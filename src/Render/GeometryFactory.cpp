@@ -354,6 +354,34 @@ Vertex v[24]{
 		return customGeo;
 	}
 
+	Geometry* GeometryFactory::LoadJsonGeometry(json const& object)
+	{
+		Geometry* customGeo = nullptr;
+
+		Vector<Vertex> vertices;
+		Vector<uint32> indices;
+
+		Obj obj(" ");
+		obj.LoadJsonObj(object);
+
+		for (int i = 0; i < obj.meshs.Size(); i++)
+		{
+			for (obj::Vertex& v : obj.vertices)
+			{
+				Vertex ve;
+				ve.pos = { v.position.x, v.position.y, v.position.z };
+				ve.normal = { v.normal.x, v.normal.y, v.normal.z };
+				ve.uv = { v.textureCoordinate.x, v.textureCoordinate.y };
+				vertices.PushBack(ve);
+			}
+			for (uint32 index : obj.meshs[i].indices)
+				indices.PushBack(index);
+		}
+
+		customGeo = new Geometry(vertices.Data(), vertices.Size(), indices.Data(), indices.Size());
+		return customGeo;
+	}
+
 	Geometry* GeometryFactory::CreateCylinderGeo(float32 bottomRadius, float32 topRadius, float32 height, uint32 sliceCount, uint32 stackCount)
 	{
 		Vector<Vertex> vertices;

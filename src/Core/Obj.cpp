@@ -122,4 +122,43 @@ namespace gce {
 		mesh.indices = indices;
 		meshs.PushBack(mesh);
 	}
+
+	void Obj::LoadJsonObj(json const& object)
+	{
+		json mesh = object["mesh"];
+		json vVertices = mesh["vertices"];
+		json indices = mesh["indices"];
+		json textureCoordinates = mesh["uvs"];
+
+		int nVertices = (int)vVertices.size() / 3;
+
+		for (int i = 0; i < nVertices; i++)
+		{
+			Vector3f32 pos;
+			pos.x = vVertices[i * 3].get<float>();
+			pos.y = vVertices[i * 3 + 1].get<float>();
+			pos.z = vVertices[i * 3 + 2].get<float>();
+
+			Vector3f32 normal;
+			
+			Vector2f32 texCoord;
+			texCoord.x = textureCoordinates[i * 2].get<float>();
+			texCoord.y = textureCoordinates[i * 2 + 1].get<float>();
+
+			obj::Vertex vertex(pos, normal, texCoord);
+			vertices.PushBack(vertex);
+		}
+
+		Mesh m;
+		
+		for (int i = 0; i < indices.size(); i += 3)
+		{
+			m.indices.PushBack(indices[i]);
+		}
+
+		meshs.PushBack(m);
+	}
+
+
+	
 }
