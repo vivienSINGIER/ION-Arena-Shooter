@@ -35,9 +35,8 @@ void Game::Init()
     windowParam.isFullScreen = true;
 
     GameObject& player = GameObject::Create(*m_Scene);
-    player.AddScript<PlayerMovement>()->Init(pPso);
+    player.AddScript<Player>()->Init(pPso);
 	player.AddScript<PlayerController>();
-    player.AddScript<Rifle>();
 
     GameObject& ground = GameObject::Create(*m_Scene);
     ground.transform.SetWorldPosition({ 0,-3,0 });

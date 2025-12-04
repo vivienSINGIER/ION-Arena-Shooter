@@ -18,10 +18,6 @@ void Start() override
     m_ammo = 25;
     m_shotCooldown = 0.1f;
     m_reloadCooldown = 1.5f;
-
-    m_pOwner->transform.SetWorldPosition({ 0,2,0 });
-    m_pOwner->transform.SetWorldScale({ 1.f ,1.f,1.f });
-
 }
 
 void Shoot() override
@@ -32,6 +28,7 @@ void Shoot() override
     GameObject& bullet = GameObject::Create(m_pOwner->GetScene());
     bullet.AddScript<BulletRifle>()->Init(m_pOwner->transform.GetWorldForward(), 2.f, m_PSO);
 
+    std::cout << "test" << std::endl;
 }
 
 void Init(D12PipelineObject* pso) override

@@ -9,15 +9,17 @@
 #include "Core/Maths/Vector3.h"
 #include "GameManager.h"
 #include "Shapes.h"
+#include "Rifle.hpp"
 
 using namespace gce;
 
-DECLARE_SCRIPT(PlayerMovement, ScriptFlag::Start | ScriptFlag::Update)
+DECLARE_SCRIPT(Player, ScriptFlag::Start | ScriptFlag::Update)
 
 
 float32 m_speed = 5;
 float32 m_jumpForce = 15000;
 Camera* m_camera = nullptr;
+Rifle* m_rifle = nullptr;
 
 void Init(D12PipelineObject* pPso)
 {
@@ -42,6 +44,14 @@ void Init(D12PipelineObject* pPso)
 	m_camera->perspective.up = { 0.0f, 1.0f, 0.0f };
 	cam.SetParent(*m_pOwner);
 	cam.transform.SetLocalPosition({0.f, 0.8f, 0.f});
+
+	GameObject& rifle = GameObject::Create(m_pOwner->GetScene());
+	m_rifle = rifle.AddScript<Rifle>();
+	m_rifle->Init(pPso);
+	rifle.SetParent(cam);
+	rifle.transform.SetLocalPosition({ 0.3f,-0.3f,1.f });
+	rifle.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
+
 }
 
 void Start() override
