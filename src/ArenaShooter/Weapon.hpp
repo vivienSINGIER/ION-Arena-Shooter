@@ -9,8 +9,6 @@ using namespace gce;
 
 DECLARE_SCRIPT(Weapon, ScriptFlag::Start | ScriptFlag::Update)
 
-int8 m_ammo = 0;
-int8 m_maxAmmo = 0;
 
 float32 m_reloadCooldown = 0.f;
 float32 m_shotCooldown = 0.f;
@@ -23,6 +21,15 @@ bool m_isReloading = false;
 
 D12PipelineObject* m_PSO = nullptr;
 
+
+
+float32 m_heat = 0.f;          
+float32 m_maxHeat = 100.f;     
+float32 m_heatPerShot = 10.f;  
+float32 m_coolRate = 8.f;     
+
+bool m_isOverheated = false;
+
 void Start() override
 {
     
@@ -30,17 +37,23 @@ void Start() override
 
 void Update() override
 {
+    float32 dt = GameManager::DeltaTime();
+
+    if (m_isShooting == false)
+    {
+        m_heat -= m_coolRate * dt;
+    }
     // Fin de reload
     if (m_isReloading && m_reloadTimer.GetElapsedTime() >= m_reloadCooldown)
     {
         m_isReloading = false;
-        m_ammo = m_maxAmmo;
+        m_heat = 0.f;
         m_reloadTimer.Pause();
         m_reloadTimer.Reset();
     }
 
     // Cooldown tir
-    if (m_isShooting && m_shotTimer.GetElapsedTime() >= m_shotCooldown)
+    if (m_isShooting && m_shotTimer.GetElapsedTime() >= m_shotCooldown && m_heat < m_maxHeat)
     {
         EndShot();
     }
@@ -52,7 +65,6 @@ void BeginShot()
 {
     if (m_isShooting) return;
     if (m_isReloading) return;
-    if (m_ammo <= 0) return;
 
     m_isShooting = true;
 
@@ -79,11 +91,7 @@ void EndShot()
 void Reload()
 {
     if (m_isReloading == true) return;
-    if (m_ammo == m_maxAmmo)
-    {
-        std::cout << "Chargeur plein" << std::endl;
-        return;
-    }
+
     m_isReloading = true;
     m_reloadTimer.Start();
     std::cout << "Reload" << std::endl;
