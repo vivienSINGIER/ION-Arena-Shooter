@@ -25,20 +25,31 @@ Keyboard::Key m_keyLeft = Keyboard::Q;
 Keyboard::Key m_keyRight = Keyboard::D;
 
 Keyboard::Key m_keyJump = Keyboard::SPACE;
+Keyboard::Key m_keyEscape = Keyboard::ESCAPE;
 
+Vector3f32 m_previousMousePos;
+float32 m_mouseSensitivity = 0.2f;
+
+private:
+	PlayerMovement* m_pMovement = nullptr;
+	bool m_mouseLock = false;
+
+public:
 
 void Start() override
 {
 	m_pPlayer = m_pOwner;
+	m_pMovement = m_pPlayer->GetScript<PlayerMovement>();
 }
 
 void Update() override
 {
 	m_deltaTime = GameManager::DeltaTime();
-	HandleInput(GameManager::DeltaTime());
+	HandleInput();
+	HandleMousePos();
 }
 
-void HandleInput(float32 deltaTime)
+void HandleInput()
 {
 	if (GetKey(m_keyForward))
 		Move({ 0, 0, 1 });
@@ -51,6 +62,32 @@ void HandleInput(float32 deltaTime)
 
 	if (GetKeyDown(m_keyJump))
 		m_pPlayer->GetScript<PlayerMovement>()->Jump();
+	if (GetKeyDown(m_keyEscape))
+	{
+		m_mouseLock = !m_mouseLock;
+		if (m_mouseLock)
+			HideMouseCursor();
+		else
+			ShowMouseCursor();
+		Vector2i32 center( GameManager::GetWindow()->GetWidth() / 2, GameManager::GetWindow()->GetHeight() / 2 );
+		SetMousePosition( { center.x, center.y } );
+	}
+}
+
+void HandleMousePos()
+{
+	if (m_mouseLock == false)
+		return;
+	
+	Vector2i32 center( GameManager::GetWindow()->GetWidth() / 2, GameManager::GetWindow()->GetHeight() / 2 );
+	Vector2i32 mousePos = GetMousePosition();
+	Vector2f32 delta = (mousePos - center);
+	delta *= m_mouseSensitivity;
+
+	m_pPlayer->transform.WorldRotate({0.0f, delta.x * m_deltaTime, 0.0f});
+	m_pMovement->m_camera->GetOwner().transform.LocalRotate({delta.y * m_deltaTime, 0.0f, 0.0f});
+	
+	SetMousePosition( { center.x, center.y } );
 }
 
 void Move(Vector3f32 direction)
