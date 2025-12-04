@@ -23,10 +23,6 @@ Rifle* m_rifle = nullptr;
 
 void Init(D12PipelineObject* pPso)
 {
-	MeshRenderer& meshPlayer = *m_pOwner->AddComponent<MeshRenderer>();
-	meshPlayer.pGeometry = SHAPES.CUBE;
-	meshPlayer.pPso = pPso;
-	
 	m_pOwner->transform.SetWorldPosition({ 0,2,0 });
 	m_pOwner->transform.SetWorldScale({ 1.f, 1.f, 1.f });
 	m_pOwner->AddComponent<BoxCollider>();
@@ -34,6 +30,8 @@ void Init(D12PipelineObject* pPso)
 	m_pOwner->GetComponent<PhysicComponent>()->SetBounciness(0.0f);
 	
 	GameObject& cam = GameObject::Create(m_pOwner->GetScene());
+	cam.SetParent(*m_pOwner);
+	cam.transform.SetLocalPosition({ 0.f, 0.8f, 0.f });
 	m_camera = cam.AddComponent<Camera>();
 	m_camera->SetMainCamera();
 	m_camera->SetType(PERSPECTIVE);
@@ -42,8 +40,7 @@ void Init(D12PipelineObject* pPso)
 	m_camera->perspective.farPlane = 500.0f;
 	m_camera->perspective.aspectRatio = 600.0f / 400.0f;
 	m_camera->perspective.up = { 0.0f, 1.0f, 0.0f };
-	cam.SetParent(*m_pOwner);
-	cam.transform.SetLocalPosition({0.f, 0.8f, 0.f});
+	
 
 	GameObject& rifle = GameObject::Create(m_pOwner->GetScene());
 	m_rifle = rifle.AddScript<Rifle>();

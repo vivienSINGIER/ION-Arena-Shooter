@@ -35,6 +35,8 @@ void Update() override
     {
         m_isReloading = false;
         m_ammo = m_maxAmmo;
+        m_reloadTimer.Pause();
+        m_reloadTimer.Reset();
     }
 
     // Cooldown tir
@@ -76,7 +78,7 @@ void EndShot()
 
 void Reload()
 {
-    if (m_isReloading) return;
+    if (m_isReloading == true) return;
     if (m_ammo == m_maxAmmo)
     {
         std::cout << "Chargeur plein" << std::endl;

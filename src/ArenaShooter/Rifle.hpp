@@ -26,9 +26,8 @@ void Shoot() override
     m_shotTimer.Start();
 
     GameObject& bullet = GameObject::Create(m_pOwner->GetScene());
-    bullet.AddScript<BulletRifle>()->Init(m_pOwner->transform.GetWorldForward(), 2.f, m_PSO);
+    bullet.AddScript<BulletRifle>()->Init(m_pOwner->transform.GetWorldForward(),m_pOwner->transform.GetWorldPosition(), 20.f, m_PSO);
 
-    std::cout << "test" << std::endl;
 }
 
 void Init(D12PipelineObject* pso) override
@@ -36,7 +35,7 @@ void Init(D12PipelineObject* pso) override
     m_PSO = pso;
 
     MeshRenderer& meshProjectileRifle = *m_pOwner->AddComponent<MeshRenderer>();
-    meshProjectileRifle.pGeometry = SHAPES.CUBE;
+    meshProjectileRifle.pGeometry = SHAPES.SPHERE;
     meshProjectileRifle.pPso = pso;
 }
 

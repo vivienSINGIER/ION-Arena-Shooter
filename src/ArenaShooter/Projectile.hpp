@@ -11,10 +11,12 @@ using namespace gce;
 DECLARE_SCRIPT(Projectile, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::CollisionEnter)
 
 Vector3f32 m_Direction;
+Vector3f32 m_Position;
 float32 m_Speed;
 float32 m_MaxDistance;
-float32 m_CurrentDistance;
+float32 m_CurrentDistance = 0.f;
 float32 m_DeltaTime;
+
 
 void Start() override
 {
@@ -37,7 +39,7 @@ void CollisionEnter(GameObject* other) override
     std::cout << "test" << std::endl;
 }
 
-virtual void Init(Vector3f32 dir, float32 speed, D12PipelineObject* pso)
+virtual void Init(Vector3f32 dir,Vector3f32 pos, float32 speed, D12PipelineObject* pso)
 {
    
 }
