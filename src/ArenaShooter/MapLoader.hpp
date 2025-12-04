@@ -3,8 +3,12 @@
 
 #include "Engine.h"
 #include <fstream>
+#include <wincodec.h>
+
 #include "Core/nlohmann.hpp"
 #include "Core/Maths/Quaternion.h"
+
+#include "Health.hpp"
 
 using json = nlohmann::json;
 using namespace gce;
@@ -37,8 +41,17 @@ struct MapLoader
             MeshRenderer& mesh = *gameObject.AddComponent<MeshRenderer>();
             mesh.pGeometry = GeometryFactory::LoadJsonGeometry(currObject);
             mesh.pPso = pso;
-            gameObject.AddComponent<BoxCollider>();
             gameObject.SetName(currObject["name"].get<String>().c_str());
+
+            if (currObject["has_collider"].get<bool>() == true)
+            {
+                gameObject.AddComponent<BoxCollider>();
+                if (currObject["destructible"].get<bool>() == true)
+                {
+                    Health* h = gameObject.AddScript<Health>();
+                    h->maxHealth = 1.0f;
+                }
+            }
             
             if (currObject.contains("texture") && currObject["texture"].is_string())
             {
@@ -66,12 +79,11 @@ struct MapLoader
                 gameObject.transform.SetLocalScale(scale);
             
                 float32 rotX = currObject["rotation"][0].get<float>();
-                float32 rotY = currObject["rotation"][2].get<float>();
-                float32 rotZ = currObject["rotation"][1].get<float>();
+                float32 rotY = currObject["rotation"][1].get<float>();
+                float32 rotZ = currObject["rotation"][2].get<float>();
                 float32 rotW = currObject["rotation"][3].get<float>();
-                Quaternion rotation(rotX, rotY, rotZ, rotW);
-                Quaternion convert = Quaternion::RotationEuler(Vector3f32(90.0f, 0.0f, -90.0f));
-                gameObject.transform.SetWorldRotation(rotation * convert);
+                Quaternion rotation(-rotX, rotY, rotZ, rotW);
+                gameObject.transform.SetLocalRotation(rotation);
             }
 
             if (currObject.contains("parent") && currObject["parent"].is_string())

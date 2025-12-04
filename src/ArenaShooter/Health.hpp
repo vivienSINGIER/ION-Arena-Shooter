@@ -1,5 +1,5 @@
-#ifndef PLAYER_HPP_INCLUDED
-#define PLAYER_HPP_INCLUDED
+#ifndef HEALTH_HPP_INCLUDED
+#define HEALTH_HPP_INCLUDED
 
 #include "define.h"
 #include "Script.h"
@@ -18,4 +18,4 @@ void TakeDamage(float32 damage)
 
 END_SCRIPT
 
-#endif // !PLAYER_HPP_DEFINED
+#endif 

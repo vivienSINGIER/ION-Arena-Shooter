@@ -13,6 +13,31 @@ Game* Game::Create()
 
 Game::Game() {}
 
+DECLARE_SCRIPT(CamScript, ScriptFlag::Update)
+
+void Update() override
+{
+    GameTransform* t = &m_pOwner->transform;
+    float32 dt = GameManager::DeltaTime();
+    float32 speed = 5.f;
+    
+    if (GetKey(Keyboard::D))
+        t->WorldTranslate(Vector3f32(1.0f, 0.0f, 0.0f) * dt * speed);
+    if (GetKey(Keyboard::Q))
+        t->WorldTranslate(Vector3f32(-1.0f, 0.0f, 0.0f) * dt * speed);
+    if (GetKey(Keyboard::Z))
+        t->WorldTranslate(Vector3f32(0.0f, 0.0f, 1.0f) * dt * speed);
+    if (GetKey(Keyboard::S))
+        t->WorldTranslate(Vector3f32(0.0f, 0.0f, -1.0f) * dt * speed);
+
+    if (GetKey(Keyboard::NUMPAD6))
+        t->WorldRotate(Vector3f32(0.0f, 1.0f, 0.0f) * dt * speed);
+    if (GetKey(Keyboard::NUMPAD4))
+        t->WorldRotate(Vector3f32(0.0f, -1.0f, 0.0f) * dt * speed);
+}
+
+END_SCRIPT
+
 void Game::Init()
 {
     GameManager::Create();
@@ -60,6 +85,7 @@ void Game::Init()
     camera.perspective.farPlane = 500.0f;
     camera.perspective.aspectRatio = 600.0f / 400.0f;
     camera.perspective.up = { 0.0f, 1.0f, 0.0f };
+    cam.AddScript<CamScript>();
 
 }
 

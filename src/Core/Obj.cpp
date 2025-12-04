@@ -139,8 +139,8 @@ namespace gce {
 			// Position from vertex index
 			Vector3f32 pos;
 			pos.x = vVertices[vIndex * 3 + 0].get<float>();
-			pos.y = vVertices[vIndex * 3 + 1].get<float>();
-			pos.z = vVertices[vIndex * 3 + 2].get<float>();
+			pos.y = vVertices[vIndex * 3 + 2].get<float>();
+			pos.z = vVertices[vIndex * 3 + 1].get<float>();
 
 			// UV from loop index
 			Vector2f32 texCoord;
