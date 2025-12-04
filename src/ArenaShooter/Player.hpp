@@ -30,7 +30,7 @@ void Start() override
 	Camera& camera = *cam.AddComponent<Camera>();
 	camera.SetMainCamera();
 	camera.SetType(PERSPECTIVE);
-	camera.perspective.fov = XM_PIDIV4;
+	camera.perspective.fov = XM_PIDIV2;
 	camera.perspective.nearPlane = 0.001f;
 	camera.perspective.farPlane = 500.0f;
 	camera.perspective.aspectRatio = 600.0f / 400.0f;
@@ -55,7 +55,7 @@ bool IsRising()
 
 bool IsAirborne()
 {
-	if (m_pOwner->transform.GetWorldPosition().y <= 0.f)
+	if (m_pOwner->transform.GetWorldPosition().y <= 0.5f)
 		return false;
 	else
 		return true;
@@ -75,13 +75,22 @@ void Jump()
 
 void Move(Vector3f32 direction)
 {
-	Vector3f32 offset = direction * m_speed;
+	
+
+	Vector3f32 offset = (m_pOwner->transform.GetLocalForward().Normalize() * direction.z + m_pOwner->transform.GetLocalRight().Normalize() * direction.x) * m_speed;
 	offset *= m_deltaTime;
 
 	if (IsAirborne())
 		offset *= 0.25f;
 
 	m_pOwner->transform.LocalTranslate(offset);
+}
+
+void Rotate(Vector3f32 rotation)
+{
+	Vector3f32 tilt = rotation * m_deltaTime;
+
+	m_pOwner->transform.LocalRotate(tilt);
 }
 
 void Die()

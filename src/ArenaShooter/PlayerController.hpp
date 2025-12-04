@@ -26,6 +26,9 @@ Keyboard::Key m_keyRight = Keyboard::D;
 
 Keyboard::Key m_keyJump = Keyboard::SPACE;
 
+Keyboard::Key m_keyRotLeft = Keyboard::A;
+Keyboard::Key m_keyRotRight = Keyboard::E;
+
 
 void Start() override
 {
@@ -35,10 +38,10 @@ void Start() override
 void Update() override
 {
 	m_deltaTime = GameManager::DeltaTime();
-	HandleInput(GameManager::DeltaTime());
+	HandleInput();
 }
 
-void HandleInput(float32 deltaTime)
+void HandleInput()
 {
 	if (GetKey(m_keyForward))
 		Move({ 0, 0, 1 });
@@ -51,11 +54,21 @@ void HandleInput(float32 deltaTime)
 
 	if (GetKeyDown(m_keyJump))
 		m_pPlayer->GetScript<PlayerMovement>()->Jump();
+
+	if (GetKey(m_keyRotLeft))
+		Rotate({ 0, -1, 0 });
+	if (GetKey(m_keyRotRight))
+		Rotate({ 0, 1, 0 });
 }
 
 void Move(Vector3f32 direction)
 {
 	m_pPlayer->GetScript<PlayerMovement>()->Move(direction);
+}
+
+void Rotate(Vector3f32 rotation)
+{
+	m_pPlayer->GetScript<PlayerMovement>()->Rotate(rotation);
 }
 
 END_SCRIPT
