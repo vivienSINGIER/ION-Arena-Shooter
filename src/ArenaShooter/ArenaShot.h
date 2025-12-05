@@ -3,6 +3,10 @@
 
 #include <Engine.h>
 #include <Render.h>
+
+
+#include "PlayerController.hpp"
+
 using namespace gce;
 
 struct Game
@@ -19,7 +23,7 @@ private:
 
     Scene* m_Scene;
     WindowParam windowParam;
-    D12PipelineObject* p_Pso;
+    D12PipelineObject* pPso;
 
 };
 
