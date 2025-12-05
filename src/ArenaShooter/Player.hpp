@@ -68,9 +68,18 @@ bool IsRising()
 bool IsAirborne()
 {
 	if (m_pOwner->transform.GetWorldPosition().y <= 0.5f)
+	{
+		Force land;
+		land.direction = (m_moveOffset * m_speed).Normalize();
+		land.norm = m_jumpForce;
+
 		return false;
+		m_pOwner->GetComponent<PhysicComponent>()->AddForce(land);
+	}
 	else
+	{
 		return true;
+	}
 }
 
 void Jump()
@@ -81,7 +90,7 @@ void Jump()
 		jumpForce.direction = { 0, 1, 0 };
 		jumpForce.norm = m_jumpForce;
 		
-		Vector3f32 jumpDirection = (m_moveOffset * m_speed).Normalize();
+		Vector3f32 jumpDirection = (m_pOwner->transform.GetLocalForward().Normalize() * m_moveOffset.z + m_pOwner->transform.GetLocalRight().Normalize() * m_moveOffset.x).Normalize();
 		jumpForce.direction += jumpDirection;
 
 		m_pOwner->GetComponent<PhysicComponent>()->AddForce(jumpForce);
@@ -122,15 +131,7 @@ void MovingForward(float32 direction)
 {
 	m_moveOffset.z = direction;
 }
-void MovingBackward(float32 direction)
-{
-	m_moveOffset.z = direction;
-}
-void MovingLeft(float32 direction)
-{
-	m_moveOffset.x = direction;
-}
-void MovingRight(float32 direction)
+void MovingLaterally(float32 direction)
 {
 	m_moveOffset.x = direction;
 }
