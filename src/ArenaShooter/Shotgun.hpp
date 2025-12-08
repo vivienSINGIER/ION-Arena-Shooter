@@ -14,7 +14,7 @@ DECLARE_CHILD_SCRIPT(Shotgun, Weapon, ScriptFlag::Start | ScriptFlag::Update)
 
 float32 m_spreadAngle = 5.f; // Angle de dispersion des projectiles (horizontal)
 float32 m_verticalSpread = 5.f; // Angle de dispersion verticale (au-dessus / en-dessous)
-int m_numPellets = 8;         // Nombre de projectiles tirés
+int m_numPellets = 8;         // Nombre de projectiles tirï¿½s
 
 void Start() override
 {
@@ -30,16 +30,25 @@ void Shoot() override
     // On tire plusieurs projectiles
     for (int i = 0; i < m_numPellets; ++i)
     {
-        // Calcul d'un angle aléatoire horizontal et vertical
-        float32 horizontalAngle = ((rand() % 2001) - 1000) / 1000.f * m_spreadAngle; // -15 à +15 degrés
-        float32 verticalAngle = ((rand() % 2001) - 1000) / 1000.f * m_verticalSpread; // -10 à +10 degrés
+        // Calcul d'un angle alï¿½atoire horizontal et vertical
+        float32 horizontalAngle = ((rand() % 2001) - 1000) / 1000.f * m_spreadAngle; // -15 ï¿½ +15 degrï¿½s
+        float32 verticalAngle = ((rand() % 2001) - 1000) / 1000.f * m_verticalSpread; // -10 ï¿½ +10 degrï¿½s
 
         // Calcul de la direction de tir
         Vector3f32 spreadDirection = GetSpreadDirection(horizontalAngle, verticalAngle);
 
-        // Création du projectile
+        Vector3f32 forward = m_pOwner->transform.GetWorldForward();
+        Vector3f32 right = m_pOwner->transform.GetWorldRight();
+        Vector3f32 up = m_pOwner->transform.GetWorldUp();
+        
+        Vector3f32 worldDirection = 
+            right * spreadDirection.x
+            + up * spreadDirection.y
+            + forward * spreadDirection.z;
+
+        // Crï¿½ation du projectile
         GameObject& bullet = GameObject::Create(m_pOwner->GetScene());
-        bullet.AddScript<BulletShotgun>()->Init(spreadDirection, m_pOwner->transform.GetWorldPosition(), 25.f, m_PSO);
+        bullet.AddScript<BulletShotgun>()->Init(worldDirection, m_pOwner->transform.GetWorldPosition(), 25.f, m_PSO);
     }
 }
 
@@ -60,10 +69,10 @@ Vector3f32 GetSpreadDirection(float32 horizontalAngle, float32 verticalAngle)
     // Calcul de la direction finale
     Vector3f32 direction;
     direction.x = cosVertical * sinHorizontal; // Projection sur X
-    direction.y = sinVertical;                 // Projection sur Y (élévation)
+    direction.y = sinVertical;                 // Projection sur Y (ï¿½lï¿½vation)
     direction.z = cosVertical * cosHorizontal; // Projection sur Z
 
-    // Retourne la direction normalisée
+    // Retourne la direction normalisï¿½e
     return direction.Normalize();
 }
 
@@ -72,7 +81,7 @@ void Init(D12PipelineObject* pso) override
     m_PSO = pso;
 
     MeshRenderer& meshProjectileShotgun = *m_pOwner->AddComponent<MeshRenderer>();
-    meshProjectileShotgun.pGeometry = SHAPES.CYLINDER; // On pourrait avoir un modèle de cartouche ou autre forme
+    meshProjectileShotgun.pGeometry = SHAPES.CYLINDER; // On pourrait avoir un modï¿½le de cartouche ou autre forme
     meshProjectileShotgun.pPso = pso;
 }
 
