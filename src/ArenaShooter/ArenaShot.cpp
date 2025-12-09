@@ -46,7 +46,7 @@ void Game::Init()
 {
     GameManager::Create();
     m_Scene = &Scene::Create();
-
+    
     pPso = new D12PipelineObject(
         SHADERS.VERTEX,
         SHADERS.PIXEL,
@@ -64,11 +64,11 @@ void Game::Init()
     MapLoader::LoadMap(RES_PATH"res/Maps/blockout.json", m_Scene, pPso);
 
     GameObject& player = GameObject::Create(*m_Scene);
-    player.AddScript<Player>()->Init(pPso);
+    player.AddScript<Player>();
 	player.AddScript<PlayerController>();
 
     GameObject& kamikaze = GameObject::Create(*m_Scene);
-    kamikaze.AddScript<Kamikaze>()->Init(pPso);
+    kamikaze.AddScript<Kamikaze>();
     kamikaze.AddComponent<BoxCollider>();
 
 }

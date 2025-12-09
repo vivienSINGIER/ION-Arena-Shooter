@@ -15,7 +15,6 @@ using namespace gce;
 
 DECLARE_SCRIPT(PlayerController, ScriptFlag::Start | ScriptFlag::Update)
 
-
 float32 m_deltaTime;
 
 GameObject* m_pPlayer;
@@ -71,6 +70,9 @@ void HandleInput()
 
 	Move(direction);
 
+	if (GetKeyDown(Keyboard::P))
+		m_pMovement->Test();
+	
 	if (GetKeyDown(m_keyJump))
 		m_pPlayer->GetScript<Player>()->Jump();
 	

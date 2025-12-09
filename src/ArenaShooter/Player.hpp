@@ -22,13 +22,14 @@ Camera* m_camera = nullptr;
 Rifle* m_rifle = nullptr;
 Shotgun* m_shotgun = nullptr;
 
-void Init(D12PipelineObject* pPso)
+void Start() override
 {
-	m_pOwner->transform.SetWorldPosition({ 0,3,0 });
+	m_pOwner->transform.SetWorldPosition({ 0,10,0 });
 	m_pOwner->transform.SetWorldScale({ 1.f, 1.f, 1.f });
 	m_pOwner->AddComponent<BoxCollider>();
 	m_pOwner->AddComponent<PhysicComponent>()->SetMass(80.0f);
 	m_pOwner->GetComponent<PhysicComponent>()->SetBounciness(0.0f);
+	m_pOwner->SetName("Player");
 	
 	GameObject& cam = GameObject::Create(m_pOwner->GetScene());
 	cam.SetParent(*m_pOwner);
@@ -41,29 +42,29 @@ void Init(D12PipelineObject* pPso)
 	m_camera->perspective.farPlane = 500.0f;
 	m_camera->perspective.aspectRatio = 600.0f / 400.0f;
 	m_camera->perspective.up = { 0.0f, 1.0f, 0.0f };
-	
 
 	GameObject& rifle = GameObject::Create(m_pOwner->GetScene());
 	m_rifle = rifle.AddScript<Rifle>();
-	m_rifle->Init(pPso);
 	rifle.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
 	rifle.SetParent(cam);
 	rifle.transform.SetLocalPosition({ 0.3f,-0.3f,1.f });
 
 	/*GameObject& shotgun = GameObject::Create(m_pOwner->GetScene());
 	m_shotgun = shotgun.AddScript<Shotgun>();
-	m_shotgun->Init(pPso);
 	shotgun.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
 	shotgun.SetParent(cam);
 	shotgun.transform.SetLocalPosition({ 0.3f,-0.3f,1.f });*/
 
 }
 
-void Start() override
+void Test()
 {
+	GameObject& testObject = GameObject::Create(m_pOwner->GetScene());
+	testObject.AddComponent<MeshRenderer>()->pGeometry = SHAPES.CUBE;
+
+	testObject.transform.SetWorldPosition(m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward() * 2.f);
 	
 }
-
 
 void Update() override
 {
