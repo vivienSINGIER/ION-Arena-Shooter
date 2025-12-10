@@ -18,12 +18,12 @@ float32 m_CurrentDistance = 0.f;
 float32 m_DeltaTime;
 float32 m_dmgBullet;
 
-void Start() override
+void Start()
 {
 
 }
 
-void Update() override
+void Update()
 {
     m_DeltaTime = GameManager::DeltaTime();
 
@@ -32,7 +32,7 @@ void Update() override
 
 }
 
-void CollisionEnter(GameObject* other) override
+void CollisionEnter(GameObject* other)
 {
     if (m_pOwner->GetName() == other->GetName())
         return;
