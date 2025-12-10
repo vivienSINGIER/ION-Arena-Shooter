@@ -11,6 +11,7 @@
 #include "Shapes.h"
 #include "Rifle.hpp"
 #include "Shotgun.hpp"
+#include "WeaponController.hpp"
 
 using namespace gce;
 
@@ -22,9 +23,10 @@ Camera* m_camera = nullptr;
 Rifle* m_rifle = nullptr;
 Shotgun* m_shotgun = nullptr;
 
+WeaponController* m_weaponController = nullptr;
+
 void Awake() override
 {
-
 	GameObject& cam = GameObject::Create(m_pOwner->GetScene());
 	cam.SetParent(*m_pOwner);
 	cam.transform.SetLocalPosition({ 0.f, 0.8f, 0.f });
@@ -37,18 +39,27 @@ void Awake() override
 	m_camera->perspective.aspectRatio = 600.0f / 400.0f;
 	m_camera->perspective.up = { 0.0f, 1.0f, 0.0f };
 
+	GameObject& weaponControllerObj = GameObject::Create(m_pOwner->GetScene());
+	m_weaponController = weaponControllerObj.AddScript<WeaponController>();
+	weaponControllerObj.SetParent(*m_pOwner);
 
-	// GameObject& rifle = GameObject::Create(m_pOwner->GetScene());
-	// m_rifle = rifle.AddScript<Rifle>();
-	// rifle.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
-	// rifle.SetParent(cam);
-	// rifle.transform.SetLocalPosition({ 0.3f,-0.3f,1.f });
+	GameObject& rifle = GameObject::Create(m_pOwner->GetScene());
+	MeshRenderer& meshProjectileRifle = *rifle.AddComponent<MeshRenderer>();
+	meshProjectileRifle.pGeometry = SHAPES.SPHERE;
+	m_rifle = rifle.AddScript<Rifle>();
+	rifle.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
+	rifle.SetParent(cam);
+	rifle.transform.SetLocalPosition({ 0.3f,-0.3f,1.f });
+	m_weaponController->AddWeapon(m_rifle);
 
 	GameObject& shotgun = GameObject::Create(m_pOwner->GetScene());
+	MeshRenderer& meshProjectileShotgun = *shotgun.AddComponent<MeshRenderer>();
+	meshProjectileShotgun.pGeometry = SHAPES.CYLINDER;
 	m_shotgun = shotgun.AddScript<Shotgun>();
 	shotgun.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
 	shotgun.SetParent(cam);
 	shotgun.transform.SetLocalPosition({ 0.3f,-0.3f,1.f });
+	m_weaponController->AddWeapon(m_shotgun);
 
 }
 
@@ -120,6 +131,10 @@ void Die()
 
 }
 
+WeaponController* GetWeaponController()
+{
+	return m_weaponController;
+}
 
 
 private:

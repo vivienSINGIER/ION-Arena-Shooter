@@ -10,14 +10,13 @@
 
 using namespace gce;
 
-DECLARE_CHILD_SCRIPT(Rifle, Weapon, ScriptFlag::Start | ScriptFlag::Update)
+DECLARE_CHILD_SCRIPT(Rifle, Weapon, ScriptFlag::Awake | ScriptFlag::Update)
 
-void Start() override
+void Awake() override
 {
+    Weapon::Awake();
     m_shotCooldown = 0.3f;
     m_reloadCooldown = 1.5f;
-    MeshRenderer& meshProjectileRifle = *m_pOwner->AddComponent<MeshRenderer>();
-    meshProjectileRifle.pGeometry = SHAPES.SPHERE;
 
     for (int i = 0; i < 50; i++)
     {
