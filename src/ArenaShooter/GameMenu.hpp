@@ -35,6 +35,7 @@ void InitMenuGame(CustomScene* menu, WindowParam* windowParam, D12PipelineObject
     kamikaze.transform.SetWorldScale({ 1.f,1.f,1.f });
     kamikaze.AddScript<Kamikaze>();
     kamikaze.AddComponent<BoxCollider>();
+    kamikaze.GetScript<Enemy>()->SetPlayer(&player);
 
 }
 
