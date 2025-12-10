@@ -1,12 +1,7 @@
 #include "ArenaShot.h"
-#include "Player.hpp"
-#include "MapLoader.hpp"
-#include "PlayerController.hpp"
-#include "Rifle.hpp"
-#include "BulletRifle.hpp"
-#include "Kamikaze.hpp"
 #include "CustomScene.h"
-#include "MenuController.hpp"
+#include "MainMenu.hpp"
+#include "GameMenu.hpp"
 
 Game* Game::Create()
 {
@@ -45,42 +40,9 @@ void Game::Init()
     windowParam.height = 720;
     windowParam.isFullScreen = true;
 
-    GameObject& title = main_menu->AddObject();
-    ImageUI& uiImage = *title.AddComponent<ImageUI>();
-    Vector2f32 center = { windowParam.width / 2.f, windowParam.height / 2.f };
-    Vector2f32 size = { 32, 32 };
-    Vector2f32 posUi = center - size * 0.5f;
-    uiImage.InitializeImage(posUi, size, 1.f);
-
-    uiImage.btmBrush = new BitMapBrush("res/ArenaShooter/VilleretAuxence.jpg");
-    uiImage.btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, { 1.f / 16.f, 1.f / 16.f, 1.f / 16.f }, 0);
-    uiImage.SetActive(true);
-
-    GameObject& menu_controller = main_menu->AddObject();
-    menu_controller.AddScript<MenuController>();
-
-
-    MapLoader::LoadMap(RES_PATH"res/Maps/blockout.json", game_menu, pPso);
-
-    GameObject& player = game_menu->AddObject();
-    player.transform.SetWorldPosition({ 0,10,0 });
-    player.transform.SetWorldScale({ 1.f, 1.f, 1.f });
-    player.AddComponent<BoxCollider>();
-    player.AddComponent<PhysicComponent>()->SetMass(80.0f);
-    player.GetComponent<PhysicComponent>()->SetBounciness(0.0f);
-    player.SetName("Player");
-
-    player.AddScript<Player>();
-	player.AddScript<PlayerController>();
-
-
-    GameObject& kamikaze = game_menu->AddObject();
-    MeshRenderer& mesh = *kamikaze.AddComponent<MeshRenderer>();
-    mesh.pGeometry = SHAPES.CUBE;
-    kamikaze.transform.SetWorldPosition({ 5.f,0.5f,0.f });
-    kamikaze.transform.SetWorldScale({ 1.f,1.f,1.f });
-    kamikaze.AddScript<Kamikaze>();
-    kamikaze.AddComponent<BoxCollider>();
+    InitMenu(main_menu, &windowParam);
+    
+    InitMenuGame(game_menu, &windowParam, pPso);
 
 }
 

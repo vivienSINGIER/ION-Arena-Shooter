@@ -22,15 +22,12 @@ void Start() override
 
 void Update() override
 {
-	HandleInput();
+
 }
 
-void HandleInput()
+static void GoToGame()
 {
-	if (GetKeyDown(Keyboard::ENTER))
-	{
-		SceneManager::GetInstance()->ChangeScene(GAME);
-	}
+	SceneManager::GetInstance()->ChangeScene(GAME);
 }
 
 END_SCRIPT
