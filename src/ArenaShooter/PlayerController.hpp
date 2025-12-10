@@ -7,6 +7,7 @@
 #include "Core/Maths/Vector3.h"
 #include "GameManager.h"
 #include "Rifle.hpp"
+#include "WeaponController.hpp"
 
 #include "Player.hpp"
 #include "InputsMethods.h"
@@ -76,11 +77,17 @@ void HandleInput()
 	if (GetKeyDown(m_keyJump))
 		m_pPlayer->GetScript<Player>()->Jump();
 	
-	if (GetKeyDown(m_keyReload))
-		m_pPlayer->GetScript<Player>()->m_shotgun->Reload();
-
 	if (GetButton(m_buttonLeft))
-		m_pPlayer->GetScript<Player>()->m_shotgun->BeginShot();
+		m_pPlayer->GetScript<Player>()->GetWeaponController()->Shoot();
+
+	if (GetKeyDown(m_keyReload))
+		m_pPlayer->GetScript<Player>()->GetWeaponController()->Reload();
+
+	if (GetKeyDown(Keyboard::NUMPAD1))
+		m_pPlayer->GetScript<Player>()->GetWeaponController()->EquipWeapon(0);
+
+	if (GetKeyDown(Keyboard::NUMPAD2))
+		m_pPlayer->GetScript<Player>()->GetWeaponController()->EquipWeapon(1);
 
 	if (GetKeyDown(m_keyEscape))
 	{

@@ -8,7 +8,7 @@
 #include "Projectile.hpp"
 using namespace gce;
 
-DECLARE_SCRIPT(Weapon, ScriptFlag::Start | ScriptFlag::Update)
+DECLARE_SCRIPT(Weapon, ScriptFlag::Awake | ScriptFlag::Update)
 
 
 float32 m_reloadCooldown = 0.f;
@@ -31,9 +31,11 @@ bool m_isOverheated = false;
 
 Vector<Projectile*> m_pProjectiles;
 
-void Start() override
+GameObject* m_Owner = nullptr;
+
+void Awake() override
 {
-    
+    m_Owner = m_pOwner;
 }
 
 void Update() override
@@ -129,6 +131,10 @@ void Reload()
     std::cout << "Reload" << std::endl;
 }
 
+GameObject* GetOwner()
+{
+    return m_Owner;
+}
 
 END_SCRIPT
 
