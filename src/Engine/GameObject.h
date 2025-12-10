@@ -60,6 +60,7 @@ public:
     template <class ScriptClass> ScriptClass* AddScript();
     template <class ScriptClass> void RemoveScript();
 
+    cstr m_name;
     Event<GameObject*>* pCollisionEvents = nullptr;
     Event<GameObject*>* pCollision2DEvents = nullptr;
     Scene* m_pScene = nullptr;
@@ -75,7 +76,6 @@ private:
 
     inline static uint32 s_nextID = 0;
     uint32 m_id = s_nextID++;
-    cstr m_name;
 
     
     int64 m_componentsBitmask = 0;
