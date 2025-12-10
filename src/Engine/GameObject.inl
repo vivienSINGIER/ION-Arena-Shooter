@@ -36,8 +36,7 @@ template <class ComponentClass>
 ComponentClass* GameObject::GetComponent() { return HasComponent<ComponentClass>() ? ComponentClass::s_list[m_components[ComponentClass::TypeId]] : nullptr; }
 
 template <class ComponentClass>
-ComponentClass const* GameObject::GetComponent() const { return HasComponent<ComponentClass>() ? ComponentClass::s_list[m_components[ComponentClass::TypeId]] : nullptr; }
-
+    ComponentClass const* GameObject::GetComponent() const { return HasComponent<ComponentClass>() ? ComponentClass::s_list.At(m_components.at(ComponentClass::TypeId)) : nullptr; }
 template <class ComponentClass>
 ComponentClass* GameObject::AddComponent()
 {
