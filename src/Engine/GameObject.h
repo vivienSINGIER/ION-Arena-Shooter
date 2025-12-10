@@ -27,9 +27,9 @@ public:
     void Destroy();
 
     [[nodiscard]] uint32 GetID() const;
-    [[nodiscard]] cstr GetName() const;
+    [[nodiscard]] String GetName() const;
     [[nodiscard]] Scene& GetScene();
-    void SetName(cstr name);
+    void SetName(String name);
 
     [[nodiscard]] bool IsActive() const;
     void SetActive( bool active );
@@ -60,7 +60,7 @@ public:
     template <class ScriptClass> ScriptClass* AddScript();
     template <class ScriptClass> void RemoveScript();
 
-    cstr m_name;
+    String m_name;
     Event<GameObject*>* pCollisionEvents = nullptr;
     Event<GameObject*>* pCollision2DEvents = nullptr;
     Scene* m_pScene = nullptr;
