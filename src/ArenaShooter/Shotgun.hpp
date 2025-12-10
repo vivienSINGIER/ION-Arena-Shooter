@@ -27,6 +27,15 @@ void Start() override
     for (int i = 0; i < 50; i++)
     {
         GameObject& bullet = GameObject::Create(m_pOwner->GetScene());
+
+        MeshRenderer& meshProjectile = *bullet.AddComponent<MeshRenderer>();
+        meshProjectile.pGeometry = SHAPES.SPHERE;
+        bullet.transform.SetWorldPosition({0.0f, 0.0f, 0.0f});
+        bullet.transform.SetWorldScale({ 0.2f, 0.2f, 0.2f });
+    
+        bullet.AddComponent<SphereCollider>();
+        bullet.AddComponent<PhysicComponent>()->SetGravityScale(0.0f);
+        
         m_pProjectiles.PushBack(bullet.AddScript<BulletShotgun>());
     }
 }

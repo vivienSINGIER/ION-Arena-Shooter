@@ -46,6 +46,7 @@ struct MapLoader
 
             if (currObject["has_collider"].get<bool>() == true)
             {
+                // gameObject.AddComponent<PhysicComponent>()->SetGravityScale(0.0f);
                 gameObject.AddComponent<BoxCollider>();
                 // if (currObject["destructible"].get<bool>() == true)
                 // {

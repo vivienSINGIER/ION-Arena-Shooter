@@ -10,7 +10,7 @@
 
 using namespace gce;
 
-DECLARE_CHILD_SCRIPT(BulletRifle, Projectile, ScriptFlag::Start | ScriptFlag::Update)
+DECLARE_CHILD_SCRIPT(BulletRifle, Projectile, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::CollisionEnter)
 
 void Start() override
 {

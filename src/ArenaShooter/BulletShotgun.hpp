@@ -10,26 +10,26 @@
 
 using namespace gce;
 
-DECLARE_CHILD_SCRIPT(BulletShotgun, Projectile, ScriptFlag::Start | ScriptFlag::Update)
+DECLARE_CHILD_SCRIPT(BulletShotgun, Projectile, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::CollisionEnter)
 
-void Start() override
+void Start()
 {
-    MeshRenderer& meshProjectile = *m_pOwner->AddComponent<MeshRenderer>();
-    meshProjectile.pGeometry = SHAPES.SPHERE;
-    m_pOwner->transform.SetWorldPosition({0.0f, 0.0f, 0.0f});
-    m_pOwner->transform.SetWorldScale({ 0.2f, 0.2f, 0.2f });
-
     m_MaxDistance = 15.f;
 
     m_pOwner->SetActive(false);
 }
 
-void Update() override
+void Update()
 {
     Projectile::Update();
 }
 
-void Init(Vector3f32 dir, Vector3f32 pos, float32 speed) override
+void CollisionEnter(GameObject* other)
+{
+    Projectile::CollisionEnter(other);
+}
+
+void Init(Vector3f32 dir, Vector3f32 pos, float32 speed)
 {
     Projectile::Init(dir, pos, speed);
 }
