@@ -77,6 +77,32 @@ namespace gce
 		m_pData[2] = 1;
 	}
 
+	float32 Vector3f32::Distance(Vector3f32 const& other) const
+	{
+		__m128 v1 = Load();        // this vector (float32)
+		__m128 v2 = other.Load();  // other vector (float32)
+
+		// delta = v1 - v2
+		__m128 vDelta = _mm_sub_ps(v1, v2);
+
+		// square each component
+		__m128 vSq = _mm_mul_ps(vDelta, vDelta);
+
+		// x + y
+		__m128 vTemp = VecPermute(vSq, 1, 2, 1, 2);
+		__m128 vSum = _mm_add_ss(vSq, vTemp);
+
+		// + z
+		vTemp = VecPermute(vTemp, 1, 1, 1, 1);
+		vSum = _mm_add_ss(vSum, vTemp);
+
+		// sqrt(x² + y² + z²)
+		vSum = _mm_sqrt_ss(vSum);
+
+		// return scalar
+		return vSum.m128_f32[0];
+	}
+
 	//////////////////////////////////////////////////////////
 	/// @brief Computes the dot product of this and other.
 	/// @param other: The vector right of the operation.

@@ -19,6 +19,7 @@ namespace gce
         void SetNull();
         void SetOne();
 
+        [[nodiscard]] float32 Distance(Vector3f32 const& other) const;
         [[nodiscard]] float32 DotProduct(Vector3f32 const&) const;
         [[nodiscard]] float32 Norm() const;
         [[nodiscard]] float32 SquareNorm() const;
@@ -77,7 +78,7 @@ namespace gce
 
         void SetNull();
         void SetOne();
-
+        
         [[nodiscard]] int32 DotProduct(Vector3i32 const&) const;
         [[nodiscard]] int32 Norm() const;
         [[nodiscard]] int32 SquareNorm() const;

@@ -18,6 +18,20 @@ Node* LevelGrid::GetNode(Vector3i32 const& pos)
     return nullptr;
 }
 
+Vector3i32 LevelGrid::GetTilePosition(Vector3f32 const& pos)
+{
+    Vector3f32 anchorPoint = {m_mapProperties.first.x - m_mapProperties.second.x * 0.5f,
+                              m_mapProperties.first.y - m_mapProperties.second.y * 0.5f,
+                              m_mapProperties.first.z - m_mapProperties.second.z * 0.5f};
+    
+    Vector3f32 newPos = { pos.x - anchorPoint.x, pos.y - anchorPoint.y, pos.z - anchorPoint.z };
+    newPos /= m_tileSize;
+    
+    Vector3i32 result(RoundToInt(newPos.x), RoundToInt(newPos.y), RoundToInt(newPos.z));
+
+    return result;
+}
+
 void LevelGrid::Init(SceneName scene, std::pair<Vector3f32, Vector3f32> const& mapProperties, Vector3f32 tileSize)
 {
     m_mapProperties = mapProperties;

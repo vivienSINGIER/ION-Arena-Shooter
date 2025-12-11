@@ -55,6 +55,9 @@ namespace gce
         void Reset();
         Node* AStar(Node* pStart, Node* pEnd, Agent* pAgent);
         void CalculateNodes();
+        
+        Node* GetNode(Vector3i32 const& pos);
+        Vector3i32 GetTilePosition(Vector3f32 const& pos);
 
     private:
         int32 m_WIDTH  = 0;
@@ -67,8 +70,6 @@ namespace gce
         Vector<Node> m_vNodes;
         Vector<Vector<Vector<Data>>> m_vData;
         GameObject* tempCollider;
-
-        Node* GetNode(Vector3i32 const& pos);
         
         bool CalculateAvailability(Vector3i32 position, Vector<GameObject*>& objs);
         Vector<Vector3i32>& GetNeighbours(Vector3i32 pos, Vector3i32 minPos, Vector3i32 maxPos);
