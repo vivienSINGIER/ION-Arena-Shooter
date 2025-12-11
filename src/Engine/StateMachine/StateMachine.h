@@ -56,7 +56,6 @@ namespace gce
 	private:
 
 		String m_actualAction;
-
 		UnorderedMap< String, Action> m_actions;
 
 		friend class StatesSystem;

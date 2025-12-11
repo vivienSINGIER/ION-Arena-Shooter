@@ -35,7 +35,7 @@ Keyboard::Key m_keyRotLeft = Keyboard::A;
 Keyboard::Key m_keyRotRight = Keyboard::E;
 
 Vector3f32 m_previousMousePos;
-float32 m_mouseSensitivity = 0.2f;
+float32 m_mouseSensitivity = 0.05f;
 
 private:
 	Player* m_pMovement = nullptr;

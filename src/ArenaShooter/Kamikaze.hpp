@@ -48,7 +48,12 @@ void Awake() override
 
 void Update() override
 {
-    Enemy::Update();
+	if (m_Hp->GetHealth() <= 0.f)
+	{
+		m_Hp->SetIsAlive(false);
+		GameManager::GetStateSystem().DestroyStateMachine(m_pOwner);
+		m_pOwner->Destroy();
+	}
 }
 
 void Shoot() override

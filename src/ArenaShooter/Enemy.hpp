@@ -22,14 +22,7 @@ void Awake() override
 
 void Update() override
 {
-	if (m_Hp->GetHealth() <= 0.f)
-	{
-		m_Hp->SetIsAlive(false);
-	}
-
 	if (m_Hp->GetIsAlive() == true) return;
-
-	m_pOwner->Destroy();
 
 }
 
