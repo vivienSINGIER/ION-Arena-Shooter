@@ -10,54 +10,30 @@
 
 using namespace gce;
 
-class Enemy;
 
 struct EnemyStates
 {
-	static bool IsPlayerClose(GameObject* me)
-	{
-		Enemy* e = me->GetScript<Enemy>();
-		if (!e || !e->m_pPlayer) return false;
+	static bool IsPlayerClose(GameObject* me);
+	
 
-		Vector3f32 DistVect = e->m_pPlayer->transform.GetLocalPosition()
-			- me->transform.GetLocalPosition();
-		return DistVect.Norm() < 8.f;
-	}
+	static bool IsPlayerVeryClose(GameObject* me);
 
-	static bool IsPlayerVeryClose(GameObject* me)
-	{
-		Enemy* e = me->GetScript<Enemy>();
-		if (!e || !e->m_pPlayer) return false;
 
-		Vector3f32 DistVect = e->m_pPlayer->transform.GetLocalPosition()
-			- me->transform.GetLocalPosition();
-		return DistVect.Norm() < 2.f;
-	}
+	static bool IsPlayerFar(GameObject* me);
+	
 
-	static bool IsPlayerFar(GameObject* me)
-	{
-		Enemy* e = me->GetScript<Enemy>();
-		if (!e || !e->m_pPlayer) return false;
+	static void OnBeginIdle(GameObject* me);
+	static void OnUpdateIdle(GameObject* me);
+	static void OnEndIdle(GameObject* me);
 
-		Vector3f32 DistVect = e->m_pPlayer->transform.GetLocalPosition()
-			- me->transform.GetLocalPosition();
-		return DistVect.Norm() > 12.f;
-	}
+	static void OnBeginChase(GameObject* me);
+	static void OnUpdateChase(GameObject* me);
+	static void OnEndChase(GameObject* me);
 
-	static void OnBeginIdle(GameObject* me) { Console::Log("Idle"); }
-	static void OnUpdateIdle(GameObject* me) {}
-	static void OnEndIdle(GameObject* me) {}
-
-	static void OnBeginChase(GameObject* me) { Console::Log("Chase"); }
-	static void OnUpdateChase(GameObject* me) {}
-	static void OnEndChase(GameObject* me) {}
-
-	static void OnBeginAttack(GameObject* me) { Console::Log("Attack"); }
-	static void OnUpdateAttack(GameObject* me) {}
-	static void OnEndAttack(GameObject* me) {}
+	static void OnBeginAttack(GameObject* me);
+	static void OnUpdateAttack(GameObject* me);
+	static void OnEndAttack(GameObject* me);
 };
-
-
 
 DECLARE_SCRIPT(Enemy, ScriptFlag::Awake | ScriptFlag::Update | ScriptFlag::CollisionEnter)
 
@@ -132,4 +108,49 @@ void CollisionEnter(GameObject* pOther) override
 }
 
 END_SCRIPT
+
+
+bool EnemyStates::IsPlayerClose(GameObject* me)
+{
+	Enemy* e = me->GetScript<Enemy>();
+	if (!e || !e->m_pPlayer) return false;
+
+	Vector3f32 DistVect = e->m_pPlayer->transform.GetLocalPosition()
+		- me->transform.GetLocalPosition();
+	return DistVect.Norm() < 8.f;
+}
+
+bool EnemyStates::IsPlayerVeryClose(GameObject* me)
+{
+	Enemy* e = me->GetScript<Enemy>();
+	if (!e || !e->m_pPlayer) return false;
+
+	Vector3f32 DistVect = e->m_pPlayer->transform.GetLocalPosition()
+		- me->transform.GetLocalPosition();
+	return DistVect.Norm() < 2.f;
+}
+
+bool EnemyStates::IsPlayerFar(GameObject* me)
+{
+	Enemy* e = me->GetScript<Enemy>();
+	if (!e || !e->m_pPlayer) return false;
+
+	Vector3f32 DistVect = e->m_pPlayer->transform.GetLocalPosition()
+		- me->transform.GetLocalPosition();
+	return DistVect.Norm() > 12.f;
+}
+
+void EnemyStates::OnBeginIdle(GameObject* me) { Console::Log("Idle"); }
+void EnemyStates::OnUpdateIdle(GameObject* me) {}
+void EnemyStates::OnEndIdle(GameObject* me) {}
+
+void EnemyStates::OnBeginChase(GameObject* me) { Console::Log("Chase"); }
+void EnemyStates::OnUpdateChase(GameObject* me) {}
+void EnemyStates::OnEndChase(GameObject* me) {}
+
+void EnemyStates::OnBeginAttack(GameObject* me) { Console::Log("Attack"); }
+void EnemyStates::OnUpdateAttack(GameObject* me) {}
+void EnemyStates::OnEndAttack(GameObject* me) {}
+
+
 #endif
