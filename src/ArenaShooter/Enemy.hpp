@@ -91,6 +91,11 @@ void CollisionEnter(GameObject* pOther) override
 		m_Hp->TakeDamage(pOther->GetScript<BulletShotgun>()->GetDmgBullet());
 		std::cout << m_Hp->GetHealth() << std::endl;
 	}
+	if (pOther->GetScript<BulletHandgun>())
+	{
+		m_Hp->TakeDamage(pOther->GetScript<BulletHandgun>()->GetDmgBullet());
+		std::cout << m_Hp->GetHealth() << std::endl;
+	}
 }
 
 void GoToPosition(Vector3f32 const& pos, float32 speed)
