@@ -30,8 +30,7 @@ void InitMenuGame(CustomScene* menu, WindowParam* windowParam, D12PipelineObject
 
     player.AddScript<Player>();
     player.AddScript<PlayerController>();
-
-
+    
     GameObject& kamikaze = menu->AddObject();
     MeshRenderer& mesh = *kamikaze.AddComponent<MeshRenderer>();
     mesh.pGeometry = SHAPES.CUBE;
@@ -39,7 +38,6 @@ void InitMenuGame(CustomScene* menu, WindowParam* windowParam, D12PipelineObject
     kamikaze.transform.SetWorldScale({ 1.f,1.f,1.f });
     kamikaze.AddScript<Kamikaze>();
     kamikaze.AddComponent<BoxCollider>();
-
 }
 
 #endif // !MAINMENU_HPP_INCLUDED

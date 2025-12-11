@@ -1,9 +1,22 @@
 #ifndef LEVELGRID_CPP_DEFINED
 #define LEVELGRID_CPP_DEFINED
 #include "LevelGrid.h"
+
+#include <queue>
+
 #include "Maths/MathsFunctions.hpp"
 
 #include "CustomScene.h"
+
+Node* LevelGrid::GetNode(Vector3i32 const& pos)
+{
+    for (int i = 0; i < m_vNodes.Size(); i++)
+    {
+        if (m_vNodes[i].data->gridPosition.x == pos.x && m_vNodes[i].data->gridPosition.y == pos.y && m_vNodes[i].data->gridPosition.z == pos.z)
+            return &m_vNodes[i];
+    }
+    return nullptr;
+}
 
 void LevelGrid::Init(SceneName scene, std::pair<Vector3f32, Vector3f32> const& mapProperties, Vector3f32 tileSize)
 {
@@ -18,6 +31,10 @@ void LevelGrid::Init(SceneName scene, std::pair<Vector3f32, Vector3f32> const& m
     Vector3f32 startTile = {mapProperties.first.x - mapProperties.second.x * 0.5f + tileSize.x * 0.5f,
                             mapProperties.first.y - mapProperties.second.y * 0.5f + tileSize.y * 0.5f,
                             mapProperties.first.z - mapProperties.second.z * 0.5f + tileSize.z * 0.5f};
+
+    tempCollider = &SceneManager::GetInstance()->GetCurrentScene()->AddObject();
+    tempCollider->AddComponent<BoxCollider>();
+    tempCollider->transform.SetWorldScale(m_tileSize * 0.5f);
     
     for (int y = 0; y < tileCountY; y++)
     {
@@ -28,26 +45,35 @@ void LevelGrid::Init(SceneName scene, std::pair<Vector3f32, Vector3f32> const& m
             for (int x = 0; x < tileCountX; x++)
             {
                 Data newTile;
-                newTile.position = {startTile.x + x * tileSize.x,
-                                         startTile.y + y * tileSize.y,
-                                         startTile.z + z * tileSize.z};
-                newTile.isAvailable = CalculateAvailability(newTile.position, vObjs);
+                newTile.gridPosition = {x, y, z};
+                newTile.worldPosition =
+                    {
+                    startTile.x + x * tileSize.x,
+                    startTile.y + y * tileSize.y,
+                    startTile.z + z * tileSize.z
+                    };
+                newTile.isAvailable = CalculateAvailability(newTile.gridPosition, vObjs);
                 tempX.PushBack(newTile);
             }
             tempZ.PushBack(tempX);
         }
         m_vData.PushBack(tempZ);
     }
+
+    tempCollider->Destroy();
+
+    CalculateNodes();
 }
 
-bool LevelGrid::CalculateAvailability(Vector3f32 position, Vector<GameObject*>& objs)
+bool LevelGrid::CalculateAvailability(Vector3i32 position, Vector<GameObject*>& objs)
 {
-    GameObject& temp = SceneManager::GetInstance()->GetCurrentScene()->AddObject();
-    BoxCollider* b = temp.AddComponent<BoxCollider>();
-    temp.transform.SetWorldPosition(position);
-    temp.transform.SetWorldScale(m_tileSize * 0.5f);
-    temp.transform.UpdateMatrix();
-        
+    tempCollider->transform.SetWorldPosition(GetNode(position)->data->worldPosition);
+    tempCollider->transform.SetWorldScale(m_tileSize * 0.5f);
+    tempCollider->transform.UpdateMatrix();
+    BoxCollider* b = tempCollider->GetComponent<BoxCollider>();
+
+    if (b == nullptr) return false;
+    
     for (GameObject* obj : objs)
     {
         BoxCollider* oB = obj->GetComponent<BoxCollider>();
@@ -60,6 +86,7 @@ bool LevelGrid::CalculateAvailability(Vector3f32 position, Vector<GameObject*>& 
         if (oB != nullptr)
         {
             CollideResult intersects = Physics::IntersectBoxBox(b->m_worldBox, oB->m_worldBox);
+            if (intersects.isColliding)
                 return false;
         }
 
@@ -70,19 +97,135 @@ bool LevelGrid::CalculateAvailability(Vector3f32 position, Vector<GameObject*>& 
                 return false;
         }
     }
-
-    temp.Destroy();
+    
     return true;
+}
+
+Vector<Vector3i32>& LevelGrid::GetNeighbours(Vector3i32 pos, Vector3i32 minPos, Vector3i32 maxPos)
+{
+    Vector<Vector3i32> neighbours;
+    for (int i = -1; i <= 1; i++)
+    {
+        for (int j = -1; j <= 1; j++)
+        {
+            for (int k = -1; k <= 1; k++)
+            {
+                if (j == 0 && i == 0 && k == 0)                                             continue;
+                if (pos.y + j < minPos.y || pos.x + i < minPos.x || pos.z + k < minPos.z)   continue;
+                if (pos.y + j > maxPos.y || pos.x + i > maxPos.x || pos.z + k > maxPos.z)   continue;
+
+
+                neighbours.PushBack({ pos.x + i, pos.y + j, pos.z + k });   
+            }
+        }
+    }
+    return neighbours;
+}
+
+void LevelGrid::CalculateNodes()
+{
+    m_vNodes.Clear();
+    
+    m_WIDTH = m_vData.Front().Front().Size();
+    m_LENGTH = m_vData.Front().Size();
+    m_HEIGHT = m_vData.Size();
+
+    for (int i = 0; i < m_HEIGHT; i++)
+    {
+        for (int j = 0; j < m_LENGTH; j++)
+        {
+            for (int k = 0; k < m_WIDTH; k++)
+            {
+                Node tempNode;
+                tempNode.data = &m_vData[i][j][k];
+                m_vNodes.PushBack(tempNode);   
+            }
+        }
+    }
+
+    for (int i = 0; i < m_vNodes.Size(); i++)
+    {
+        Node* n = &m_vNodes[i];
+        n->vNeighbours.Clear();
+        Vector<Vector3i32> neighbours = GetNeighbours(n->data->gridPosition, {0, 0, 0}, {m_WIDTH, m_HEIGHT, m_LENGTH});
+
+        for (int i = 0; i < neighbours.Size(); i++)
+        {
+            Vector3i32 p = neighbours[i];
+            Data* neig = &m_vData[p.y][p.z][p.x];
+
+            if (neig->isAvailable == false)
+                continue;
+            if (n->data->Distance(*neig) == 2)
+            {
+                Vector3i32 centerPos = n->data->gridPosition;
+                Data* n1 = &m_vData[centerPos.y][p.z][p.x];
+                Data* n2 = &m_vData[p.y][centerPos.z][p.x];
+                Data* n3 = &m_vData[p.y][p.z][centerPos.x];
+                
+                if (n1->isAvailable == false || n2->isAvailable == false)
+                    continue;
+            }
+
+            Node* nNeig = GetNode(neig->gridPosition);
+            
+            n->vNeighbours.PushBack(nNeig);
+        }
+    }
 }
 
 void LevelGrid::Reset()
 {
+    for (int i = 0; i < m_vNodes.Size(); i++)
+    {
+        m_vNodes[i].cost = MAX_COST;
+        m_vNodes[i].targetDistance = MAX_COST;
+        m_vNodes[i].pCameFrom = nullptr;
+        m_vNodes[i].isVisited = false;
+    }
 }
 
-Node* LevelGrid::AStar(Node* pStart, Node* pEnd)
+Node* LevelGrid::AStar(Node* pStart, Node* pEnd, Agent* pAgent)
 {
+    std::priority_queue<Node*, std::vector<Node*>, Node> queue;
+    pStart->cost = 0;
+    queue.push(pStart);
+
+    while (!queue.empty())
+    {
+        Node* curr = queue.top();
+        queue.pop();
+
+        if (curr->isVisited == true)
+            continue;
+
+        if (curr == pEnd)
+            return pEnd;
+
+        curr->isVisited = true;
+
+        Vector<Node*> neighbours = curr->vNeighbours;
+        for (int i = 0; i < neighbours.Size(); i++)
+        {
+            Node* neighbour = neighbours[i];
+            if (neighbour->isVisited)
+                continue;
+            if (neighbour->data->pOccupyingAgent != nullptr && neighbour->data->pOccupyingAgent != pAgent)
+                continue;
+
+            neighbour->targetDistance = neighbour->data->Distance(*pEnd->data);
+            
+            int newCost = curr->cost + curr->data->Distance(*neighbour->data);
+            if (newCost < neighbour->cost)
+            {
+                neighbour->cost = newCost;
+                neighbour->pCameFrom = curr;
+            }
+            queue.push(neighbour);
+        }
+    }
+
     return nullptr;
 }
-
 
 #endif
