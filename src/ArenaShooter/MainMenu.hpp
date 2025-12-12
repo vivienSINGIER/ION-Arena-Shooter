@@ -12,7 +12,9 @@ using namespace gce;
 
 void InitMenu(CustomScene* menu, WindowParam* windowParam)
 {
-    BitMapBrush* buttonBrush = new BitMapBrush{ "res/ArenaShooter/VilleretAuxence.jpg"};
+    BitMapBrush* buttonBrush = new BitMapBrush{ "res/ArenaShooter/START.PNG"};
+    BitMapBrush* buttonOptionsBrush = new BitMapBrush{ "res/ArenaShooter/OPTIONS.PNG" };
+    BitMapBrush* buttonQuitBrush = new BitMapBrush{ "res/ArenaShooter/QUIT.PNG" };
     BitMapBrush* button2Brush = new BitMapBrush{ "res/ArenaShooter/VilleretAuxence.jpg" };
 
     GameObject& menu_controller = menu->AddObject();
@@ -30,22 +32,31 @@ void InitMenu(CustomScene* menu, WindowParam* windowParam)
     uiImage.SetActive(true);
 
     GameObject& playButton = menu->AddObject();
-    playButton.transform.LocalTranslate({ windowParam->width / 2.f, 200.f, 0.0f });
-    playButton.transform.LocalScale({ 216.0f, 69.0f, 1.0f });
+    playButton.transform.LocalTranslate({ 1000.f, 400.f, 0.0f });
+    playButton.transform.LocalScale({ 416.0f, 120.0f, 1.0f });
     UIButton& button = *playButton.AddComponent<UIButton>();
 
     GameObject& optionButton = menu->AddObject();
-    optionButton.transform.LocalTranslate({ windowParam->width / 2.f, 500.f, 0.0f });
-    optionButton.transform.LocalScale({ 216.0f, 69.0f, 1.0f });
+    optionButton.transform.LocalTranslate({ 1000.f, 600.f, 0.0f });
+    optionButton.transform.LocalScale({ 416.0f, 120.0f, 1.0f });
     UIButton& button2 = *optionButton.AddComponent<UIButton>();
+
+    GameObject& quitButton = menu->AddObject();
+    quitButton.transform.LocalTranslate({ 1000.f, 800.f, 0.0f });
+    quitButton.transform.LocalScale({ 416.0f, 120.0f, 1.0f });
+    UIButton& button3 = *quitButton.AddComponent<UIButton>();
 
     button.AddListener(&(menu_controller.GetScript<MenuController>()->GoToGame));
     button2.AddListener(&(menu_controller.GetScript<MenuController>()->GoToOption));
 
     button.pBitMapBrush = buttonBrush;
     button.pHoverBitMapBrush = button2Brush;
-    button2.pBitMapBrush = buttonBrush;
+
+    button2.pBitMapBrush = buttonOptionsBrush;
     button2.pHoverBitMapBrush = button2Brush;
+
+    button3.pBitMapBrush = buttonQuitBrush;
+    button3.pHoverBitMapBrush = button2Brush;
 }
 
 
