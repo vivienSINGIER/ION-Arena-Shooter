@@ -17,8 +17,7 @@ void InitMenuGame(CustomScene* menu, WindowParam* windowParam, D12PipelineObject
 {
     MapProperties mapProperties = MapLoader::LoadMap(RES_PATH"res/Maps/blockout.json", menu, pso);
 
-    // std::srand(timeGetTime());
-    std::srand(time(NULL));
+    std::srand(timeGetTime());
     
     LevelGrid* grid = new LevelGrid();
     grid->Init(SceneName::GAME, mapProperties, {4.0f, 4.0f, 4.0f});

@@ -25,7 +25,7 @@ struct Path
 
 using namespace gce;
 
-DECLARE_SCRIPT(Enemy, ScriptFlag::Awake | ScriptFlag::Update | ScriptFlag::CollisionEnter)
+DECLARE_SCRIPT(Enemy, ScriptFlag::Awake | ScriptFlag::Update | ScriptFlag::CollisionEnter | ScriptFlag::Destroy)
 
 Health<float>* m_Hp;
 GameObject* m_pPlayer;
@@ -36,6 +36,7 @@ Vector3f32 m_direction;
 Vector<Path> m_vPaths;
 
 LevelGrid* m_pLevelGrid = nullptr;
+Event<void>* m_pDeathEvent = nullptr;
 
 void Awake() override
 {
@@ -102,6 +103,12 @@ void CollisionEnter(GameObject* pOther) override
 		m_Hp->TakeDamage(pOther->GetScript<BulletHandgun>()->GetDmgBullet());
 		std::cout << m_Hp->GetHealth() << std::endl;
 	}
+}
+
+void Destroy() override
+{
+	if (m_pDeathEvent != nullptr)
+		m_pDeathEvent->Invoke();
 }
 
 void GoToPosition(Vector3f32 const& pos, float32 speed)

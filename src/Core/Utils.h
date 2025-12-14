@@ -149,6 +149,13 @@ inline Vector<String> SplitString(String const& toSplit, char8 separator)
     return result;
 }
 
+template <typename T>
+T RandomFrom(Vector<T>& vect)
+{
+    int size = vect.Size() - 1;
+    int randIndex = rand() % size;
+    return vect[randIndex];
+}
 
 }
 
