@@ -11,11 +11,7 @@ using namespace gce;
 
 class MainMenu : public CustomScene
 {
-    BitMapBrush* buttonStart = new BitMapBrush{ "res/ArenaShooter/commencer_e.png"};
-    BitMapBrush* buttonStart2 = new BitMapBrush{ "res/ArenaShooter/commencer_allum�.png" };
-    BitMapBrush* buttonOptionsBrush = new BitMapBrush{ "res/ArenaShooter/OPTIONS.PNG" };
-    BitMapBrush* buttonQuitBrush = new BitMapBrush{ "res/ArenaShooter/QUIT.PNG" };
-    BitMapBrush* button2Brush = new BitMapBrush{ "res/ArenaShooter/VilleretAuxence.jpg" };
+   
 
 public:
     MainMenu(Scene* pScene) : CustomScene(pScene) {}
@@ -23,7 +19,8 @@ public:
     void Init() override
     {
         CustomScene::Init();
-        BitMapBrush* buttonBrush = new BitMapBrush{ "res/ArenaShooter/START.PNG"};
+        BitMapBrush* buttonStart = new BitMapBrush{ "res/ArenaShooter/commencer_e.png" };
+        BitMapBrush* buttonStart2 = new BitMapBrush{ "res/ArenaShooter/commencer_allume.png" };
         BitMapBrush* buttonOptionsBrush = new BitMapBrush{ "res/ArenaShooter/OPTIONS.PNG" };
         BitMapBrush* buttonQuitBrush = new BitMapBrush{ "res/ArenaShooter/QUIT.PNG" };
         BitMapBrush* button2Brush = new BitMapBrush{ "res/ArenaShooter/VilleretAuxence.jpg" };
@@ -70,11 +67,6 @@ public:
 
         button3.pBitMapBrush = buttonQuitBrush;
         button3.pHoverBitMapBrush = button2Brush;
-
-        button.pBitMapBrush = buttonBrush;
-        button.pHoverBitMapBrush = button2Brush;
-        button2.pBitMapBrush = buttonBrush;
-        button2.pHoverBitMapBrush = button2Brush;
     }
 };
 

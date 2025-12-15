@@ -7,6 +7,10 @@ CustomScene::CustomScene(Scene* pScene)
 	m_pScene = pScene;
 }
 
+CustomScene::~CustomScene()
+{
+}
+
 GameObject& CustomScene::AddObject()
 {
 	GameObject& object = GameObject::Create(*m_pScene);
