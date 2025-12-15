@@ -14,33 +14,53 @@
 
 using namespace gce;
 
-void InitMenuGame(CustomScene* menu, WindowParam* windowParam, D12PipelineObject* pso)
+class GameScene : public CustomScene
 {
-    MapProperties mapProperties = MapLoader::LoadMap(RES_PATH"res/Maps/blockout.json", menu, pso);
+public:
+    GameScene(Scene* pScene) : CustomScene(pScene) {}
+    
+    void Init() override
+    {
+        CustomScene::Init();
+        MapProperties mapProperties = MapLoader::LoadMap(RES_PATH"res/Maps/blockout.json", this);
 
-    std::srand(timeGetTime());
+        std::srand(timeGetTime());
     
-    LevelGrid* grid = new LevelGrid();
-    grid->Init(SceneName::GAME, mapProperties, {4.0f, 4.0f, 4.0f});
+        LevelGrid* grid = new LevelGrid();
+        grid->Init(SceneName::GAME, mapProperties, {4.0f, 4.0f, 4.0f});
     
-    grid->Reset();
+        grid->Reset();
     
-    GameObject& player = menu->AddObject();
-    player.transform.SetWorldPosition({ 0,10,0 });
-    player.transform.SetWorldScale({ 1.f, 1.f, 1.f });
-    player.AddComponent<BoxCollider>();
-    player.AddComponent<PhysicComponent>()->SetMass(80.0f);
-    player.GetComponent<PhysicComponent>()->SetBounciness(0.0f);
-    player.SetName("Player");
+        GameObject& player = AddObject();
+        player.transform.SetWorldPosition({ 0,10,0 });
+        player.transform.SetWorldScale({ 1.f, 1.f, 1.f });
+        player.AddComponent<BoxCollider>();
+        player.AddComponent<PhysicComponent>()->SetMass(80.0f);
+        player.GetComponent<PhysicComponent>()->SetBounciness(0.0f);
+        player.SetName("Player");
 
-    player.AddScript<Player>();
-    player.AddScript<PlayerController>();
+        player.AddScript<Player>();
+        player.AddScript<PlayerController>();
     
-    GameObject& waveManager = menu->AddObject();
-    WaveManager* wManagerComponent = waveManager.AddComponent<WaveManager>();
-    wManagerComponent->grid = grid;
-    wManagerComponent->player = &player;
-    wManagerComponent->currScene = menu;
-}
+        GameObject& waveManager = AddObject();
+        WaveManager* wManagerComponent = waveManager.AddScript<WaveManager>();
+        wManagerComponent->grid = grid;
+        wManagerComponent->player = &player;
+        wManagerComponent->currScene = this;
+        wManagerComponent->spawns = mapProperties.vSpawns;
+        wManagerComponent->OnInit();
+        pWaveManager = wManagerComponent;
+    }
+
+    void Start() override
+    {
+        CustomScene::Start();
+        pWaveManager->OnStart();
+    }
+
+private:
+    WaveManager* pWaveManager = nullptr;
+};
+
 
 #endif // !MAINMENU_HPP_INCLUDED

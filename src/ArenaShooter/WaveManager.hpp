@@ -16,7 +16,7 @@ enum EnemyCost
     TANK = 3
 };
 
-DECLARE_SCRIPT(WaveManager, ScriptFlag::Start | ScriptFlag::Update)
+DECLARE_SCRIPT(WaveManager, ScriptFlag::Update)
 
 int8 maxWaveCount = 3;
 int8 floorFactor = 0;
@@ -30,12 +30,11 @@ bool isFightingWave = false;
 Vector<Spawn> spawns;
 
 Chrono waveSpawnChrono;
-float32 waveSpawnDelay = 0.2f;
+float32 waveSpawnDelay = 0.5f;
 
 Chrono waveIntervalChrono;
 float32 waveInterval = 1.5f;
 
-int8 remainingEnemies = 0;
 Event<WaveManager*> onEnemyDeathEvent;
 
 CustomScene* currScene = nullptr;
@@ -44,15 +43,60 @@ LevelGrid* grid = nullptr;
 
 Vector<Enemy*> vEnemy;
 
-void Start() override
+void OnInit() 
 {
-    
+    for (int i = 0; i < 20; i++)
+    {
+        GameObject* newEnemy = &currScene->AddObject();
+        MeshRenderer& mesh = *newEnemy->AddComponent<MeshRenderer>();
+        mesh.pGeometry = SHAPES.CUBE;
+        newEnemy->transform.SetWorldScale({ 1.f,1.f,1.f });
+        Kamikaze* tempScript = newEnemy->AddScript<Kamikaze>();
+        tempScript->SetGrid(grid);
+        tempScript->SetPlayer(player);
+        newEnemy->AddComponent<BoxCollider>();
+        PhysicComponent* newEnemyPC = newEnemy->AddComponent<PhysicComponent>();
+        newEnemyPC->SetGravityScale(0.0f);
+        newEnemyPC->SetIsTrigger(true);
+        newEnemy->SetActive(false);
+
+        Enemy* enemyScript = dynamic_cast<Enemy*>(tempScript);
+        vEnemy.PushBack(enemyScript);
+    }
+}
+
+void OnStart()
+{
+    for (Enemy* pEnemy: vEnemy)
+    {
+        pEnemy->m_pOwner->SetActive(false);
+    }
+}
+
+int8 GetEnemyCount()
+{
+    int8 count = 0;
+    for (Enemy* pEnemy : vEnemy)
+    {
+        if (pEnemy->m_pOwner->IsActive() == true)
+            count++;
+    }
+    return count;
 }
 
 template <typename T>
-void GetFirstAvailableEnemy()
+T* GetFirstAvailableEnemy()
 {
-    
+    for (Enemy* pEnemy : vEnemy)
+    {
+        if (pEnemy->m_pOwner->IsActive() == true) continue;
+        T* pResult = pEnemy->m_pOwner->GetScript<T>();
+        if (pResult == nullptr) continue;
+
+        return pResult;
+    }
+
+    return nullptr;
 }
 
 
@@ -79,23 +123,15 @@ void SpawnEnemy(Spawn selectedSpawn)
     if (remainingWaveValue >= TANK) options.PushBack(TANK);
 
     EnemyCost chosenEnemy = RandomFrom(options);
-
-    GameObject* newEnemy = &currScene->AddObject();
+    
     if (chosenEnemy == KAMIKAZE)
     {
-        MeshRenderer& mesh = *newEnemy->AddComponent<MeshRenderer>();
-        mesh.pGeometry = SHAPES.CUBE;
-        newEnemy->transform.SetWorldPosition(selectedSpawn.startPos);
-        newEnemy->transform.SetWorldScale({ 1.f,1.f,1.f });
-        Kamikaze* tempScript = newEnemy->AddScript<Kamikaze>();
+        Kamikaze* tempScript = GetFirstAvailableEnemy<Kamikaze>();
+        tempScript->m_pOwner->transform.SetWorldPosition(selectedSpawn.startPos);
         tempScript->GoToPosition(selectedSpawn.endPos, tempScript->m_speed);
-        tempScript->SetGrid(grid);
-        tempScript->SetPlayer(player);
-        newEnemy->AddComponent<BoxCollider>();
-        PhysicComponent* newEnemyPC = newEnemy->AddComponent<PhysicComponent>();
-        newEnemyPC->SetGravityScale(0.0f);
-        newEnemyPC->SetIsTrigger(true);
-        remainingEnemies++;
+        tempScript->m_pOwner->SetActive(true);
+        Console::Log("Spawned Kamikaze");
+        remainingWaveValue -= KAMIKAZE;
     }
     else if (chosenEnemy == DRONE) {}
     else if (chosenEnemy == TANK) {}
@@ -125,7 +161,7 @@ void Update() override
 
     if (isFightingWave)
     {
-        if (remainingEnemies == 0)
+        if (GetEnemyCount() == 0)
         {
             isFightingWave = false;
             waveIntervalChrono.Reset();

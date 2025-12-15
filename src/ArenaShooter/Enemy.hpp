@@ -88,20 +88,11 @@ void SetGrid(LevelGrid* pGrid) { m_pLevelGrid = pGrid; }
 void CollisionEnter(GameObject* pOther) override
 {
 	if(pOther->GetScript<BulletRifle>())
-	{
 		m_Hp->TakeDamage(pOther->GetScript<BulletRifle>()->GetDmgBullet());
-		std::cout << m_Hp->GetHealth() << std::endl;
-	}
 	if (pOther->GetScript<BulletShotgun>())
-	{
 		m_Hp->TakeDamage(pOther->GetScript<BulletShotgun>()->GetDmgBullet());
-		std::cout << m_Hp->GetHealth() << std::endl;
-	}
 	if (pOther->GetScript<BulletHandgun>())
-	{
 		m_Hp->TakeDamage(pOther->GetScript<BulletHandgun>()->GetDmgBullet());
-		std::cout << m_Hp->GetHealth() << std::endl;
-	}
 }
 
 void Destroy() override
@@ -129,7 +120,7 @@ void GoToPosition(Vector3f32 const& pos, float32 speed)
 	m_target.isSet = true;
 	m_target.isReached = false;
 
-	std::cout << m_target.position.x << "|" << m_target.position.y << "|" << m_target.position.z << std::endl;
+	// std::cout << m_target.position.x << "|" << m_target.position.y << "|" << m_target.position.z << std::endl;
 	
 	OrientFace(m_target.position);
 }
@@ -298,6 +289,9 @@ void ResetPath()
 	m_target.isSet = false;
 }
 
+private:
+
+	friend class WaveManager;
 
 END_SCRIPT
 
