@@ -11,6 +11,7 @@
 #include "Kamikaze.hpp"
 #include "LevelGrid.h"
 #include "Drone.hpp"
+#include "Tank.hpp"
 
 using namespace gce;
 
@@ -37,7 +38,7 @@ void InitMenuGame(CustomScene* menu, WindowParam* windowParam, D12PipelineObject
     player.AddScript<Player>();
     player.AddScript<PlayerController>();
     
-   /* GameObject& kamikaze = menu->AddObject();
+    GameObject& kamikaze = menu->AddObject();
     MeshRenderer& meshKa = *kamikaze.AddComponent<MeshRenderer>();
     meshKa.pGeometry = SHAPES.CUBE;
     kamikaze.transform.SetWorldPosition({ 35.f,5.f,0.f });
@@ -49,13 +50,13 @@ void InitMenuGame(CustomScene* menu, WindowParam* windowParam, D12PipelineObject
     kamikazePC->SetIsTrigger(true);
     
     kamikaze.GetScript<Kamikaze>()->SetPlayer(&player);
-    kamikaze.GetScript<Kamikaze>()->SetGrid(grid);*/
+    kamikaze.GetScript<Kamikaze>()->SetGrid(grid);
 
 
     GameObject& drone = menu->AddObject();
     MeshRenderer& meshD = *drone.AddComponent<MeshRenderer>();
     meshD.pGeometry = SHAPES.CUBE;
-    drone.transform.SetWorldPosition({ -35.f,5.f,0.f });
+    drone.transform.SetWorldPosition({ -10.f,5.f,0.f });
     drone.transform.SetWorldScale({ 1.f,1.f,1.f });
     drone.AddScript<Drone>();
     drone.AddComponent<BoxCollider>();
@@ -65,6 +66,20 @@ void InitMenuGame(CustomScene* menu, WindowParam* windowParam, D12PipelineObject
 
     drone.GetScript<Drone>()->SetPlayer(&player);
     drone.GetScript<Drone>()->SetGrid(grid);
+
+    GameObject& tank = menu->AddObject();
+    MeshRenderer& meshT = *tank.AddComponent<MeshRenderer>();
+    meshT.pGeometry = SHAPES.CUBE;
+    tank.transform.SetWorldPosition({ -35.f,2.f,0.f });
+    tank.transform.SetWorldScale({ 1.f,1.f,1.f });
+    tank.AddScript<Tank>();
+    tank.AddComponent<BoxCollider>();
+    PhysicComponent* tankPC = tank.AddComponent<PhysicComponent>();
+    tankPC->SetGravityScale(0.0f);
+    tankPC->SetIsTrigger(true);
+
+    tank.GetScript<Tank>()->SetPlayer(&player);
+    tank.GetScript<Tank>()->SetGrid(grid);
 
 }
 

@@ -1,5 +1,5 @@
-#ifndef DRONE_HPP_INCLUDED
-#define DRONE_HPP_INCLUDED
+#ifndef TANK_HPP_INCLUDED
+#define TANK_HPP_INCLUDED
 
 #include "define.h"
 #include "Script.h"
@@ -7,11 +7,11 @@
 #include "Enemy.hpp"
 #include "GameManager.h"
 #include "StateMachine/StateMachine.h"
-#include "BulletDrone.hpp"
+#include "BulletTank.hpp"
 
 using namespace gce;
 
-DECLARE_CHILD_SCRIPT(Drone, Enemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::CollisionEnter)
+DECLARE_CHILD_SCRIPT(Tank, Enemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::CollisionEnter)
 
 StateMachine* m_pSm = nullptr;
 
@@ -22,16 +22,17 @@ float32 blockedToggleTime = 3.00f;
 
 Vector3f32 finalDir;
 
-float32 m_shootingInterval = 2.0f;
+float32 m_shootingInterval = 5.0f;
 float32 m_deltaTime = 0.0f;
 
-Vector<BulletDrone*> m_pProjectiles;
+Vector<BulletTank*> m_pProjectiles;
+
 
 void Awake() override
 {
 	Enemy::Awake();
-	m_speed = 3.50f;
-	m_pOwner->SetName("Drone");
+	m_speed = 2.50f;
+	m_pOwner->SetName("Tank");
 	m_Hp = new Health<float>(100.f);
 
 	m_pSm = GameManager::GetStateSystem().CreateStateMachine(m_pOwner);
@@ -76,14 +77,14 @@ void Awake() override
 	{
 		GameObject& bullet = GameObject::Create(m_pOwner->GetScene());
 		MeshRenderer& meshProjectile = *bullet.AddComponent<MeshRenderer>();
-		meshProjectile.pGeometry = SHAPES.SPHERE;
+		meshProjectile.pGeometry = SHAPES.CYLINDER;
 		bullet.transform.SetWorldPosition({ 10.0f, 0.0f, 0.0f });
 		bullet.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
-		bullet.SetName("Drone bullet");
+		bullet.SetName("Tank bullet");
 
 		bullet.AddComponent<SphereCollider>();
 		bullet.AddComponent<PhysicComponent>()->SetGravityScale(0.0f);
-		m_pProjectiles.PushBack(bullet.AddScript<BulletDrone>());
+		m_pProjectiles.PushBack(bullet.AddScript<BulletTank>());
 	}
 }
 
@@ -105,13 +106,15 @@ void Shoot() override
 
 }
 
+
+
 bool IsPlayerClose()
 {
 	GameObject* player = m_pPlayer;
 	if (player == nullptr) return false;
 	Vector3f32 DistVect = player->transform.GetLocalPosition() - m_pOwner->transform.GetLocalPosition();
 	float distance = DistVect.Norm();
-	return distance < 25.0f && distance >= 20.f; // Seuil de distance
+	return distance < 20.0f && distance >= 15.f; // Seuil de distance
 }
 
 bool IsPlayerVeryClose()
@@ -120,7 +123,7 @@ bool IsPlayerVeryClose()
 	if (player == nullptr) return false;
 	Vector3f32 DistVect = player->transform.GetLocalPosition() - m_pOwner->transform.GetLocalPosition();
 	float distance = DistVect.Norm();
-	return distance < 20.0f; // Seuil de distance
+	return distance < 15.0f; // Seuil de distance
 }
 
 bool IsPlayerFar()
@@ -148,11 +151,11 @@ bool CheckPlayer()
 	RaycastHit hitInfo;
 	bool hit = PhysicSystem::IntersectRay(ray, hitInfo, 25.f);
 
-	return hit && hitInfo.pGameObject != nullptr && hitInfo.pGameObject->GetName() != "Player" && hitInfo.pGameObject->GetName() != "Drone bullet" && hitInfo.pGameObject->GetName() != "Rifle bullet" && hitInfo.pGameObject->GetName() != "Shotgun bullet" && hitInfo.pGameObject->GetName() != "Handgun bullet" && hitInfo.pGameObject != m_pOwner;
+	return hit && hitInfo.pGameObject != nullptr && hitInfo.pGameObject->GetName() != "Player" && hitInfo.pGameObject->GetName() != "Tank bullet" && hitInfo.pGameObject->GetName() != "Rifle bullet" && hitInfo.pGameObject->GetName() != "Shotgun bullet" && hitInfo.pGameObject->GetName() != "Handgun bullet" && hitInfo.pGameObject != m_pOwner;
 }
 
 
-void OnBeginIdle() { }
+void OnBeginIdle() {}
 void OnUpdateIdle()
 {
 	if (m_target.isSet == true)
@@ -208,17 +211,16 @@ void OnUpdateShooting()
 {
 	Vector3f32 direction = m_pPlayer->transform.GetWorldPosition() - m_pOwner->transform.GetWorldPosition();
 	direction.SelfNormalize();
-	OrientFace(m_pPlayer->transform.GetWorldPosition());
 	m_deltaTime += GameManager::DeltaTime();
 	if (m_deltaTime >= m_shootingInterval)
 	{
-		BulletDrone* first = m_pProjectiles[0];
+		OrientFace(m_pPlayer->transform.GetWorldPosition());
+		BulletTank* first = m_pProjectiles[0];
 		if (!first->IsActive())
 		{
 			first->Init(direction, m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward() * 1.f, 20.f);
 			m_deltaTime = 0.0f;
 		}
-			
 	}
 }
 void OnEndShooting()

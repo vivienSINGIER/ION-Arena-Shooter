@@ -14,6 +14,8 @@
 #include "Handgun.hpp"
 #include "Health.h"
 #include "WeaponController.hpp"
+#include "BulletDrone.hpp"
+#include "BulletTank.hpp"
 
 using namespace gce;
 
@@ -95,6 +97,10 @@ void Update() override
 {
 	m_deltaTime = GameManager::DeltaTime();
 	RaycastUpdate();
+	if (m_health->GetHealth() <= 0)
+	{
+		m_pOwner->SetActive(false);
+	}
 }
 
 bool IsRising()
@@ -148,7 +154,6 @@ void Move(Vector3f32 direction)
 
 	if(m_isGrounded == true)
 	{
-
 		PhysicComponent& phys = *m_pOwner->GetComponent<PhysicComponent>();
 		Vector3f32 vel = phys.GetVelocity();
 		phys.SetVelocity({ offset.x, vel.y, offset.z });
@@ -198,6 +203,16 @@ void CollisionEnter(GameObject* other)
 	Console::Log(other->GetName());
 
 	m_isGrounded = true;*/
+
+	if (other->GetScript<BulletDrone>())
+	{
+		m_health->TakeDamage(other->GetScript<BulletDrone>()->GetDmgBullet());
+	}
+	if (other->GetScript<BulletTank>())
+	{
+		m_health->TakeDamage(other->GetScript<BulletTank>()->GetDmgBullet());
+	}
+	
 }
 
 void CollisionExit(GameObject* other) override
@@ -220,9 +235,6 @@ void RaycastUpdate()
 	ray.direction = m_pOwner->transform.GetWorldUp();
 	ray.direction.y *= -1.f;
 
-	Console::Log(ray.origin.x);
-	Console::Log(ray.origin.z);
-
 	float32 maxDistance = 1.f;
 	RaycastHit hitInfo;
 	float32 distance = maxDistance;
@@ -237,14 +249,11 @@ void RaycastUpdate()
 		distance = hitInfo.distance;
 		hitPoint = hitInfo.point;
 
-		Console::Log("Touch");
-		Console::Log(hitInfo.pGameObject->GetName());
 
 		m_isGrounded = true;
 	}
 	else
 	{
-		Console::Log("Untouch");
 		m_isGrounded = false;
 	}
 }
