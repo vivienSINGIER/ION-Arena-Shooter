@@ -10,6 +10,7 @@
 #include "PlayerController.hpp"
 #include "Kamikaze.hpp"
 #include "LevelGrid.h"
+#include "WaveManager.hpp"
 
 using namespace gce;
 
@@ -35,20 +36,11 @@ void InitMenuGame(CustomScene* menu, WindowParam* windowParam, D12PipelineObject
     player.AddScript<Player>();
     player.AddScript<PlayerController>();
     
-    GameObject& kamikaze = menu->AddObject();
-    MeshRenderer& mesh = *kamikaze.AddComponent<MeshRenderer>();
-    mesh.pGeometry = SHAPES.CUBE;
-    kamikaze.transform.SetWorldPosition({ 35.f,5.f,0.f });
-    kamikaze.transform.SetWorldScale({ 1.f,1.f,1.f });
-    kamikaze.AddScript<Kamikaze>();
-    kamikaze.AddComponent<BoxCollider>();
-    PhysicComponent* kamikazePC = kamikaze.AddComponent<PhysicComponent>();
-    kamikazePC->SetGravityScale(0.0f);
-    kamikazePC->SetIsTrigger(true);
-    
-    kamikaze.GetScript<Kamikaze>()->SetPlayer(&player);
-    kamikaze.GetScript<Kamikaze>()->SetGrid(grid);
-
+    GameObject& waveManager = menu->AddObject();
+    WaveManager* wManagerComponent = waveManager.AddComponent<WaveManager>();
+    wManagerComponent->grid = grid;
+    wManagerComponent->player = &player;
+    wManagerComponent->currScene = menu;
 }
 
 #endif // !MAINMENU_HPP_INCLUDED

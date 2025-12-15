@@ -36,7 +36,6 @@ Vector3f32 m_direction;
 Vector<Path> m_vPaths;
 
 LevelGrid* m_pLevelGrid = nullptr;
-Event<void>* m_pDeathEvent = nullptr;
 
 void Awake() override
 {
@@ -107,8 +106,7 @@ void CollisionEnter(GameObject* pOther) override
 
 void Destroy() override
 {
-	if (m_pDeathEvent != nullptr)
-		m_pDeathEvent->Invoke();
+
 }
 
 void GoToPosition(Vector3f32 const& pos, float32 speed)
