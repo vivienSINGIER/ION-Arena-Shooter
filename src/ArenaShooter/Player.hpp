@@ -36,7 +36,8 @@ Handgun* m_handgun = nullptr;
 WeaponController* m_weaponController = nullptr;
 
 Health<int>* m_health = nullptr;
-
+int8 m_energyOrbs = 0;
+int8 m_maxEnergyOrbs = 2;
 
 void Awake() override
 {
@@ -99,13 +100,24 @@ void Update() override
 {
 	m_deltaTime = GameManager::DeltaTime();
 	RaycastUpdate();
+
+	if(IsEnergyFull() == true) 
+		Console::Log("Energy Full");
+
 	if (m_health->GetHealth() <= 0)
 	{
 		m_pOwner->SetActive(false);
 		SceneManager::GetInstance()->GetCurrentScene()->Empty(1);
 		SceneManager::GetInstance()->ChangeScene(GAMEOVER);
-		
 	}
+}
+
+bool IsEnergyFull()
+{
+	if (m_energyOrbs >= m_maxEnergyOrbs)
+		return true;
+	else
+		return false;
 }
 
 bool IsRising()
