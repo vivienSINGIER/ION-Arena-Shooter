@@ -65,7 +65,7 @@ public:
 
 private:
     WaveManager* pWaveManager = nullptr;
-    GameObject* player;
+    GameObject* player = nullptr;
 };
 
 

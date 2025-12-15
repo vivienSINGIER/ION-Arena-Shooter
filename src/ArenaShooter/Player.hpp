@@ -161,7 +161,7 @@ void Move(Vector3f32 direction)
 	{
 		PhysicComponent& phys = *m_pOwner->GetComponent<PhysicComponent>();
 		Vector3f32 vel = phys.GetVelocity();
-		phys.SetVelocity({ offset.x, vel.y, offset.z });
+		phys.SetVelocity({ offset.x, vel.y , offset.z });
 	}
 	else if (m_isGrounded == false)
 	{
