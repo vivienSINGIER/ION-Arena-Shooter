@@ -7,7 +7,7 @@ class Health
 public:
 	Health(T max);
 	void TakeDamage(T ammount);
-	void Heal(T ammount);
+	void Heal(T ammount = 0);
 	T GetHealth();
 
 	bool GetIsAlive();

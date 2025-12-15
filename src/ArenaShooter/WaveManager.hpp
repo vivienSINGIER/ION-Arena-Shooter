@@ -105,8 +105,7 @@ T* GetFirstAvailableEnemy()
 void StartWave()
 {
     currentWave++;
-    // waveValue = 5 + currentWave * 3 + floorFactor * 3;
-    waveValue = 1;
+    waveValue = 5 + currentWave * 3 + floorFactor * 3;
     remainingWaveValue = waveValue;
     isSpawningWave = true;
 }
@@ -134,6 +133,7 @@ void SpawnEnemy(Spawn selectedSpawn)
         tempScript->m_pOwner->transform.SetWorldPosition(selectedSpawn.startPos);
         tempScript->GoToPosition(selectedSpawn.endPos, tempScript->m_speed);
         tempScript->m_pOwner->SetActive(true);
+        tempScript->m_Hp->Heal();
         Console::Log("Spawned Kamikaze");
         remainingWaveValue -= KAMIKAZE;
     }

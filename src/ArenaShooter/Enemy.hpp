@@ -191,9 +191,9 @@ bool SetPath(Vector3f32 target)
 	//
 	Vector<Vector2f32> dirs;
 	dirs.PushBack(Vector2f32(0.0f, 0.0f));
-	// dirs.PushBack(Vector2f32(0.0f, 1.0f));
-	// dirs.PushBack(Vector2f32(-1.0f, -1.0f));
-	// dirs.PushBack(Vector2f32(1.0f, -1.0f));
+	dirs.PushBack(Vector2f32(0.0f, 1.0f));
+	dirs.PushBack(Vector2f32(-1.0f, -1.0f));
+	dirs.PushBack(Vector2f32(1.0f, -1.0f));
 	
 	Ray ray;
 	bool blocked = false;

@@ -229,13 +229,12 @@ WeaponController* GetWeaponController()
 
 void RaycastUpdate()
 {
-	//Texture laserTexture(RES_PATH"res/Textures/rouge-laser.jpg");
 	Ray ray;
 	ray.origin = m_pOwner->transform.GetWorldPosition();
 	ray.direction = m_pOwner->transform.GetWorldUp();
 	ray.direction.y *= -1.f;
 
-	float32 maxDistance = 1.f;
+	float32 maxDistance = 1.1f;
 	RaycastHit hitInfo;
 	float32 distance = maxDistance;
 	Vector3f32 hitPoint = ray.origin + ray.direction * distance;

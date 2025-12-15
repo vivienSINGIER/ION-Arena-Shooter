@@ -1259,6 +1259,13 @@ bool PhysicSystem::IntersectRay(Ray const& ray, RaycastHit& hitInfo, float32 max
 	for (SphereCollider* sphere : SphereCollider::s_list)
 	{
 		RaycastHit tempHit;
+		Vector3f32 distance = sphere->m_pOwner->transform.GetWorldPosition() - ray.origin;
+		float32 dot = distance.DotProduct(ray.direction);
+		
+		float32 radius = sphere->m_worldSphere.ray;
+		
+		if (dot < 0.0f || dot > maxDistance + radius)
+			continue;
 		if (sphere->RaycastCollider(ray, tempHit, closestDistance))
 		{
 			if (tempHit.distance < closestDistance)
@@ -1273,6 +1280,14 @@ bool PhysicSystem::IntersectRay(Ray const& ray, RaycastHit& hitInfo, float32 max
 	for (BoxCollider* box : BoxCollider::s_list)
 	{
 		RaycastHit tempHit;
+		Vector3f32 distance = box->m_pOwner->transform.GetWorldPosition() - ray.origin;
+		float32 dot = distance.DotProduct(ray.direction);
+
+		Vector3f32 boxSize = (box->m_worldBox.max - box->m_worldBox.min) * 0.5f;
+		float32 radius = boxSize.Norm();
+		
+		if (dot < 0.0f || dot > maxDistance + radius)
+			continue;
 		if (box->RaycastCollider(ray, tempHit, closestDistance))
 		{
 			if (tempHit.distance < closestDistance)

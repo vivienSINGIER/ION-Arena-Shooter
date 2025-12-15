@@ -40,6 +40,9 @@ void Health<T>::TakeDamage(T ammount)
 template<typename T>
 void Health<T>::Heal(T ammount)
 {
+	if (ammount == 0)
+		ammount = m_MaxHealth;
+	
 	m_Health += ammount;
 	if (m_Health >= m_MaxHealth)
 	{
