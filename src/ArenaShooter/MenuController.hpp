@@ -35,6 +35,11 @@ static void GoToOption()
 	SceneManager::GetInstance()->ChangeScene(OPTIONS_MENU);
 }
 
+static void Quit()
+{
+
+}
+
 END_SCRIPT
 
 #endif

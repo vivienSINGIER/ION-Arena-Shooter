@@ -14,7 +14,7 @@ DECLARE_CHILD_SCRIPT(Kamikaze, Enemy, ScriptFlag::Start | ScriptFlag::Update | S
 
 StateMachine* m_pSm = nullptr;
 
-float32 explosionRadius = 5.0f;
+float32 explosionRadius = 2.0f;
 
 bool isBlocked = false;
 Chrono blockedChrono;
@@ -87,8 +87,8 @@ void Explode()
 	if (m_pPlayer != nullptr)
 	{
 		float32 distanceToPlayer = (m_pPlayer->transform.GetLocalPosition() - m_pOwner->transform.GetLocalPosition()).Norm();
-		// if (distanceToPlayer < explosionRadius)
-			// m_pPlayer->TakeDamage(1);	
+		if (distanceToPlayer < explosionRadius)
+			m_pPlayer->GetScript<Player>()->m_health->TakeDamage(1);
 	}
 
 	Console::Log("Explode");
@@ -125,7 +125,7 @@ bool IsPlayerVeryClose()
 	if (player == nullptr) return false;
 	Vector3f32 DistVect = player->transform.GetLocalPosition() - m_pOwner->transform.GetLocalPosition();
 	float distance = DistVect.Norm();
-	return distance < 8.0f; // Seuil de distance
+	return distance < 10.0f; // Seuil de distance
 }
 
 bool IsPlayerFar()

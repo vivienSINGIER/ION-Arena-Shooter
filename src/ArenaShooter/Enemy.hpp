@@ -39,7 +39,6 @@ LevelGrid* m_pLevelGrid = nullptr;
 
 void Awake() override
 {
-	
 }
 
 void Update() override
@@ -88,16 +87,17 @@ void SetGrid(LevelGrid* pGrid) { m_pLevelGrid = pGrid; }
 void CollisionEnter(GameObject* pOther) override
 {
 	if(pOther->GetScript<BulletRifle>())
+	{
 		m_Hp->TakeDamage(pOther->GetScript<BulletRifle>()->GetDmgBullet());
+	}
 	if (pOther->GetScript<BulletShotgun>())
-		m_Hp->TakeDamage(pOther->GetScript<BulletShotgun>()->GetDmgBullet());
+	{
+	m_Hp->TakeDamage(pOther->GetScript<BulletShotgun>()->GetDmgBullet());
+	}
 	if (pOther->GetScript<BulletHandgun>())
-		m_Hp->TakeDamage(pOther->GetScript<BulletHandgun>()->GetDmgBullet());
-}
-
-void Destroy() override
-{
-
+	{
+	m_Hp->TakeDamage(pOther->GetScript<BulletHandgun>()->GetDmgBullet());
+	}
 }
 
 void GoToPosition(Vector3f32 const& pos, float32 speed)
@@ -120,7 +120,6 @@ void GoToPosition(Vector3f32 const& pos, float32 speed)
 	m_target.isSet = true;
 	m_target.isReached = false;
 
-	// std::cout << m_target.position.x << "|" << m_target.position.y << "|" << m_target.position.z << std::endl;
 	
 	OrientFace(m_target.position);
 }
