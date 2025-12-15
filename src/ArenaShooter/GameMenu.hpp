@@ -10,6 +10,7 @@
 #include "PlayerController.hpp"
 #include "Kamikaze.hpp"
 #include "LevelGrid.h"
+#include "Drone.hpp"
 
 using namespace gce;
 
@@ -36,9 +37,9 @@ void InitMenuGame(CustomScene* menu, WindowParam* windowParam, D12PipelineObject
     player.AddScript<Player>();
     player.AddScript<PlayerController>();
     
-    GameObject& kamikaze = menu->AddObject();
-    MeshRenderer& mesh = *kamikaze.AddComponent<MeshRenderer>();
-    mesh.pGeometry = SHAPES.CUBE;
+   /* GameObject& kamikaze = menu->AddObject();
+    MeshRenderer& meshKa = *kamikaze.AddComponent<MeshRenderer>();
+    meshKa.pGeometry = SHAPES.CUBE;
     kamikaze.transform.SetWorldPosition({ 35.f,5.f,0.f });
     kamikaze.transform.SetWorldScale({ 1.f,1.f,1.f });
     kamikaze.AddScript<Kamikaze>();
@@ -48,7 +49,22 @@ void InitMenuGame(CustomScene* menu, WindowParam* windowParam, D12PipelineObject
     kamikazePC->SetIsTrigger(true);
     
     kamikaze.GetScript<Kamikaze>()->SetPlayer(&player);
-    kamikaze.GetScript<Kamikaze>()->SetGrid(grid);
+    kamikaze.GetScript<Kamikaze>()->SetGrid(grid);*/
+
+
+    GameObject& drone = menu->AddObject();
+    MeshRenderer& meshD = *drone.AddComponent<MeshRenderer>();
+    meshD.pGeometry = SHAPES.CUBE;
+    drone.transform.SetWorldPosition({ -35.f,5.f,0.f });
+    drone.transform.SetWorldScale({ 1.f,1.f,1.f });
+    drone.AddScript<Drone>();
+    drone.AddComponent<BoxCollider>();
+    PhysicComponent* dronePC = drone.AddComponent<PhysicComponent>();
+    dronePC->SetGravityScale(0.0f);
+    dronePC->SetIsTrigger(true);
+
+    drone.GetScript<Drone>()->SetPlayer(&player);
+    drone.GetScript<Drone>()->SetGrid(grid);
 
 }
 
