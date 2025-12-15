@@ -70,6 +70,9 @@ void HandleInput()
 	if (GetKey(m_keyRight))
 	 	direction += { 1, 0, 0 };
 
+	if (GetKey(m_keyRotLeft))
+		m_pPlayer->GetScript<Player>()->Die();
+
 	Move(direction);
 
 	if (GetKeyDown(Keyboard::P))

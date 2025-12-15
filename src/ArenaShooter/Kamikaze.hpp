@@ -10,7 +10,7 @@
 
 using namespace gce;
 
-DECLARE_CHILD_SCRIPT(Kamikaze, Enemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::CollisionEnter)
+DECLARE_CHILD_SCRIPT(Kamikaze, Enemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::CollisionEnter | ScriptFlag::Destroy)
 
 StateMachine* m_pSm = nullptr;
 
@@ -80,6 +80,12 @@ void Update() override
 	}
 	
 	Enemy::Update();
+}
+
+void Destroy() override
+{
+	GameManager::GetStateSystem().DestroyStateMachine(m_pOwner);
+	m_pOwner->SetActive(false);
 }
 
 void Explode()

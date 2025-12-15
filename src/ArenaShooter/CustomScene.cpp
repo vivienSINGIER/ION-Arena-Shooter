@@ -9,6 +9,7 @@ CustomScene::CustomScene(Scene* pScene)
 
 CustomScene::~CustomScene()
 {
+
 }
 
 GameObject& CustomScene::AddObject()
@@ -59,5 +60,16 @@ void CustomScene::CleanVector()
 	{
 		if (m_vObject[i] == nullptr)
 			m_vObject.Erase(m_vObject.begin() + i);
+	}
+}
+
+void CustomScene::Empty(int indexStart)
+{
+	int size = m_vObject.Size() - indexStart;
+	for (int i = 0; i < size; i++)
+	{
+		m_vObject[indexStart]->SetActive(true);
+		m_vObject[indexStart]->Destroy();
+		m_vObject.Erase(m_vObject.begin() + indexStart);
 	}
 }

@@ -16,6 +16,8 @@
 #include "WeaponController.hpp"
 #include "BulletDrone.hpp"
 #include "BulletTank.hpp"
+#include "SceneManager.h"
+#include "CustomScene.h"
 
 using namespace gce;
 
@@ -100,6 +102,9 @@ void Update() override
 	if (m_health->GetHealth() <= 0)
 	{
 		m_pOwner->SetActive(false);
+		SceneManager::GetInstance()->GetCurrentScene()->Empty(1);
+		SceneManager::GetInstance()->ChangeScene(GAMEOVER);
+		
 	}
 }
 
@@ -189,7 +194,7 @@ void Rotate(Vector3f32 rotation)
 
 void Die()
 {
-
+	m_health->TakeDamage(5);
 }
 
 void CollisionStay(GameObject* other) override
