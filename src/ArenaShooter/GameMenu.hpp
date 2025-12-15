@@ -60,6 +60,7 @@ public:
 		energyOrb->transform.SetWorldPosition({ 2.f, 5.f, 2.f });
 		energyOrb->AddScript<EnergyOrb>();
 		energyOrb->AddComponent<BoxCollider>();
+		energyOrb->AddComponent<PhysicComponent>()->SetMass(1.0f);
 
         GameObject* energyOrb2 = &AddObject();
         MeshRenderer& meshEnergyOrb2 = *energyOrb2->AddComponent<MeshRenderer>();
@@ -68,7 +69,7 @@ public:
         energyOrb2->transform.SetWorldPosition({ -2.f, 5.f, -2.f });
         energyOrb2->AddScript<EnergyOrb>();
         energyOrb2->AddComponent<BoxCollider>();
-
+        energyOrb2->AddComponent<PhysicComponent>()->SetMass(1.0f);
 
         GameObject& waveManager = AddObject();
         WaveManager* wManagerComponent = waveManager.AddScript<WaveManager>();
