@@ -53,7 +53,7 @@ public:
         wManagerComponent->OnInit();
         pWaveManager = wManagerComponent;
 
-        GameObject& kamikaze = menu->AddObject();
+        GameObject& kamikaze = AddObject();
         MeshRenderer& meshKa = *kamikaze.AddComponent<MeshRenderer>();
         meshKa.pGeometry = SHAPES.CUBE;
         kamikaze.transform.SetWorldPosition({ 35.f,5.f,0.f });
@@ -68,7 +68,7 @@ public:
         kamikaze.GetScript<Kamikaze>()->SetGrid(grid);
 
 
-        GameObject& drone = menu->AddObject();
+        GameObject& drone = AddObject();
         MeshRenderer& meshD = *drone.AddComponent<MeshRenderer>();
         meshD.pGeometry = SHAPES.CUBE;
         drone.transform.SetWorldPosition({ -10.f,5.f,0.f });
@@ -82,7 +82,7 @@ public:
         drone.GetScript<Drone>()->SetPlayer(&player);
         drone.GetScript<Drone>()->SetGrid(grid);
 
-        GameObject& tank = menu->AddObject();
+        GameObject& tank = AddObject();
         MeshRenderer& meshT = *tank.AddComponent<MeshRenderer>();
         meshT.pGeometry = SHAPES.CUBE;
         tank.transform.SetWorldPosition({ -35.f,2.f,0.f });
