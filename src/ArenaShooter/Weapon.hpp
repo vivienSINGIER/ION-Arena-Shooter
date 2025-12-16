@@ -9,10 +9,7 @@
 
 using namespace gce;
 
-class WeaponController;
-
-DECLARE_SCRIPT(Weapon, ScriptFlag::Awake | ScriptFlag::Update)
-
+DECLARE_SCRIPT(Weapon, ScriptFlag::Start | ScriptFlag::Update)
 
 float32 m_shotCooldown = 0.f;
 WeaponController* m_pWeaponController = nullptr;
@@ -20,8 +17,6 @@ WeaponController* m_pWeaponController = nullptr;
 Chrono m_shotTimer;
 
 bool m_isShooting = false;
-
-D12PipelineObject* m_PSO = nullptr;
 
 float32 m_heat = 0.f;          
 float32 m_maxHeat = 100.f;     
@@ -34,7 +29,7 @@ Vector<Projectile*> m_pProjectiles;
 
 GameObject* m_Owner = nullptr;
 
-void Awake() override
+void Start() override
 {
     m_Owner = m_pOwner;
 }

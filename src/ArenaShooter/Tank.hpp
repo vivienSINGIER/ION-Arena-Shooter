@@ -12,7 +12,7 @@
 
 using namespace gce;
 
-DECLARE_CHILD_SCRIPT(Tank, Enemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::CollisionEnter)
+DECLARE_CHILD_SCRIPT(Tank, Enemy, ScriptFlag::Awake | ScriptFlag::Update | ScriptFlag::CollisionEnter)
 
 StateMachine* m_pSm = nullptr;
 
