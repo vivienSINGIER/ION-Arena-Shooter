@@ -16,7 +16,7 @@ inline void GameObject::SetActive( bool const active )
 {
     m_active = active;
 
-    if (m_scripts.size() == 0)
+    if (m_destroyed)
         return;
     
     for (std::pair<uint16, uint16> pair : m_scripts)
