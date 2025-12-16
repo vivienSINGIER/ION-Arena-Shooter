@@ -119,7 +119,7 @@ void Update() override
 	if (m_health->GetHealth() <= 0)
 	{
 		m_pOwner->SetActive(false);
-		SceneManager::GetInstance()->GetCurrentScene()->Empty(1);
+		SceneManager::GetInstance()->GetCurrentScene()->Empty(2);
 		SceneManager::GetInstance()->ChangeScene(GAMEOVER);
 	}
 }

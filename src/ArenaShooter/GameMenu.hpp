@@ -44,6 +44,18 @@ public:
         CustomScene::Start();
         player->GetScript<Player>()->m_health->Heal(5);
         player->transform.SetWorldPosition({ 0,10,0 });
+
+        GameObject& crosshair = AddObject();
+        ImageUI& uiImage = *crosshair.AddComponent<ImageUI>();
+        Vector2f32 center = { (GameManager::GetWindow()->GetWidth() / 2.f) + 20.f, (GameManager::GetWindow()->GetHeight() / 2.f) + 20.f };
+        Vector2f32 size = { 65, 65 };
+        Vector2f32 posUi = center - size * 0.5f;
+        uiImage.InitializeImage(posUi, size, 1.f);
+
+        uiImage.btmBrush = new BitMapBrush("res/ArenaShooter/crosshair.png");
+        uiImage.btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, { 1.f / 4.f, 1.f / 4.f, 1.f / 4.f }, 0);
+        uiImage.SetActive(true);
+
         MapProperties mapProperties = MapLoader::LoadMap(RES_PATH"res/Maps/blockout.json", this);
 
         std::srand(timeGetTime());
