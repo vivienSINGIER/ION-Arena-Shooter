@@ -3,7 +3,10 @@
 
 #include "define.h"
 #include "Script.h"
+#include "GameObject.h"
+#include "Chrono.h"
 #include "Weapon.hpp"
+#include "BulletBazooka.hpp"
 #include "WeaponController.hpp"
 
 using namespace gce;
@@ -24,8 +27,13 @@ void Update() override
 
 bool Shoot() override
 {
-	if(m_isShooting)
+	if (!Weapon::Shoot())
 		return false;
+	Projectile* proj = GetFirstAvailableProjectile();
+	BulletBazooka* bulletBazooka = dynamic_cast<BulletBazooka*>(proj);
+
+	if (bulletBazooka)
+		bulletBazooka->Init(m_pOwner->transform.GetWorldForward(), m_pOwner->transform.GetWorldPosition(), 1.f);
 
 	Console::Log("Bazooka Shoot!");
 

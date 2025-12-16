@@ -3,15 +3,18 @@
 
 #include "define.h"
 #include "Script.h"
-#include "Weapon.hpp"
+#include "GameObject.h"
+#include "Shapes.h"
+#include "Chrono.h"
 #include "Projectile.hpp"
+
 using namespace gce;
 
 DECLARE_CHILD_SCRIPT(BulletBazooka, Projectile, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::CollisionEnter)
 
 void Start() override
 {
-	m_MaxDistance = 50.f;
+	m_MaxDistance = 100.f;
 	m_dmgBullet = 50.f;
 	m_pOwner->SetActive(false);
 }

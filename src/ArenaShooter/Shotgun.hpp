@@ -14,7 +14,7 @@ DECLARE_CHILD_SCRIPT(Shotgun, Weapon, ScriptFlag::Awake | ScriptFlag::Update)
 
 float32 m_spreadAngle = 5.f; // Angle de dispersion des projectiles (horizontal)
 float32 m_verticalSpread = 5.f; // Angle de dispersion verticale (au-dessus / en-dessous)
-int m_numPellets = 8;         // Nombre de projectiles tir�s
+int m_numPellets = 8;         // Nombre de projectiles tirés
 
 void Awake() override
 {
@@ -46,9 +46,9 @@ bool Shoot() override
     
     for (int i = 0; i < m_numPellets; ++i)
     {
-        // Calcul d'un angle al�atoire horizontal et vertical
-        float32 horizontalAngle = ((rand() % 2001) - 1000) / 1000.f * m_spreadAngle; // -15 � +15 degr�s
-        float32 verticalAngle = ((rand() % 2001) - 1000) / 1000.f * m_verticalSpread; // -10 � +10 degr�s
+        // Calcul d'un angle aléatoire horizontal et vertical
+        float32 horizontalAngle = ((rand() % 2001) - 1000) / 1000.f * m_spreadAngle; // -15 � +15 degrés
+        float32 verticalAngle = ((rand() % 2001) - 1000) / 1000.f * m_verticalSpread; // -10 � +10 degrés
 
         // Calcul de la direction de tir
         Vector3f32 spreadDirection = GetSpreadDirection(horizontalAngle, verticalAngle);
