@@ -29,7 +29,7 @@ struct MapProperties
 
 struct MapLoader
 {
-    static MapProperties LoadMap(String const& path, CustomScene* menu)
+    static MapProperties LoadMap(String const& path, CustomScene* menu, Vector<GameObject*>& vObjects)
     {
         if (menu == nullptr) return {};
 
@@ -161,6 +161,8 @@ struct MapLoader
                 el.second = currObject["parent"].get<std::string>();
                 objects.insert(el);
             }
+
+            vObjects.PushBack(&gameObject);
         }
 
         for (std::pair<GameObject*, String> el : objects)

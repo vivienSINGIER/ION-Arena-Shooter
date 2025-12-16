@@ -24,7 +24,8 @@ public:
     void Init() override
     {
         CustomScene::Init();
-        MapProperties mapProperties = MapLoader::LoadMap(RES_PATH"res/Maps/blockout.json", this);
+        Vector<GameObject*> temp;
+        MapProperties mapProperties = MapLoader::LoadMap(RES_PATH"res/Maps/blockout.json", this, temp);
 
         std::srand(timeGetTime());
     
