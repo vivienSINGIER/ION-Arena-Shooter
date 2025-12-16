@@ -291,6 +291,7 @@ void ResetPath()
 private:
 
 	friend class WaveManager;
+	friend class BossManager;
 
 END_SCRIPT
 
