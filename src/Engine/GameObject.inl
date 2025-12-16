@@ -16,6 +16,9 @@ inline void GameObject::SetActive( bool const active )
 {
     m_active = active;
 
+    if (m_scripts.size() == 0)
+        return;
+    
     for (std::pair<uint16, uint16> pair : m_scripts)
     {
         if ((Script::s_list[pair.second]->m_flags & ScriptFlag::SetActive) | (Script::s_list[pair.second]->m_flags & ScriptFlag::SetInnactive))

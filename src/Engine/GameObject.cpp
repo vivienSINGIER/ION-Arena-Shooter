@@ -12,7 +12,9 @@ m_name( name ) {}
 
 bool GameObject::IsActive() const
 {
-    return m_active && (HasParent() ? GetParent()->IsActive() : true);
+    bool temp = (HasParent() ? GetParent()->IsActive() : true);
+
+    return m_active && temp;
 }
 
 void GameObject::AddChild(GameObject& child)

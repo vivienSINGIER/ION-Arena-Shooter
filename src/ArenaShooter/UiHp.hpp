@@ -44,7 +44,7 @@ void UiImageHp()
         }
         case 1:
         {
-            UiHpImage->btmBrush = new BitMapBrush("res/ArenaShooter/stadefinal.png");
+            UiHpImage->btmBrush = new BitMapBrush("res/ArenaShooter/stadefinale.png");
             break;
         }
      

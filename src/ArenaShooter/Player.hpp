@@ -47,12 +47,6 @@ int8 m_maxEnergyOrbs = 2;
 
 void Start() override
 {
-	
-
-}
-
-void Init()
-{
 	m_health = new Health<int>(5);
 
 	GameObject& cam = m_customScene->AddObject();
@@ -117,6 +111,12 @@ void Init()
 	bazooka.SetParent(cam);
 	bazooka.transform.SetLocalPosition({ 0.3f,-0.3f,1.f });
 	m_weaponController->AddWeapon(m_bazooka, false);
+
+}
+
+void Init()
+{
+	
 }
 
 void SetActiveEvent() override
