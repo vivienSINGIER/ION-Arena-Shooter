@@ -41,7 +41,12 @@ Health<int>* m_health = nullptr;
 void Awake() override
 {
 	m_health = new Health<int>(5);
-	
+
+	Geometry* pRifleGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/Rifle.obj");
+	Texture* albedoRifle = new Texture(RES_PATH"res/ArenaShooter/Obj/Rifle_Color.png");
+	Texture* roughRifle = new Texture(RES_PATH"res/ArenaShooter/Obj/Rifle_Mettalic.png");
+	Texture* metalRifle = new Texture(RES_PATH"res/ArenaShooter/Obj/Rifle_roughness.png");
+
 	Geometry* pShotgunGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/shotgun_lower.obj");
 
 	GameObject& cam = GameObject::Create(m_pOwner->GetScene());
@@ -62,20 +67,26 @@ void Awake() override
 
 	GameObject& rifle = GameObject::Create(m_pOwner->GetScene());
 	MeshRenderer& meshProjectileRifle = *rifle.AddComponent<MeshRenderer>();
-	meshProjectileRifle.pGeometry = SHAPES.SPHERE;
+	meshProjectileRifle.pGeometry = pRifleGeo;
+	meshProjectileRifle.pMaterial->albedoTextureID = albedoRifle->GetTextureID();
+	meshProjectileRifle.pMaterial->useTextureAlbedo = 1;
+	meshProjectileRifle.pMaterial->roughnessTextureID = roughRifle->GetTextureID();
+	meshProjectileRifle.pMaterial->useTextureRoughness = 1;
+	meshProjectileRifle.pMaterial->metalnessTextureID = metalRifle->GetTextureID();
+	meshProjectileRifle.pMaterial->useTextureMetalness = 1;
 	m_rifle = rifle.AddScript<Rifle>();
-	rifle.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
+	rifle.transform.SetWorldScale({ 1.3f,1.3f,1.3f });
 	rifle.SetParent(cam);
-	rifle.transform.SetLocalPosition({ 0.3f,-0.3f,1.f });
+	rifle.transform.SetLocalPosition({ 0.3f,-0.2f,0.3f });
 	m_weaponController->AddWeapon(m_rifle);
 
 	GameObject& shotgun = GameObject::Create(m_pOwner->GetScene());
 	MeshRenderer& meshProjectileShotgun = *shotgun.AddComponent<MeshRenderer>();
 	meshProjectileShotgun.pGeometry = pShotgunGeo;
 	m_shotgun = shotgun.AddScript<Shotgun>();
-	shotgun.transform.SetWorldScale({ 0.2f,0.2f,0.2f });
+	shotgun.transform.SetWorldScale({ 0.1f,0.1f,0.1f });
 	shotgun.SetParent(cam);
-	shotgun.transform.SetLocalPosition({ 0.8f,-1.f,0.3f });
+	shotgun.transform.SetLocalPosition({ 0.8f,-1.2f,-0.5f });
 	shotgun.transform.SetLocalRotation({ 0.f, 0.f, 0.f });
 	m_weaponController->AddWeapon(m_shotgun);
 

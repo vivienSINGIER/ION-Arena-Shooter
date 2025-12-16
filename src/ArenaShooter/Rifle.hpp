@@ -43,7 +43,7 @@ bool Shoot() override
     BulletRifle* bulletRifle = dynamic_cast<BulletRifle*>(proj);
 
     if (bulletRifle)
-        bulletRifle->Init(m_pOwner->transform.GetWorldForward(),m_pOwner->transform.GetWorldPosition(), 20.f);
+        bulletRifle->Init(m_pOwner->transform.GetWorldForward(), m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward() * 1.2f, 20.f);
 
 }
 
