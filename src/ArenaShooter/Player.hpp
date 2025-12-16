@@ -19,6 +19,7 @@
 #include "BulletTank.hpp"
 #include "SceneManager.h"
 #include "CustomScene.h"
+#include "UiHp.hpp"
 
 using namespace gce;
 
@@ -34,8 +35,10 @@ Rifle* m_rifle = nullptr;
 Shotgun* m_shotgun = nullptr;
 Handgun* m_handgun = nullptr;
 Bazooka* m_bazooka = nullptr;
+UiHp* m_uiHp = nullptr;
 
 WeaponController* m_weaponController = nullptr;
+
 
 Health<int>* m_health = nullptr;
 int8 m_energyOrbs = 0;
@@ -60,6 +63,16 @@ void Awake() override
 	GameObject& weaponControllerObj = GameObject::Create(m_pOwner->GetScene());
 	m_weaponController = weaponControllerObj.AddScript<WeaponController>();
 	weaponControllerObj.SetParent(*m_pOwner);
+
+	GameObject& hpUi = GameObject::Create(m_pOwner->GetScene());
+	ImageUI& uiImage = *hpUi.AddComponent<ImageUI>();
+	Vector2f32 center = { 1920 / 2 , 1080 / 2 };
+	Vector2f32 size = { 1920, 1080 };
+	Vector2f32 posUi = center - size * 0.5f;
+	uiImage.InitializeImage(posUi, size, 1.f);
+	m_uiHp = hpUi.AddScript<UiHp>();
+	m_uiHp->m_pPlayer = m_health;
+	m_uiHp->UiHpImage = &uiImage;
 
 	GameObject& rifle = GameObject::Create(m_pOwner->GetScene());
 	MeshRenderer& meshProjectileRifle = *rifle.AddComponent<MeshRenderer>();
@@ -235,11 +248,11 @@ void CollisionEnter(GameObject* other)
 
 	if (other->GetScript<BulletDrone>())
 	{
-		m_health->TakeDamage(other->GetScript<BulletDrone>()->GetDmgBullet());
+		TakeDamage(other->GetScript<BulletDrone>()->GetDmgBullet());
 	}
 	if (other->GetScript<BulletTank>())
 	{
-		m_health->TakeDamage(other->GetScript<BulletTank>()->GetDmgBullet());
+		TakeDamage(other->GetScript<BulletTank>()->GetDmgBullet());
 	}
 	
 }
@@ -285,6 +298,12 @@ void RaycastUpdate()
 	{
 		m_isGrounded = false;
 	}
+}
+
+void TakeDamage(int dmg)
+{
+	m_health->TakeDamage(dmg);
+	m_uiHp->UiImageHp();
 }
 
 private:

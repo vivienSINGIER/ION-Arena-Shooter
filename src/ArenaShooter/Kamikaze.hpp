@@ -103,10 +103,8 @@ void Explode()
 	{
 		float32 distanceToPlayer = (m_pPlayer->transform.GetLocalPosition() - m_pOwner->transform.GetLocalPosition()).Norm();
 		if (distanceToPlayer < explosionRadius)
-			m_pPlayer->GetScript<Player>()->m_health->TakeDamage(1);
+			m_pPlayer->GetScript<Player>()->TakeDamage(1);
 	}
-
-	Console::Log("Explode");
 	
 	m_pOwner->SetActive(false);
 }
