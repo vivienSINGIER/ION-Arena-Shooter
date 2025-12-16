@@ -146,7 +146,7 @@ namespace gce
 		void OnStart() { Start(); }
 		void OnUpdate() { if ( IsActive() ) Update(); }
 		void OnFixedUpdate() { if ( IsActive() ) FixedUpdate(); }
-		void OnDestroy() { if ( IsActive() ) Destroy(); }
+		void OnDestroy() { Destroy(); }
 		void OnSetActive(bool active)
 		{
 			if ( IsActive() ) SetActiveEvent(); else SetInnactiveEvent();

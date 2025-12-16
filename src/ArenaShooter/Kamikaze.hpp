@@ -94,7 +94,6 @@ void Update() override
 void Destroy() override
 {
 	GameManager::GetStateSystem().DestroyStateMachine(m_pOwner);
-	m_pOwner->SetActive(false);
 }
 
 void Explode()

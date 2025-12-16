@@ -30,6 +30,7 @@ float32 m_jumpForce = 40000;
 float32 m_boostForce = 500;
 float32 m_airMovementForce = m_jumpForce / 15;
 Vector3f32 m_currentOffset = { 0,0,0 };
+GameObject* m_camObj = nullptr;
 Camera* m_camera = nullptr;
 Rifle* m_rifle = nullptr;
 Shotgun* m_shotgun = nullptr;
@@ -49,10 +50,10 @@ void Start() override
 {
 	m_health = new Health<int>(5);
 
-	GameObject& cam = m_customScene->AddObject();
-	cam.SetParent(*m_pOwner);
-	cam.transform.SetLocalPosition({ 0.f, 0.8f, 0.f });
-	m_camera = cam.AddComponent<Camera>();
+	m_camObj = &m_customScene->AddObject();
+	m_camObj->SetParent(*m_pOwner);
+	m_camObj->transform.SetLocalPosition({ 0.f, 0.8f, 0.f });
+	m_camera = m_camObj->AddComponent<Camera>();
 	m_camera->SetMainCamera();
 	m_camera->SetType(PERSPECTIVE);
 	m_camera->perspective.fov = XM_PIDIV4;
@@ -60,7 +61,15 @@ void Start() override
 	m_camera->perspective.farPlane = 500.0f;
 	m_camera->perspective.aspectRatio = 600.0f / 400.0f;
 	m_camera->perspective.up = { 0.0f, 1.0f, 0.0f };
+}
 
+void Init()
+{
+	
+}
+
+void SetActiveEvent() override
+{
 	GameObject& weaponControllerObj = GameObject::Create(m_pOwner->GetScene());
 	m_weaponController = weaponControllerObj.AddScript<WeaponController>();
 	weaponControllerObj.SetParent(*m_pOwner);
@@ -81,7 +90,7 @@ void Start() override
 	meshProjectileRifle.pGeometry = SHAPES.SPHERE;
 	m_rifle = rifle.AddScript<Rifle>();
 	rifle.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
-	rifle.SetParent(cam);
+	rifle.SetParent(*m_camObj);
 	rifle.transform.SetLocalPosition({ 0.3f,-0.3f,1.f });
 	m_weaponController->AddWeapon(m_rifle);
 
@@ -90,7 +99,7 @@ void Start() override
 	meshProjectileShotgun.pGeometry = SHAPES.CYLINDER;
 	m_shotgun = shotgun.AddScript<Shotgun>();
 	shotgun.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
-	shotgun.SetParent(cam);
+	shotgun.SetParent(*m_camObj);
 	shotgun.transform.SetLocalPosition({ 0.3f,-0.3f,1.f });
 	m_weaponController->AddWeapon(m_shotgun);
 
@@ -99,7 +108,7 @@ void Start() override
 	meshProjectileHandgun.pGeometry = SHAPES.CUBE;
 	m_handgun = handgun.AddScript<Handgun>();
 	handgun.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
-	handgun.SetParent(cam);
+	handgun.SetParent(*m_camObj);
 	handgun.transform.SetLocalPosition({ 0.3f,-0.3f,1.f });
 	m_weaponController->AddWeapon(m_handgun);
 
@@ -108,19 +117,10 @@ void Start() override
 	meshProjectileBazooka.pGeometry = SHAPES.CAPSULE;
 	m_bazooka = bazooka.AddScript<Bazooka>();
 	bazooka.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
-	bazooka.SetParent(cam);
+	bazooka.SetParent(*m_camObj);
 	bazooka.transform.SetLocalPosition({ 0.3f,-0.3f,1.f });
 	m_weaponController->AddWeapon(m_bazooka, false);
-
-}
-
-void Init()
-{
 	
-}
-
-void SetActiveEvent() override
-{
 	if (m_health != nullptr)
 		m_health->Heal(5);
 	m_pOwner->transform.SetWorldPosition({ 0,10,0 });

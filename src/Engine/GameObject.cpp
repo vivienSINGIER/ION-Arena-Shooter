@@ -68,6 +68,9 @@ void GameObject::Destroy()
 
     GameManager::GetLifespanSystem().m_toDelete.gameObjects.Push( this );
 
+    if (HasParent())
+        m_pParent->RemoveChild(*this);
+    
     for (GameObject* const pChild : m_children)
         pChild->Destroy();
 }
