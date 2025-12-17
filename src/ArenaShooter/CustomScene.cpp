@@ -69,7 +69,7 @@ void CustomScene::Empty(int indexStart)
 	for (int i = 0; i < size; i++)
 	{
 		m_vObject[indexStart]->SetActive(true);
-		m_vObject[indexStart]->Destroy();
-		m_vObject.Erase(m_vObject.begin() + indexStart);
+		m_vObject.Back()->Destroy();
+		m_vObject.PopBack();
 	}
 }

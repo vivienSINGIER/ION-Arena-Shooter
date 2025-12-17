@@ -33,27 +33,25 @@ public:
         
         GameObject& title = AddObject();
         ImageUI& uiImage = *title.AddComponent<ImageUI>();
-        Vector2f32 center = { windowParam->width / 2.f, windowParam->height / 2.f };
-        Vector2f32 size = { 32, 32 };
-        Vector2f32 posUi = center - size * 0.5f;
-        uiImage.InitializeImage(posUi, size, 1.f);
+        Vector2f32 size = { 1920, 1080 };
+        uiImage.InitializeImage({0,0}, size, 1.f);
 
-        uiImage.btmBrush = new BitMapBrush("res/ArenaShooter/VilleretAuxence.jpg");
-        uiImage.btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, { 1.f / 16.f, 1.f / 16.f, 1.f / 16.f }, 0);
+        uiImage.btmBrush = new BitMapBrush("res/ArenaShooter/Ecran_titre.png");
+        uiImage.btmBrush->SetTransformMatrix({ 0, 0, 0 }, { 1.f , 1.f , 1.f }, 0);
         uiImage.SetActive(true);
 
         GameObject& playButton = AddObject();
-        playButton.transform.LocalTranslate({ 1000.f, 400.f, 0.0f });
+        playButton.transform.LocalTranslate({ 1000.f, 600.f, 0.0f });
         playButton.transform.LocalScale({ 416.0f, 120.0f, 1.0f });
         UIButton& button = *playButton.AddComponent<UIButton>();
 
         GameObject& optionButton = AddObject();
-        optionButton.transform.LocalTranslate({ 1000.f, 600.f, 0.0f });
+        optionButton.transform.LocalTranslate({ 1000.f, 800.f, 0.0f });
         optionButton.transform.LocalScale({ 416.0f, 120.0f, 1.0f });
         UIButton& button2 = *optionButton.AddComponent<UIButton>();
 
         GameObject& quitButton = AddObject();
-        quitButton.transform.LocalTranslate({ 1000.f, 800.f, 0.0f });
+        quitButton.transform.LocalTranslate({ 1000.f, 1000.f, 0.0f });
         quitButton.transform.LocalScale({ 416.0f, 120.0f, 1.0f });
         UIButton& button3 = *quitButton.AddComponent<UIButton>();
 

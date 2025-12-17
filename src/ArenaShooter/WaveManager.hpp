@@ -56,6 +56,8 @@ void OnInit()
 		mesh.pMaterial->albedoTextureID = albedoKamikaze->GetTextureID();
 		mesh.pMaterial->useTextureAlbedo = 1;
         newEnemy->transform.SetWorldScale({ 1.3f,1.3f,1.3f });
+
+        newEnemy->SetName("Kamikaze");
         Kamikaze* tempScript = newEnemy->AddScript<Kamikaze>();
         tempScript->SetGrid(grid);
         tempScript->SetPlayer(player);

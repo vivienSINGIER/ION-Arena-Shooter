@@ -10,15 +10,14 @@
 
 using namespace gce;
 
-DECLARE_CHILD_SCRIPT(Rifle, Weapon, ScriptFlag::Awake | ScriptFlag::Update)
+DECLARE_CHILD_SCRIPT(Rifle, Weapon, ScriptFlag::Start | ScriptFlag::Update)
 
 
 
-void Awake() override
+void Start() override
 {
-    Weapon::Awake();
+    Weapon::Start();
     m_shotCooldown = 0.3f;
-    m_reloadCooldown = 1.5f;
 
     Geometry* pGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/laser.obj");
     Texture* albedo = new Texture(RES_PATH"res/ArenaShooter/Obj/LaserTxtBlue.png");
