@@ -156,7 +156,10 @@ bool HasCharged()
 	return chargeChrono.GetElapsedTime() > chargeTime;
 }
 
-void OnBeginIdle() {Console::Log("Idle");}
+void OnBeginIdle()
+{
+	// Console::Log("Idle");
+}
 void OnUpdateIdle()
 {
 	if (m_target.isSet == true)
@@ -183,7 +186,7 @@ void OnEndIdle() {}
 void OnBeginChase()
 {
 	isBlocked = false;
-	Console::Log("Chase");
+	// Console::Log("Chase");
 }
 void OnUpdateChase()
 {
@@ -207,7 +210,7 @@ void OnEndChase() {}
 void OnBeginCharge()
 {
 	ResetPath();
-	Console::Log("Charge");
+	// Console::Log("Charge");
 	chargeChrono.Reset();
 	chargeChrono.Start();
 
@@ -223,7 +226,7 @@ void OnEndCharge()
 
 void OnBeginDash()
 {
-	Console::Log("Dash");
+	// Console::Log("Dash");
 	m_speed *= 5.f;
 }
 void OnUpdateDash()
@@ -231,7 +234,10 @@ void OnUpdateDash()
 	float32 dt = GameManager::DeltaTime();
 	m_pOwner->transform.WorldTranslate(finalDir * m_speed * dt);
 }
-void OnEndDash() {}
+void OnEndDash()
+{
+	m_speed /= 5.f;
+}
 
 END_SCRIPT
 

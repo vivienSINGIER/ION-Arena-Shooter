@@ -12,10 +12,9 @@
 
 using namespace gce;
 
-DECLARE_CHILD_SCRIPT(Tank, Enemy, ScriptFlag::Awake | ScriptFlag::Update | ScriptFlag::CollisionEnter)
+DECLARE_CHILD_SCRIPT(Tank, Enemy, ScriptFlag::Awake | ScriptFlag::Start | ScriptFlag::SetActive | ScriptFlag::Update | ScriptFlag::CollisionEnter)
 
 StateMachine* m_pSm = nullptr;
-
 
 bool isBlocked = false;
 Chrono blockedChrono;
@@ -72,11 +71,13 @@ void Awake() override
 	Vector<StateMachine::Condition> rayConditions;
 	rayConditions.PushBack(rayCondition);
 	m_pSm->AddTransition(rayConditions, shooting, idle);
+}
 
-
+void Start() override
+{
 	for (int i = 0; i < 10; i++)
 	{
-		GameObject& bullet = GameObject::Create(m_pOwner->GetScene());
+		GameObject& bullet = m_pCustomScene->AddObject();
 		MeshRenderer& meshProjectile = *bullet.AddComponent<MeshRenderer>();
 		meshProjectile.pGeometry = SHAPES.CYLINDER;
 		bullet.transform.SetWorldPosition({ 10.0f, 0.0f, 0.0f });
@@ -87,6 +88,11 @@ void Awake() override
 		bullet.AddComponent<PhysicComponent>()->SetGravityScale(0.0f);
 		m_pProjectiles.PushBack(bullet.AddScript<BulletTank>());
 	}
+}
+
+void SetActiveEvent() override
+{
+	m_pSm->Transit("Idle");
 }
 
 void Update() override

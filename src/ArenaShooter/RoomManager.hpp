@@ -10,12 +10,12 @@ DECLARE_SCRIPT(RoomManager, ScriptFlag::Update | ScriptFlag::Start)
 
 GameObject* pPlayer = nullptr;
 CustomScene* pScene = nullptr;
+WaveManager* pWaveManager = nullptr;
 
 bool isFloorFinished = false;
 bool canSwitchRoom = false;
 bool isRoomInit = false;
 bool isPlayerLocked = false;
-
 
 void Start() override
 {
@@ -30,6 +30,12 @@ void Start() override
     m_pElevator->mapPath = RES_PATH"res/Maps/WaitingRoom.json";
     m_pElevator->pPlayer = pPlayer;
     m_pElevator->pScene = pScene;
+
+    GameObject& waveManager = pScene->AddObject();
+    pWaveManager = waveManager.AddScript<WaveManager>();
+    pWaveManager->player = pPlayer;
+    pWaveManager->currScene = pScene;
+    pWaveManager->OnInit();
 
     m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room1.json");
     m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room1.json");
@@ -103,6 +109,7 @@ void LoadRoom()
     m_pCurrRoom->pScene = pScene;
     m_pCurrRoom->hasLevelGrid = true;
     m_pCurrRoom->hasWaves = true;
+    m_pCurrRoom->pWaveManager = pWaveManager;
     m_roomIndex++;
 }
 

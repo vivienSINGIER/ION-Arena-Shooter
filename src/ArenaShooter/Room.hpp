@@ -21,7 +21,7 @@ CustomScene* pScene = nullptr;
 String mapPath;
 MapProperties roomProperties;
 
-int floor = 0;
+int8 floor = 0;
 
 void Start() override
 {
@@ -38,14 +38,12 @@ void Start() override
     
     if ( hasWaves )
     {
-        GameObject& waveManager = pScene->AddObject();
-        pWaveManager = waveManager.AddScript<WaveManager>();
         pWaveManager->grid = pLevelGrid;
-        pWaveManager->player = pPlayer;
+        pWaveManager->UpdateGrid();
         pWaveManager->currScene = pScene;
         pWaveManager->spawns = roomProperties.vSpawns;
-        pWaveManager->OnInit();
         pWaveManager->floorFactor = floor;
+        pWaveManager->currentWave = 0;
     }
 }
 

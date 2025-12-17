@@ -38,6 +38,8 @@ Vector<Path> m_vPaths;
 
 LevelGrid* m_pLevelGrid = nullptr;
 
+CustomScene* m_pCustomScene = nullptr;
+
 void Awake() override
 {
 }
@@ -85,7 +87,7 @@ virtual void Shoot()
 
 void SpawnOrb()
 {
-	GameObject& energyOrb = GameObject::Create(m_pOwner->GetScene());
+	GameObject& energyOrb = m_pCustomScene->AddObject();
 	MeshRenderer& meshEnergyOrb = *energyOrb.AddComponent<MeshRenderer>();
 	meshEnergyOrb.pGeometry = SHAPES.SPHERE;
 	energyOrb.transform.SetWorldScale({ 0.5f,0.5f,0.5f });
@@ -218,7 +220,6 @@ bool SetPath(Vector3f32 target)
 		
 		ray.origin += targetRight * dir.x * m_pOwner->transform.GetWorldScale().x * 0.5f;
 		ray.origin += targetUp * dir.y * m_pOwner->transform.GetWorldScale().y * 0.5f;
-		ray.origin += targetDir * m_pOwner->transform.GetWorldScale().z * 0.5f;
 	
 		RaycastHit hitInfo;
 		bool hit = PhysicSystem::IntersectRay(ray, hitInfo, distance);
@@ -226,6 +227,7 @@ bool SetPath(Vector3f32 target)
 		if (hit && hitInfo.pGameObject != nullptr && hitInfo.pGameObject->GetName() != "Player" &&  hitInfo.pGameObject != m_pOwner)
 		{
 			blocked = true;
+			Console::Log("Blocked");
 			break;
 		}
 	}

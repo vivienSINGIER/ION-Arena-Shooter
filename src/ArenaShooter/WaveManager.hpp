@@ -56,6 +56,7 @@ void OnInit()
         Kamikaze* tempScript = newEnemy->AddScript<Kamikaze>();
         tempScript->SetGrid(grid);
         tempScript->SetPlayer(player);
+        tempScript->m_pCustomScene = currScene;
         newEnemy->AddComponent<BoxCollider>();
         PhysicComponent* newEnemyPC = newEnemy->AddComponent<PhysicComponent>();
         newEnemyPC->SetGravityScale(0.0f);
@@ -65,16 +66,16 @@ void OnInit()
         Enemy* enemyScript = dynamic_cast<Enemy*>(tempScript);
         vEnemy.PushBack(enemyScript);
     }
-}
-
-void OnStart()
-{
-    for (Enemy* pEnemy: vEnemy)
-    {
-        pEnemy->m_pOwner->SetActive(false);
-    }
 
     waveIntervalChrono.Start();
+}
+
+void UpdateGrid()
+{
+    for (Enemy* pEnemy :vEnemy)
+    {
+        pEnemy->m_pLevelGrid = grid;
+    }
 }
 
 int8 GetEnemyCount()
