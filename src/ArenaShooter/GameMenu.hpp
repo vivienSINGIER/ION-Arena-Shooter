@@ -72,7 +72,7 @@ public:
         energyOrb2->AddComponent<BoxCollider>();
         energyOrb2->AddComponent<PhysicComponent>()->SetMass(1.0f);
 
-        GameObject& waveManager = AddObject();
+        /*GameObject& waveManager = AddObject();
         WaveManager* wManagerComponent = waveManager.AddScript<WaveManager>();
         wManagerComponent->grid = grid;
         wManagerComponent->player = player;
@@ -80,9 +80,9 @@ public:
         wManagerComponent->spawns = mapProperties.vSpawns;
         wManagerComponent->OnInit();
         pWaveManager = wManagerComponent;
-        pWaveManager->OnStart();
+        pWaveManager->OnStart();*/
 
-        /*GameObject& bossManager = AddObject();
+        GameObject& bossManager = AddObject();
         BossManager* bManagerComponent = bossManager.AddScript<BossManager>();
         bManagerComponent->grid = grid;
         bManagerComponent->player = player;
@@ -90,7 +90,7 @@ public:
         bManagerComponent->spawns = mapProperties.vSpawns;
         bManagerComponent->OnInit();
         pBossManager = bManagerComponent;
-        pBossManager->OnStart();*/
+        pBossManager->OnStart();
     }
 
 private:

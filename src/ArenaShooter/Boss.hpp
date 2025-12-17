@@ -23,11 +23,14 @@ float32 blockedToggleTime = 3.00f;
 
 Vector3f32 finalDir;
 
-float32 m_shootingInterval = 10.0f;
-float32 m_punchingInterval = 25.0f;
+float32 m_shootingInterval = 7.0f;
+float32 m_punchingInterval = 1.5f;
 float32 m_deltaTime = 0.0f;
 
 Vector<BulletBoss*> m_pProjectiles;
+
+float32 m_punchUpForce = 5000.f;
+float32 m_punchForce = 200000.f;
 
 
 void Awake() override
@@ -41,53 +44,32 @@ void Awake() override
 	String idle = "Idle";
 	m_pSm->AddAction(idle, [this]() {this->OnBeginIdle(); }, [this]() {this->OnUpdateIdle(); }, [this]() {this->OnEndIdle(); });
 
-	String chase = "Chase";
-	m_pSm->AddAction(chase, [this]() {this->OnBeginChase(); }, [this]() {this->OnUpdateChase(); }, [this]() {this->OnEndChase(); });
-
-	String shooting = "Shooting";
-	m_pSm->AddAction(shooting, [this]() {this->OnBeginShooting(); }, [this]() {this->OnUpdateShooting(); }, [this]() {this->OnEndShooting(); });
-
 	String punching = "Punching";
 	m_pSm->AddAction(punching, [this]() {this->OnBeginPunching(); }, [this]() {this->OnUpdatePunching(); }, [this]() {this->OnEndPunching(); });
 
-
-	StateMachine::Condition closePlayerCondition = { [this]() { return this->IsPlayerClose(); } };
+	StateMachine::Condition closePlayerCondition = { [this]() { return this->IsPlayerClose() && this->CheckPlayer() == false; } };
 	Vector<StateMachine::Condition> closePlayerConditions;
 	closePlayerConditions.PushBack(closePlayerCondition);
-	m_pSm->AddTransition(closePlayerConditions, shooting, chase);
-	m_pSm->AddTransition(closePlayerConditions, punching, chase);
-	m_pSm->AddTransition(closePlayerConditions, idle, chase);
-
-	StateMachine::Condition veryClosePlayerCondition = { [this]() { return this->IsPlayerVeryClose() && this->CheckPlayer() == false; } };
-	Vector<StateMachine::Condition> veryClosePlayerConditions;
-	veryClosePlayerConditions.PushBack(veryClosePlayerCondition);
-	m_pSm->AddTransition(veryClosePlayerConditions, chase, shooting);
-	m_pSm->AddTransition(veryClosePlayerConditions, chase, punching);
+	m_pSm->AddTransition(closePlayerConditions, idle, punching);
 
 	StateMachine::Condition farPlayerCondition = { [this]() { return this->IsPlayerFar(); } };
 	Vector<StateMachine::Condition> farPlayerConditions;
 	farPlayerConditions.PushBack(farPlayerCondition);
-	m_pSm->AddTransition(farPlayerConditions, chase, idle);
+	m_pSm->AddTransition(farPlayerConditions, punching, idle);
 
-	StateMachine::Condition blockedCondition = { [this]() { return this->IsBlocked(); } };
-	Vector<StateMachine::Condition> blockedConditions;
-	blockedConditions.PushBack(blockedCondition);
-	m_pSm->AddTransition(blockedConditions, chase, idle);
-
-	StateMachine::Condition rayCondition = { [this]() { return this->CheckPlayer(); } };
+	/*StateMachine::Condition rayCondition = { [this]() { return this->CheckPlayer(); } };
 	Vector<StateMachine::Condition> rayConditions;
 	rayConditions.PushBack(rayCondition);
-	m_pSm->AddTransition(rayConditions, shooting, idle);
-	m_pSm->AddTransition(rayConditions, punching, idle);
+	m_pSm->AddTransition(rayConditions, shooting, idle);*/
 
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		GameObject& bullet = GameObject::Create(m_pOwner->GetScene());
 		MeshRenderer& meshProjectile = *bullet.AddComponent<MeshRenderer>();
 		meshProjectile.pGeometry = SHAPES.CYLINDER;
 		bullet.transform.SetWorldPosition({ 10.0f, 0.0f, 0.0f });
-		bullet.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
+		bullet.transform.SetWorldScale({ 2.5f,5.f,1.f });
 		bullet.SetName("Boss bullet");
 
 		bullet.AddComponent<SphereCollider>();
@@ -122,25 +104,15 @@ void Shoot() override
 
 }
 
-
-
 bool IsPlayerClose()
 {
 	GameObject* player = m_pPlayer;
 	if (player == nullptr) return false;
 	Vector3f32 DistVect = player->transform.GetLocalPosition() - m_pOwner->transform.GetLocalPosition();
 	float distance = DistVect.Norm();
-	return distance < 20.0f && distance >= 15.f; // Seuil de distance
+	return distance <= 15.f; // Seuil de distance
 }
 
-bool IsPlayerVeryClose()
-{
-	GameObject* player = m_pPlayer;
-	if (player == nullptr) return false;
-	Vector3f32 DistVect = player->transform.GetLocalPosition() - m_pOwner->transform.GetLocalPosition();
-	float distance = DistVect.Norm();
-	return distance < 15.0f; // Seuil de distance
-}
 
 bool IsPlayerFar()
 {
@@ -148,12 +120,7 @@ bool IsPlayerFar()
 	if (player == nullptr) return false;
 	Vector3f32 DistVect = player->transform.GetLocalPosition() - m_pOwner->transform.GetLocalPosition();
 	float distance = DistVect.Norm();
-	return distance > 30.0f; // Seuil de distance
-}
-
-bool IsBlocked()
-{
-	return isBlocked && blockedChrono.GetElapsedTime() > blockedToggleTime;
+	return distance > 15.f; // Seuil de distance
 }
 
 bool CheckPlayer()
@@ -171,89 +138,97 @@ bool CheckPlayer()
 }
 
 
-void OnBeginIdle() {}
-void OnUpdateIdle()
+void OnBeginIdle() 
 {
-	if (m_target.isSet == true)
-		return;
-	if (m_vPaths.Empty() == false)
-		return;
-
-	int patrolRangeMin = 0.0f;
-	int patrolRangeMax = 15.0f;
-
-	float32 x = (std::rand() % ((patrolRangeMax - patrolRangeMin) * 10) + patrolRangeMin * 10) / 10.0f - patrolRangeMax * 0.5f;
-	float32 y = (std::rand() % ((patrolRangeMax - patrolRangeMin) * 10) + patrolRangeMin * 10) / 100.0f - patrolRangeMax * 0.05f;
-	float32 z = (std::rand() % ((patrolRangeMax - patrolRangeMin) * 10) + patrolRangeMin * 10) / 10.0f - patrolRangeMax * 0.5f;
-
-	Vector3f32 newPos = m_pOwner->transform.GetWorldPosition();
-	newPos += m_pOwner->transform.GetLocalRight() * x * 2.0f;
-	newPos += m_pOwner->transform.GetLocalUp() * y * 2.0f;
-	newPos += m_pOwner->transform.GetLocalForward() * z * 2.0f;
-
-	SetPath(newPos);
-}
-void OnEndIdle() {}
-
-void OnBeginChase()
-{
-	isBlocked = false;
-}
-void OnUpdateChase()
-{
-	bool searchResult = SetPath(m_pPlayer->transform.GetWorldPosition());
-	if (searchResult == false)
-	{
-		if (isBlocked == false)
-		{
-			blockedChrono.Reset();
-			blockedChrono.Start();
-			isBlocked = true;
-		}
-	}
-	else
-	{
-		blockedChrono.Pause();
-	}
-}
-void OnEndChase() {}
-
-void OnBeginShooting()
-{
+	Console::Log("Boss Idle");
 	m_deltaTime = 0.0f;
 	ResetPath();
 }
-void OnUpdateShooting()
+void OnUpdateIdle()
 {
 	Vector3f32 direction = m_pPlayer->transform.GetWorldPosition() - m_pOwner->transform.GetWorldPosition();
 	direction.SelfNormalize();
 	m_deltaTime += GameManager::DeltaTime();
 	if (m_deltaTime >= m_shootingInterval)
 	{
-		OrientFace(m_pPlayer->transform.GetWorldPosition());
 		BulletBoss* first = m_pProjectiles[0];
 		if (!first->IsActive())
 		{
-			first->Init(direction, m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward() * 1.f, 20.f);
+			Vector3f32 shootFrom = m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward() * 1.f;
+			shootFrom.x += 2.f;
+			shootFrom.y += 2.f;
+			Vector3f32 shotDir = m_pOwner->transform.GetWorldForward();
+			first->Init(shotDir, shootFrom, 10.f);
 			m_deltaTime = 0.0f;
+			Console::Log("Boss Shot");
+		}
+		BulletBoss* second = m_pProjectiles[1];
+		if (!second->IsActive())
+		{
+			Vector3f32 shootFrom = m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward() * 1.f;
+			shootFrom.x += 2.f;
+			shootFrom.y += 2.f; 
+			shootFrom.z += 5.f;
+			Vector3f32 shotDir = m_pOwner->transform.GetWorldForward();
+			//shotDir.y += 15.f;
+			second->Init(shotDir, shootFrom, 10.f);
+			m_deltaTime = 0.0f;
+			Console::Log("Boss Shot");
+		}
+		BulletBoss* third = m_pProjectiles[2];
+		if (!third->IsActive())
+		{
+			Vector3f32 shootFrom = m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward() * 1.f;
+			shootFrom.x += 2.f;
+			shootFrom.y += 2.f;
+			shootFrom.z -= 5.f;
+			Vector3f32 shotDir = m_pOwner->transform.GetWorldForward();
+			//shotDir.y -= 15.f;
+			third->Init(shotDir, shootFrom, 10.f);
+			m_deltaTime = 0.0f;
+			Console::Log("Boss Shot");
 		}
 	}
 }
-void OnEndShooting()
-{
-}
+void OnEndIdle() {}
 
 void OnBeginPunching()
 {
+	Console::Log("Boss Punching");
 	m_deltaTime = 0.0f;
 	ResetPath();
 }
 void OnUpdatePunching()
 {
+	Vector3f32 direction = m_pPlayer->transform.GetWorldPosition() - m_pOwner->transform.GetWorldPosition();
+	direction.SelfNormalize();
+	direction.y = 0.f; 
+	m_deltaTime += GameManager::DeltaTime();
+	if (m_deltaTime >= m_punchingInterval)
+	{
+		Force punchUp;
+		punchUp.direction = Vector3f32(0.f, 1.f, 0.f); // Add some upward force
+		punchUp.norm = m_punchUpForce;
+		m_pPlayer->GetComponent<PhysicComponent>()->AddForce(punchUp);
+
+		m_pPlayer->GetScript<Player>()->GettingPunched();
+
+		if (m_pPlayer->GetScript<Player>()->IsGrounded() == false)
+		{
+			Force punch;
+			punch.direction = direction;
+			punch.norm = m_punchForce;
+			m_pPlayer->GetComponent<PhysicComponent>()->AddForce(punch);
+			m_deltaTime = 0.0f;
+			Console::Log("Boss Punched");
+		}
+	}
+
 }
 void OnEndPunching()
 {
 }
+
 END_SCRIPT
 
 

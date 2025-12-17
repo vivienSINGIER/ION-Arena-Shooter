@@ -28,6 +28,7 @@ int8 currentWave = 0;
 bool isSpawningWave = false;
 bool isFightingWave = false;
 Vector<Spawn> spawns;
+Spawn BossSpawn = { { 35.f,4.f,0.f }, { 25.f,4.f,0.f } };
 
 Chrono waveSpawnChrono;
 float32 waveSpawnDelay = 0.5f;
@@ -95,6 +96,10 @@ T* GetFirstAvailableEnemy()
     return nullptr;
 }*/
 
+void BossSpawned()
+{
+    bossAlreadySpawned = true;
+}
 
 void StartBoss()
 {
@@ -108,21 +113,20 @@ void SpawnBoss(Spawn selectedSpawn)
         std::cerr << "Unvalid Parameters : Unset scene for boss creation" << std::endl;
         return;
     }
-    
-    selectedSpawn.startPos.y = 0.f;
-    selectedSpawn.endPos.y = 0.f;
+
+    BossSpawned();
     boss->m_pOwner->transform.SetWorldPosition(selectedSpawn.startPos);
     boss->GoToPosition(selectedSpawn.endPos, boss->m_speed);
     boss->m_pOwner->SetActive(true);
     Console::Log("Spawned Boss");
     
-    bossAlreadySpawned == true;
+    
 }
 
 void Update() override
 {
-    if (bossAlreadySpawned == true && isSpawningBoss == true)
-        SpawnBoss(spawns[0]);
+    if (bossAlreadySpawned == false && isSpawningBoss == true)
+        SpawnBoss(BossSpawn);
     else if (isSpawningBoss == true)
     {
         isSpawningBoss = false;
