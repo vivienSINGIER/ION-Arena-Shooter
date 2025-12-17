@@ -114,13 +114,6 @@ void SetActiveEvent() override
 	uiHeatImage.btmBrush =  new BitMapBrush("res/ArenaShooter/barre_de_surcharge.png");
 	uiHeatImage.btmBrush->SetTransformMatrix({ 1100, 480, 0 }, { 0.3f , 0.3f , 0.3f }, 0);
 
-	GameObject& heatUiBar = m_customScene->AddObject();
-	ImageUI& uiHeatBarImage = *heatUiBar.AddComponent<ImageUI>();
-	m_uiHeat = heatUiBar.AddScript<UiHeat>();
-	m_uiHeat->UiHeatH = &uiHeatBarImage;
-	uiHeatBarImage.InitializeImage({ 1100, 630 }, {44,7}, 1.f);
-	uiHeatBarImage.btmBrush = new BitMapBrush("res/ArenaShooter/curseur_barre_de_surcharge.png");
-	uiHeatBarImage.btmBrush->SetTransformMatrix({ 1100, 630, 0 }, { 0.6f , 0.6f , 0.6f }, 0);
 
 	GameObject& rifle = m_customScene->AddObject();
 	MeshRenderer& meshProjectileRifle = *rifle.AddComponent<MeshRenderer>();
@@ -184,6 +177,15 @@ void SetActiveEvent() override
 	bazooka.SetActive(false);
 	m_weaponController->AddWeapon(m_bazooka, false);
 	
+
+	GameObject& heatUiBar = m_customScene->AddObject();
+	ImageUI& uiHeatBarImage = *heatUiBar.AddComponent<ImageUI>();
+	m_uiHeat = heatUiBar.AddScript<UiHeat>();
+	m_uiHeat->UiHeatH = &uiHeatBarImage;
+	uiHeatBarImage.InitializeImage({ 1100, 630 }, { 44,7 }, 1.f);
+	uiHeatBarImage.btmBrush = new BitMapBrush("res/ArenaShooter/curseur_barre_de_surcharge.png");
+	uiHeatBarImage.btmBrush->SetTransformMatrix({ 1100, 630, 0 }, { 0.6f , 0.6f , 0.6f }, 0);
+
 }
 
 void Test()
