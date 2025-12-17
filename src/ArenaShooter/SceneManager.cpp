@@ -39,7 +39,7 @@ void SceneManager::ChangeScene(SceneName name)
 	GetScene(currScene)->SetInactive();
 	GetScene(currScene)->IsActive = false;
 	currScene = name;
+	GetScene(currScene)->Start();
 	GetScene(currScene)->SetActive();
 	GetScene(currScene)->IsActive = true;
-	GetScene(currScene)->Start();
 }

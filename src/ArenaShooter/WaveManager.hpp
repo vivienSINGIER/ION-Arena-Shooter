@@ -26,6 +26,7 @@ int8 remainingWaveValue = 0;
 int8 currentWave = 0;
 bool isSpawningWave = false;
 bool isFightingWave = false;
+bool isReady = false;
 
 Vector<Spawn> spawns;
 
@@ -87,6 +88,11 @@ int8 GetEnemyCount()
     return count;
 }
 
+bool IsFinished()
+{
+    return currentWave == maxWaveCount && GetEnemyCount() == 0 && !isSpawningWave;
+}
+
 template <typename T>
 T* GetFirstAvailableEnemy()
 {
@@ -105,10 +111,15 @@ T* GetFirstAvailableEnemy()
 
 void StartWave()
 {
+    if (currentWave > maxWaveCount)
+        return;
+    
     currentWave++;
-    waveValue = 5 + currentWave * 3 + floorFactor * 3;
+    // waveValue = 5 + currentWave * 3 + floorFactor * 3;
+    waveValue = 1;
     remainingWaveValue = waveValue;
     isSpawningWave = true;
+    isReady = true;
 }
 
 void SpawnEnemy(Spawn selectedSpawn)
@@ -178,7 +189,7 @@ void Update() override
     {
         if (waveIntervalChrono.GetElapsedTime() > waveInterval)
         {
-            if (currentWave < maxWaveCount)
+            if (currentWave < maxWaveCount && isReady == true)
                 StartWave();   
         }
     }

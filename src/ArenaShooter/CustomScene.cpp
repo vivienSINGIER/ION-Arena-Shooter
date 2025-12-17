@@ -65,6 +65,7 @@ void CustomScene::CleanVector()
 
 void CustomScene::Empty(int indexStart)
 {
+	CleanVector();
 	int size = m_vObject.Size() - indexStart;
 	for (int i = 0; i < size; i++)
 	{

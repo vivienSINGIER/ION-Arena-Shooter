@@ -8,8 +8,18 @@
 
 using namespace gce;
 
-DECLARE_SCRIPT(EnergyOrb, ScriptFlag::CollisionEnter)
+DECLARE_SCRIPT(EnergyOrb, ScriptFlag::CollisionEnter | ScriptFlag::Update)
 	
+float32 scale = 0.5f;
+
+void Update() override
+{
+	scale -= 0.0005f;
+	m_pOwner->transform.SetLocalScale({scale, scale, scale});
+
+	if (scale < 0.001f)
+		m_pOwner->Destroy();
+}
 
 void CollisionEnter(GameObject* other) override
 {

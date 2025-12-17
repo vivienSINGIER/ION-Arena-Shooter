@@ -4,17 +4,27 @@
 #include "Engine.h"
 #include "define.h"
 #include "Room.hpp"
+#include "Thread/Thread.h"
 
 DECLARE_SCRIPT(RoomManager, ScriptFlag::Update | ScriptFlag::Start)
 
 GameObject* pPlayer = nullptr;
 CustomScene* pScene = nullptr;
 
+bool isFloorFinished = false;
+bool canSwitchRoom = false;
+bool isRoomInit = false;
+bool isPlayerLocked = false;
+
+
 void Start() override
 {
+    m_roomIndex = 0;
+    isRoomInit = false;
+    
     if (pScene == nullptr)
         return;
-
+    
     GameObject& elevator = pScene->AddObject();
     m_pElevator = elevator.AddScript<Room>();
     m_pElevator->mapPath = RES_PATH"res/Maps/WaitingRoom.json";
@@ -22,12 +32,59 @@ void Start() override
     m_pElevator->pScene = pScene;
 
     m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room1.json");
+    m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room1.json");
 }
 
 void Update() override
 {
+    if (m_InitOffset == false)
+    {
+        m_InitOffset = true;
+        return;
+    }
+    
     if (m_pCurrRoom == nullptr)
         LoadRoom();
+
+    Door* door = m_pElevator->GetFromScript<Door>();
+    if (door->isClosed == false && isFloorFinished == false)
+    {
+        if (m_pElevator->DistanceFromRoomBorder() > 5.f)
+        {
+            door->Toggle();
+            if (m_pCurrRoom != nullptr)
+                m_pCurrRoom->pWaveManager->StartWave();
+        }
+    }
+
+    if (m_pCurrRoom != nullptr)
+    {
+        if (m_pCurrRoom->pWaveManager != nullptr)
+            if (m_pCurrRoom->pWaveManager->IsFinished())
+                isFloorFinished = true;
+    }
+
+    if (isFloorFinished)
+    {
+        if (door->isClosed == true && isPlayerLocked == false)
+            door->Toggle();
+        
+        if (m_pElevator->DistanceFromRoomBorder() == 0.0f & door->isClosed == false)
+        {
+            door->Toggle();
+            isPlayerLocked = true;
+        }
+        
+        if (m_pElevator->DistanceFromRoomCenter() < 3.0f)
+            ChangeRoom();
+    }
+
+    if (isRoomInit == true)
+    {
+        isRoomInit = false;
+        isFloorFinished = false;
+        canSwitchRoom = false;
+    }
 }
 
 void LoadRoom()
@@ -37,14 +94,26 @@ void LoadRoom()
     
     GameObject& temp = pScene->AddObject();
     m_pCurrRoom = temp.AddScript<Room>();
-    m_pCurrRoom->mapPath = RES_PATH"res/Maps/WaitingRoom.json";
+    m_pCurrRoom->mapPath = m_vRoomPaths[m_roomIndex];
     m_pCurrRoom->pPlayer = pPlayer;
     m_pCurrRoom->pScene = pScene;
     m_pCurrRoom->hasLevelGrid = true;
     m_pCurrRoom->hasWaves = true;
+    m_roomIndex++;
+}
+
+void ChangeRoom()
+{
+    m_pCurrRoom->EmptyRoom();
+
+    LoadRoom();
+
+    isRoomInit = true;
 }
 
 private:
+
+bool m_InitOffset = false;
 
 Room* m_pElevator = nullptr;
 Room* m_pCurrRoom = nullptr;

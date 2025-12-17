@@ -822,26 +822,60 @@
             "has_collider": true
         },
         {
-            "name": "Door",
-            "type": "MESH",
+            "name": "PlayerSpawn",
+            "type": "PLAYER_SPAWN",
             "position": [
-                -50.110069274902344,
-                -7.784960871504154e-07,
-                -8.017204284667969
+                -56.60293960571289,
+                0.0,
+                4.270627498626709
+            ]
+        },
+        {
+            "name": "Container",
+            "type": "EMPTY",
+            "position": [
+                -59.02649688720703,
+                -0.11020374298095703,
+                6.993525981903076
             ],
             "rotation": [
                 0.0,
-                0.7071067690849304,
                 0.0,
-                0.7071067690849304
+                0.0,
+                1.0
             ],
             "scale": [
-                6.681732654571533,
-                9.382201194763184,
-                1.0
+                10.042478561401367,
+                11.236671447753906,
+                7.993525981903076
             ],
             "parent": null,
             "texture": null,
+            "mesh": null,
+            "destructible": false,
+            "has_collider": true
+        },
+        {
+            "name": "Door",
+            "type": "MESH",
+            "position": [
+                -51.39810562133789,
+                0.0,
+                -7.703355312347412
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scale": [
+                1.0,
+                9.633291244506836,
+                6.444281578063965
+            ],
+            "parent": null,
+            "texture": "DarkGrey.png",
             "mesh": {
                 "vertices": [
                     -1.0,
@@ -982,40 +1016,6 @@
                     0.75
                 ]
             },
-            "destructible": false,
-            "has_collider": true
-        },
-        {
-            "name": "PlayerSpawn",
-            "type": "PLAYER_SPAWN",
-            "position": [
-                -56.60293960571289,
-                0.0,
-                4.270627498626709
-            ]
-        },
-        {
-            "name": "Container",
-            "type": "EMPTY",
-            "position": [
-                -59.02649688720703,
-                -0.11020374298095703,
-                6.993525981903076
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0,
-                1.0
-            ],
-            "scale": [
-                10.042478561401367,
-                11.236671447753906,
-                7.993525981903076
-            ],
-            "parent": null,
-            "texture": null,
-            "mesh": null,
             "destructible": false,
             "has_collider": true
         }

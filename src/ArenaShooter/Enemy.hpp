@@ -2,6 +2,7 @@
 #define ENEMY_HPP_INCLUDED
 
 #include "define.h"
+#include "EnergyOrb.hpp"
 #include "Script.h"
 #include "GameObject.h"
 #include "Health.h"
@@ -79,7 +80,19 @@ void SetPlayer(GameObject* player)
 
 virtual void Shoot()
 {
+	
+}
 
+void SpawnOrb()
+{
+	GameObject& energyOrb = GameObject::Create(m_pOwner->GetScene());
+	MeshRenderer& meshEnergyOrb = *energyOrb.AddComponent<MeshRenderer>();
+	meshEnergyOrb.pGeometry = SHAPES.SPHERE;
+	energyOrb.transform.SetWorldScale({ 0.5f,0.5f,0.5f });
+	energyOrb.transform.SetWorldPosition(m_pOwner->transform.GetWorldPosition());
+	energyOrb.AddScript<EnergyOrb>();
+	energyOrb.AddComponent<BoxCollider>();
+	energyOrb.AddComponent<PhysicComponent>()->SetMass(1.0f);
 }
 
 void SetGrid(LevelGrid* pGrid) { m_pLevelGrid = pGrid; }

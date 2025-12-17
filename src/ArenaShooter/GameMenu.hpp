@@ -40,11 +40,6 @@ public:
         player->AddScript<PlayerController>();
 		player->GetScript<Player>()->m_customScene = this;
 
-        GameObject& roomManagerObj = AddObject();
-        RoomManager* roomManager = roomManagerObj.AddScript<RoomManager>();
-        roomManager->pPlayer = player;
-        roomManager->pScene = this;
-
     }
 
     void Start() override
@@ -63,6 +58,11 @@ public:
         uiImage.btmBrush = new BitMapBrush("res/ArenaShooter/crosshair.png");
         uiImage.btmBrush->SetTransformMatrix({ posUi.x, posUi.y, 0 }, { 1.f / 4.f, 1.f / 4.f, 1.f / 4.f }, 0);
         uiImage.SetActive(true);
+
+        GameObject& roomManagerObj = AddObject();
+        RoomManager* roomManager = roomManagerObj.AddScript<RoomManager>();
+        roomManager->pPlayer = player;
+        roomManager->pScene = this;
     }
 
 private:

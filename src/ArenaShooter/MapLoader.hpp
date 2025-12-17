@@ -10,6 +10,7 @@
 
 #include "SceneManager.h"
 #include "CustomScene.h"
+#include "Door.hpp"
 
 using json = nlohmann::json;
 using namespace gce;
@@ -111,6 +112,9 @@ struct MapLoader
             MeshRenderer& mesh = *gameObject.AddComponent<MeshRenderer>();
             mesh.pGeometry = GeometryFactory::LoadJsonGeometry(currObject);
             gameObject.SetName(name);
+
+            if (name == "Door")
+                gameObject.AddScript<Door>();
             
             if (currObject["has_collider"].get<bool>() == true)
             {

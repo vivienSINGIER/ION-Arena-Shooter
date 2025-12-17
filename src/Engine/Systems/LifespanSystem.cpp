@@ -20,6 +20,8 @@ void LifespanSystem::HandleCreations()
     {
         GameObject* pGameObject = m_toCreate.gameObjects.Front();
         m_toCreate.gameObjects.Pop();
+        if (pGameObject->m_destroyed)
+            return;
         pGameObject->m_pScene->m_gameObjects[pGameObject->m_id] = pGameObject;
         pGameObject->m_created = true;
         pGameObject->transform.UpdateMatrix();

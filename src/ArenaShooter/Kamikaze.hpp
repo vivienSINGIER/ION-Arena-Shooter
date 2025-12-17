@@ -11,7 +11,7 @@
 
 using namespace gce;
 
-DECLARE_CHILD_SCRIPT(Kamikaze, Enemy, ScriptFlag::Awake | ScriptFlag::Update | ScriptFlag::CollisionEnter | ScriptFlag::Destroy)
+DECLARE_CHILD_SCRIPT(Kamikaze, Enemy, ScriptFlag::Awake | ScriptFlag::Update | ScriptFlag::CollisionEnter | ScriptFlag::Destroy | ScriptFlag::SetActive)
 
 StateMachine* m_pSm = nullptr;
 
@@ -71,21 +71,18 @@ void Awake() override
 	m_pSm->AddTransition(dashConditions, charge, dash);
 }
 
+void SetActiveEvent() override
+{
+	m_pSm->Transit("Idle");
+}
+
 void Update() override
 {
 	if (m_Hp->GetHealth() <= 0.f)
 	{
 		m_Hp->SetIsAlive(false);
 		m_pOwner->SetActive(false);
-
-		GameObject& energyOrb = GameObject::Create(m_pOwner->GetScene());
-		MeshRenderer& meshEnergyOrb = *energyOrb.AddComponent<MeshRenderer>();
-		meshEnergyOrb.pGeometry = SHAPES.SPHERE;
-		energyOrb.transform.SetWorldScale({ 0.5f,0.5f,0.5f });
-		energyOrb.transform.SetWorldPosition(m_pOwner->transform.GetWorldPosition());
-		energyOrb.AddScript<EnergyOrb>();
-		energyOrb.AddComponent<BoxCollider>();
-		energyOrb.AddComponent<PhysicComponent>()->SetMass(1.0f);
+		SpawnOrb();
 	}
 	
 	Enemy::Update();
