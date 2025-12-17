@@ -14,7 +14,7 @@ DECLARE_CHILD_SCRIPT(BulletBoss, Projectile, ScriptFlag::Start | ScriptFlag::Upd
 
 void Start() override
 {
-    m_MaxDistance = 40.f;
+    m_MaxDistance = 100.f;
     m_dmgBullet = 1.f;
 
     m_pOwner->SetActive(false);

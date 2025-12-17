@@ -11,12 +11,7 @@
 #include "Tank.hpp"
 #include "Player.hpp"
 
-enum EnemyCost
-{
-    KAMIKAZE = 1,
-    DRONE = 2,
-    TANK = 3
-};
+
 
 DECLARE_SCRIPT(BossManager, ScriptFlag::Update)
 
@@ -25,6 +20,7 @@ int8 floorFactor = 0;
 int8 waveValue = 0;
 int8 remainingWaveValue = 0;
 
+bool bossAlreadySpawned = false;
 bool isSpawningBoss = false;
 bool isFightingBoss = false;
 
@@ -59,7 +55,7 @@ void OnInit()
     tempScript->SetGrid(grid);
     tempScript->SetPlayer(player);
 
-    newEnemy->AddComponent<BoxCollider>();
+    newEnemy->AddComponent<BoxCollider>(); 
     PhysicComponent* newEnemyPC = newEnemy->AddComponent<PhysicComponent>();
     newEnemyPC->SetGravityScale(0.0f);
     newEnemyPC->SetIsTrigger(true);
@@ -71,8 +67,6 @@ void OnInit()
 void OnStart()
 {
     boss->m_pOwner->SetActive(false);
-
-    //waveIntervalChrono.Start();
 }
 
 /*int8 GetEnemyCount()
@@ -102,13 +96,10 @@ T* GetFirstAvailableEnemy()
 }*/
 
 
-/*void StartWave()
+void StartBoss()
 {
-    currentWave++;
-    waveValue = 5 + currentWave * 3 + floorFactor * 3;
-    remainingWaveValue = waveValue;
-    isSpawningWave = true;
-}*/
+    isSpawningBoss = true;
+}
 
 void SpawnBoss(Spawn selectedSpawn)
 {
@@ -125,24 +116,14 @@ void SpawnBoss(Spawn selectedSpawn)
     boss->m_pOwner->SetActive(true);
     Console::Log("Spawned Boss");
     
+    bossAlreadySpawned == true;
 }
-
-/*void SpawnSubWave()
-{
-    if (waveSpawnChrono.GetElapsedTime() < waveSpawnDelay)
-        return;
-
-    waveSpawnChrono.Reset();
-    
-    for (Spawn currSpawn : spawns)
-        SpawnEnemy(currSpawn);
-}*/
 
 void Update() override
 {
-    for (Spawn currSpawn : spawns)
-        SpawnBoss(currSpawn);
-    if (isSpawningBoss)
+    if (bossAlreadySpawned == true && isSpawningBoss == true)
+        SpawnBoss(spawns[0]);
+    else if (isSpawningBoss == true)
     {
         isSpawningBoss = false;
         isFightingBoss = true;
@@ -153,19 +134,13 @@ void Update() override
         if (boss == nullptr)
         {
             isFightingBoss = false;
-            //waveIntervalChrono.Reset();
-            //waveIntervalChrono.Start();
         }
     }
 
-    /*if (isFightingBoss == false && isSpawningBoss == false)
+    if (isFightingBoss == false && isSpawningBoss == false)
     {
-        if (waveIntervalChrono.GetElapsedTime() > waveInterval)
-        {
-            if (currentWave < maxWaveCount)
-                StartWave();   
-        }
-    }*/
+        StartBoss();
+    }
     
 }
 

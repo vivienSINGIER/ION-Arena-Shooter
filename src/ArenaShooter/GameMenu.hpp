@@ -11,6 +11,7 @@
 #include "Kamikaze.hpp"
 #include "LevelGrid.h"
 #include "WaveManager.hpp"
+#include "BossManager.hpp"
 #include "Drone.hpp"
 #include "Tank.hpp"
 #include "EnergyOrb.hpp"
@@ -80,10 +81,21 @@ public:
         wManagerComponent->OnInit();
         pWaveManager = wManagerComponent;
         pWaveManager->OnStart();
+
+        /*GameObject& bossManager = AddObject();
+        BossManager* bManagerComponent = bossManager.AddScript<BossManager>();
+        bManagerComponent->grid = grid;
+        bManagerComponent->player = player;
+        bManagerComponent->currScene = this;
+        bManagerComponent->spawns = mapProperties.vSpawns;
+        bManagerComponent->OnInit();
+        pBossManager = bManagerComponent;
+        pBossManager->OnStart();*/
     }
 
 private:
     WaveManager* pWaveManager = nullptr;
+    BossManager* pBossManager = nullptr;
     GameObject* player = nullptr;
 };
 

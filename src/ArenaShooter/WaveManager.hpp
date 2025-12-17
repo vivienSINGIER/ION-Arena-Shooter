@@ -52,12 +52,12 @@ void OnInit()
         MeshRenderer& mesh = *newEnemy->AddComponent<MeshRenderer>();
         mesh.pGeometry = SHAPES.CUBE;
         newEnemy->transform.SetWorldScale({ 1.f,1.f,1.f });
-       /* Kamikaze* tempScript = newEnemy->AddScript<Kamikaze>();
-        tempScript->SetGrid(grid);
-        tempScript->SetPlayer(player);*/
-        Tank* tempScript = newEnemy->AddScript<Tank>();
+        Kamikaze* tempScript = newEnemy->AddScript<Kamikaze>();
         tempScript->SetGrid(grid);
         tempScript->SetPlayer(player);
+        /*Tank* tempScript = newEnemy->AddScript<Tank>();
+        tempScript->SetGrid(grid);
+        tempScript->SetPlayer(player);*/
 
         newEnemy->AddComponent<BoxCollider>();
         PhysicComponent* newEnemyPC = newEnemy->AddComponent<PhysicComponent>();
@@ -125,26 +125,26 @@ void SpawnEnemy(Spawn selectedSpawn)
     
     Vector<EnemyCost> options;
 
-    //if (remainingWaveValue >= KAMIKAZE) options.PushBack(KAMIKAZE);
+    if (remainingWaveValue >= KAMIKAZE) options.PushBack(KAMIKAZE);
     //if (remainingWaveValue >= DRONE) options.PushBack(DRONE);
-    if (remainingWaveValue >= TANK) options.PushBack(TANK);
+    //if (remainingWaveValue >= TANK) options.PushBack(TANK);
 
     EnemyCost chosenEnemy = RandomFrom(options);
     
     if (chosenEnemy == KAMIKAZE)
     {
-        /*Kamikaze* tempScript = GetFirstAvailableEnemy<Kamikaze>();
+        Kamikaze* tempScript = GetFirstAvailableEnemy<Kamikaze>();
         if (tempScript == nullptr) return;
         tempScript->m_pOwner->transform.SetWorldPosition(selectedSpawn.startPos);
         tempScript->GoToPosition(selectedSpawn.endPos, tempScript->m_speed);
         tempScript->m_pOwner->SetActive(true);
         Console::Log("Spawned Kamikaze");
-        remainingWaveValue -= KAMIKAZE;*/
+        remainingWaveValue -= KAMIKAZE;
     }
     else if (chosenEnemy == DRONE) {}
     else if (chosenEnemy == TANK) 
     {
-        Tank* tempScript = GetFirstAvailableEnemy<Tank>();
+        /*Tank* tempScript = GetFirstAvailableEnemy<Tank>();
         if (tempScript == nullptr) return;
         selectedSpawn.startPos.y = 0.f;
         selectedSpawn.endPos.y = 0.f;
@@ -152,7 +152,7 @@ void SpawnEnemy(Spawn selectedSpawn)
         tempScript->GoToPosition(selectedSpawn.endPos, tempScript->m_speed);
         tempScript->m_pOwner->SetActive(true);
         Console::Log("Spawned Tank");
-        remainingWaveValue -= TANK;
+        remainingWaveValue -= TANK;*/
     }
     
 }
