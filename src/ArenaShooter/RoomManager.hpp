@@ -33,6 +33,8 @@ void Start() override
 
     m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room1.json");
     m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room1.json");
+    m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room1.json");
+    m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room1.json");
 }
 
 void Update() override
@@ -69,21 +71,23 @@ void Update() override
         if (door->isClosed == true && isPlayerLocked == false)
             door->Toggle();
         
-        if (m_pElevator->DistanceFromRoomBorder() == 0.0f & door->isClosed == false)
+        if (m_pElevator->DistanceFromRoomCenter() < 8.0f & door->isClosed == false)
         {
             door->Toggle();
             isPlayerLocked = true;
         }
         
-        if (m_pElevator->DistanceFromRoomCenter() < 3.0f)
+        if (m_pElevator->DistanceFromRoomCenter() < 6.0f)
             ChangeRoom();
     }
 
     if (isRoomInit == true)
     {
+        door->Toggle();
         isRoomInit = false;
         isFloorFinished = false;
         canSwitchRoom = false;
+        isPlayerLocked = false;
     }
 }
 
@@ -105,6 +109,7 @@ void LoadRoom()
 void ChangeRoom()
 {
     m_pCurrRoom->EmptyRoom();
+    m_pCurrRoom = nullptr;
 
     LoadRoom();
 

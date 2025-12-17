@@ -92,6 +92,9 @@ bool LevelGrid::CalculateAvailability(Vector3f32 position, Vector<GameObject*>& 
     
     for (GameObject* obj : objs)
     {
+        if (obj->m_destroyed)
+            continue;
+        
         BoxCollider* oB = obj->GetComponent<BoxCollider>();
         SphereCollider* oS = obj->GetComponent<SphereCollider>();
         obj->transform.UpdateMatrix();
