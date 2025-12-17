@@ -37,8 +37,8 @@ public:
         SliderComponent* s5 = slider5.AddComponent<SliderComponent>();
         s5->size = { 800, 30 };
         s5->min = 0.f;
-        s5->max = 1.f;
-        s5->interval = 0.2f;
+        s5->max = 0.5f;
+        s5->interval = 0.01f;
         s5->value = 0.f;
         s5->handleSize = { 40, 40 };
         s5->orientation = SliderComponent::LEFT_TO_RIGHT;
