@@ -95,7 +95,7 @@ void SetActiveEvent() override
 	GameObject& heatUi = m_customScene->AddObject();
 	ImageUI& uiHeatBar = *heatUi.AddComponent<ImageUI>();
 	Vector2f32 center2 = { (GameManager::GetWindow()->GetWidth() / 2.f), (GameManager::GetWindow()->GetHeight() / 2.f) };
-	Vector2f32 size2 = { 600, 600 };
+	Vector2f32 size2 = { 118, 510 };
 	Vector2f32 posUi2 = center2 - size2 * 0.5f;
 	uiHeatBar.InitializeImage(posUi2, size2, 1.f);
 	m_uiHeat = heatUi.AddScript<UiHeat>();
