@@ -24,6 +24,9 @@ MapProperties roomProperties;
 void Start() override
 {
     roomProperties = MapLoader::LoadMap(mapPath, pScene, m_vObjects);
+
+    if (roomProperties.hasPlayerSpawn == true)
+        pPlayer->transform.SetWorldPosition(roomProperties.playerSpawn);
     
     if ( hasLevelGrid )
     {

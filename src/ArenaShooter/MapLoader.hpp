@@ -58,7 +58,7 @@ struct MapLoader
             std::string name = currObject["name"].get<std::string>();
             std::string type = currObject["type"].get<std::string>();
 
-            if (name.find("Container") == std::string::npos)
+            if (name.find("Container") != std::string::npos)
             {
                 Vector3f32 position;
                 position.x = currObject["position"][0].get<float>();

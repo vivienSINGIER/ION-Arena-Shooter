@@ -69,7 +69,6 @@ void SetActiveEvent() override
 {
 	if (m_health != nullptr)
 		m_health->Heal(5);
-	m_pOwner->transform.SetWorldPosition({ 0,10,0 });
 	m_pOwner->transform.SetWorldRotation({ 0,0,0 });
 
 	GameObject& weaponControllerObj = m_customScene->AddObject();
