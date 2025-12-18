@@ -7,6 +7,8 @@
 #include "Utils.h"
 #include "Event.hpp"
 #include "Kamikaze.hpp"
+#include "Tank.hpp"
+#include "Drone.hpp"
 #include "Player.hpp"
 
 enum EnemyCost
@@ -49,6 +51,13 @@ void OnInit()
     Geometry* pKamikazeGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/Kamikaze.obj");
     Texture* albedoKamikaze = new Texture(RES_PATH"res/ArenaShooter/Obj/Kamikaze_Color.png");
 
+    Geometry* pTankGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/tank.obj");
+    Texture* albedoTank = new Texture(RES_PATH"res/ArenaShooter/Obj/tank_color.png");
+    Texture* normTank = new Texture(RES_PATH"res/ArenaShooter/Obj/tank_norm.png");
+    Texture* roughTank = new Texture(RES_PATH"res/ArenaShooter/Obj/tank_rough.png");
+    Texture* aoTank = new Texture(RES_PATH"res/ArenaShooter/Obj/tank_ao.png");
+
+
     for (int i = 0; i < 20; i++)
     {
         GameObject* newEnemy = &currScene->AddObject();
@@ -72,6 +81,63 @@ void OnInit()
         Enemy* enemyScript = dynamic_cast<Enemy*>(tempScript);
         vEnemy.PushBack(enemyScript);
     }
+
+    for (int i = 0; i < 20; i++)
+    {
+        GameObject* newEnemy = &currScene->AddObject();
+        MeshRenderer& mesh = *newEnemy->AddComponent<MeshRenderer>();
+        mesh.pGeometry = pTankGeo;
+        mesh.pMaterial->albedoTextureID = albedoTank->GetTextureID();
+        mesh.pMaterial->useTextureAlbedo = 1;
+		mesh.pMaterial->normalTextureID = normTank->GetTextureID();
+		mesh.pMaterial->useTextureNormal = 1;
+		mesh.pMaterial->roughnessTextureID = roughTank->GetTextureID();
+		mesh.pMaterial->useTextureRoughness = 1;
+		mesh.pMaterial->ambientTextureID = aoTank->GetTextureID();
+		mesh.pMaterial->useTextureAmbient = 1;
+        newEnemy->transform.SetWorldScale({ 1.3f,1.3f,1.3f });
+
+        newEnemy->SetName("Tank");
+        Tank* tempScript = newEnemy->AddScript<Tank>();
+        tempScript->SetGrid(grid);
+        tempScript->SetPlayer(player);
+        tempScript->m_pCustomScene = currScene;
+        newEnemy->AddComponent<BoxCollider>();
+        PhysicComponent* newEnemyPC = newEnemy->AddComponent<PhysicComponent>();
+        newEnemyPC->SetGravityScale(0.0f);
+        newEnemyPC->SetIsTrigger(true);
+        newEnemy->SetActive(false);
+
+        Enemy* enemyScript = dynamic_cast<Enemy*>(tempScript);
+        vEnemy.PushBack(enemyScript);
+    }
+
+
+    for (int i = 0; i < 20; i++)
+    {
+        GameObject* newEnemy = &currScene->AddObject();
+        MeshRenderer& mesh = *newEnemy->AddComponent<MeshRenderer>();
+        mesh.pGeometry = pKamikazeGeo;
+        mesh.pMaterial->albedoTextureID = albedoKamikaze->GetTextureID();
+        mesh.pMaterial->useTextureAlbedo = 1;
+        newEnemy->transform.SetWorldScale({ 1.3f,1.3f,1.3f });
+
+        newEnemy->SetName("Kamikaze");
+        Kamikaze* tempScript = newEnemy->AddScript<Kamikaze>();
+        tempScript->SetGrid(grid);
+        tempScript->SetPlayer(player);
+        tempScript->m_pCustomScene = currScene;
+        newEnemy->AddComponent<BoxCollider>();
+        PhysicComponent* newEnemyPC = newEnemy->AddComponent<PhysicComponent>();
+        newEnemyPC->SetGravityScale(0.0f);
+        newEnemyPC->SetIsTrigger(true);
+        newEnemy->SetActive(false);
+
+        Enemy* enemyScript = dynamic_cast<Enemy*>(tempScript);
+        vEnemy.PushBack(enemyScript);
+    }
+
+ 
 
     waveIntervalChrono.Start();
 }
@@ -123,7 +189,7 @@ void StartWave()
     
     currentWave++;
     // waveValue = 5 + currentWave * 3 + floorFactor * 3;
-    waveValue = 1;
+    waveValue = 3;
     remainingWaveValue = waveValue;
     isSpawningWave = true;
     isReady = true;
@@ -139,8 +205,8 @@ void SpawnEnemy(Spawn selectedSpawn)
     
     Vector<EnemyCost> options;
 
-    if (remainingWaveValue >= KAMIKAZE) options.PushBack(KAMIKAZE);
-    if (remainingWaveValue >= DRONE) options.PushBack(DRONE);
+   // if (remainingWaveValue >= KAMIKAZE) options.PushBack(KAMIKAZE);
+    //if (remainingWaveValue >= DRONE) options.PushBack(DRONE);
     if (remainingWaveValue >= TANK) options.PushBack(TANK);
 
     EnemyCost chosenEnemy = RandomFrom(options);
@@ -157,7 +223,17 @@ void SpawnEnemy(Spawn selectedSpawn)
         remainingWaveValue -= KAMIKAZE;
     }
     else if (chosenEnemy == DRONE) {}
-    else if (chosenEnemy == TANK) {}
+    else if (chosenEnemy == TANK) 
+    {
+        Tank* tempScript = GetFirstAvailableEnemy<Tank>();
+        if (tempScript == nullptr) return;
+        tempScript->m_pOwner->transform.SetWorldPosition(selectedSpawn.startPos);
+        tempScript->GoToPosition(selectedSpawn.endPos, tempScript->m_speed);
+        tempScript->m_pOwner->SetActive(true);
+        tempScript->m_Hp->Heal();
+        Console::Log("Spawned Tank");
+		remainingWaveValue -= TANK;
+    }
     
 }
 
