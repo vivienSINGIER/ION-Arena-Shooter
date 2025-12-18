@@ -25,14 +25,26 @@ void Start() override
     Weapon::Start();
     m_shotCooldown = 0.3f;
 
+    Geometry* pGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/bullet.obj");
+    Texture* albedo = new Texture(RES_PATH"res/ArenaShooter/Obj/bullet_color.png");
+    Texture* rough = new Texture(RES_PATH"res/ArenaShooter/Obj/bullet_rough.png");
+    Texture* ao = new Texture(RES_PATH"res/ArenaShooter/Obj/bullet_ao.png");
+
     for (int i = 0; i < 10; i++)
     {
         GameObject& bullet = GameObject::Create(m_pOwner->GetScene());
 
         MeshRenderer& meshProjectile = *bullet.AddComponent<MeshRenderer>();
-        meshProjectile.pGeometry = SHAPES.SPHERE;
+        meshProjectile.pGeometry = pGeo;
+		meshProjectile.pMaterial->albedoTextureID = albedo->GetTextureID();
+		meshProjectile.pMaterial->roughnessTextureID = rough->GetTextureID();
+		meshProjectile.pMaterial->ambientTextureID = ao->GetTextureID();
+		meshProjectile.pMaterial->useTextureAlbedo = 1;
+		meshProjectile.pMaterial->useTextureRoughness = 1;
+		meshProjectile.pMaterial->useTextureAmbient = 1;
+
         bullet.transform.SetWorldPosition({ 0.0f, 0.0f, 0.0f });
-        bullet.transform.SetWorldScale({ 0.2f, 0.2f, 0.2f });
+        bullet.transform.SetWorldScale({ 1.f, 1.f, 1.f });
         bullet.SetName("Handgun bullet");
 
         bullet.AddComponent<SphereCollider>();
@@ -59,7 +71,7 @@ void BeginShot() override
     m_chargingBullet = dynamic_cast<BulletHandgun*>(proj);
     m_chargingBullet->SetInactiveColider();
 
-    Vector3f32 pos = m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward() * 0.5f + (m_pOwner->transform.GetWorldUp() * 0.25f);
+    Vector3f32 pos = m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward();
 
     m_chargingBullet->Activate(pos);
     m_chargingBullet->SetSpeedBullet(0);
@@ -83,7 +95,7 @@ bool Shoot() override
         m_chargingBullet->SetScale(m_scale);
 
 
-        Vector3f32 pos = m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward() * (m_scale + 0.5f) + (m_pOwner->transform.GetWorldUp() * 0.25f);
+        Vector3f32 pos = m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward();
 
         m_chargingBullet->SetPosition(pos);
     }
@@ -104,7 +116,7 @@ void EndShot() override
 
     if (m_chargingBullet)
     {
-        m_chargingBullet->Init(m_pOwner->transform.GetWorldForward(), m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward() * (m_scale + 0.5f) + (m_pOwner->transform.GetWorldUp() * 0.25f), m_speed);
+        m_chargingBullet->Init(m_pOwner->transform.GetWorldForward(), m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward(), m_speed);
     }
 
     m_chargingBullet = nullptr;

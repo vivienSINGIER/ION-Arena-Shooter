@@ -164,7 +164,7 @@ void SetActiveEvent() override
 	m_handgun = handgun.AddScript<Handgun>();
 	handgun.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
 	handgun.SetParent(*m_camObj);
-	handgun.transform.SetLocalPosition({ 0.5f,-0.5f,1.f });
+	handgun.transform.SetLocalPosition({ 0.5f,-0.2f,1.f });
 	handgun.SetActive(false);
 	m_handgun->m_pCustomScene = m_customScene;
 
