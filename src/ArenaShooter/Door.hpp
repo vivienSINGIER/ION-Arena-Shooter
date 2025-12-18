@@ -25,6 +25,9 @@ void Start() override
 
 void Toggle()
 {
+    if (pUpTween == nullptr || pDownTween == nullptr)
+        return;
+
     if (isClosed == false)
         pUpTween->StartDuration(1.0f, Function<void(GameTransform::*)(Vector3f32 const&)>( &GameTransform::SetWorldPosition, &m_pOwner->transform ) );
     else

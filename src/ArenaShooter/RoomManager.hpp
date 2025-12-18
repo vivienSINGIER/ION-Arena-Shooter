@@ -12,7 +12,7 @@ GameObject* pPlayer = nullptr;
 CustomScene* pScene = nullptr;
 WaveManager* pWaveManager = nullptr;
 
-bool isFloorFinished = false;
+bool isFloorFinished = true;
 bool canSwitchRoom = false;
 bool isRoomInit = false;
 bool isPlayerLocked = false;
@@ -48,7 +48,7 @@ void Start() override
 
 void Update() override
 {
-    if (m_InitOffset == false && initChrono.GetElapsedTime() > 2.0f)
+    if (m_InitOffset == false && initChrono.GetElapsedTime() > 5.0f)
     {
         m_InitOffset = true;
         pPlayer->transform.SetWorldPosition(m_pElevator->roomProperties.playerSpawn);
@@ -78,6 +78,9 @@ void Update() override
             if (m_pCurrRoom->pWaveManager->IsFinished())
                 isFloorFinished = true;
     }
+
+    if (door == nullptr)
+        return;
 
     if (isFloorFinished)
     {
