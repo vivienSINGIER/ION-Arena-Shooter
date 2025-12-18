@@ -73,10 +73,12 @@ void Start() override
 void SetActiveEvent() override
 {
 
-	Geometry* pRifleGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/Rifle.obj");
-	Texture* albedoRifle = new Texture(RES_PATH"res/ArenaShooter/Obj/Rifle_Color.png");
-	Texture* roughRifle = new Texture(RES_PATH"res/ArenaShooter/Obj/Rifle_Mettalic.png");
-	Texture* metalRifle = new Texture(RES_PATH"res/ArenaShooter/Obj/Rifle_roughness.png");
+	Geometry* pRifleGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/rifle.obj");
+	Texture* albedoRifle = new Texture(RES_PATH"res/ArenaShooter/Obj/rifle_color.png");
+	Texture* roughRifle = new Texture(RES_PATH"res/ArenaShooter/Obj/rifle_rough.png");
+	Texture* metalRifle = new Texture(RES_PATH"res/ArenaShooter/Obj/rifle_metal.png");
+	Texture* normRifle = new Texture(RES_PATH"res/ArenaShooter/Obj/rifle_norm.png");
+	Texture* aoRifle = new Texture(RES_PATH"res/ArenaShooter/Obj/rifle_ao.png");
 
 	Geometry* pShotgunGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/shotgun_lower.obj");
 	Texture* albedoShotgun = new Texture(RES_PATH"res/ArenaShooter/Obj/shotgun_color.png");
@@ -124,10 +126,15 @@ void SetActiveEvent() override
 	meshProjectileRifle.pMaterial->useTextureRoughness = 1;
 	meshProjectileRifle.pMaterial->metalnessTextureID = metalRifle->GetTextureID();
 	meshProjectileRifle.pMaterial->useTextureMetalness = 1;
+	meshProjectileRifle.pMaterial->normalTextureID = normRifle->GetTextureID();
+	meshProjectileRifle.pMaterial->useTextureNormal = 1;
+	meshProjectileRifle.pMaterial->ambientTextureID = aoRifle->GetTextureID();
+	meshProjectileRifle.pMaterial->useTextureAmbient = 1;
+
 	m_rifle = rifle.AddScript<Rifle>();
 	rifle.SetParent(*m_camObj);
-	rifle.transform.SetWorldScale({ 1.3f,1.3f,1.3f });
-	rifle.transform.SetLocalPosition({ 0.3f,-0.2f,0.3f });
+	rifle.transform.SetWorldScale({ 0.8f,0.8f,0.8f });
+	rifle.transform.SetLocalPosition({ 0.3f,-0.2f,0.5f });
 	rifle.SetActive(false);
 	m_rifle->m_pCustomScene = m_customScene;
 

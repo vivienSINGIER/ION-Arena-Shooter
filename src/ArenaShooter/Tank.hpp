@@ -12,7 +12,7 @@
 
 using namespace gce;
 
-DECLARE_CHILD_SCRIPT(Tank, Enemy, ScriptFlag::Awake | ScriptFlag::Start | ScriptFlag::SetActive | ScriptFlag::Update | ScriptFlag::CollisionEnter)
+DECLARE_CHILD_SCRIPT(Tank, Enemy, ScriptFlag::Awake | ScriptFlag::Start | ScriptFlag::SetActive | ScriptFlag::Update | ScriptFlag::CollisionEnter | ScriptFlag::Destroy)
 
 StateMachine* m_pSm = nullptr;
 
@@ -71,6 +71,11 @@ void Awake() override
 	Vector<StateMachine::Condition> rayConditions;
 	rayConditions.PushBack(rayCondition);
 	m_pSm->AddTransition(rayConditions, shooting, idle);
+}
+
+void Destroy() override
+{
+	GameManager::GetStateSystem().DestroyStateMachine(m_pOwner);
 }
 
 void Start() override
@@ -165,6 +170,8 @@ void OnBeginIdle()
 }
 void OnUpdateIdle()
 {
+	if (!m_pOwner || !m_pOwner->IsActive())
+		return;
 	if (m_target.isSet == true)
 		return;
 	if (m_vPaths.Empty() == false)

@@ -12,7 +12,7 @@
 
 using namespace gce;
 
-DECLARE_CHILD_SCRIPT(Drone, Enemy, ScriptFlag::Awake | ScriptFlag::Start | ScriptFlag::SetActive | ScriptFlag::Update | ScriptFlag::CollisionEnter)
+DECLARE_CHILD_SCRIPT(Drone, Enemy, ScriptFlag::Awake | ScriptFlag::Start | ScriptFlag::SetActive | ScriptFlag::Update | ScriptFlag::CollisionEnter | ScriptFlag::Destroy)
 
 StateMachine* m_pSm = nullptr;
 
@@ -72,6 +72,11 @@ void Awake() override
 	m_pSm->AddTransition(rayConditions, shooting, idle);
 }
 
+void Destroy() override
+{
+	GameManager::GetStateSystem().DestroyStateMachine(m_pOwner);
+}
+
 void Start() override
 {
 	for (int i = 0; i < 10; i++)
@@ -96,6 +101,7 @@ void SetActiveEvent() override
 
 void Update() override
 {
+
 	if (m_Hp->GetHealth() <= 0.f)
 	{
 		m_Hp->SetIsAlive(false);
@@ -170,6 +176,9 @@ bool CheckPlayer()
 void OnBeginIdle() { }
 void OnUpdateIdle()
 {
+	if (m_pOwner == nullptr)
+		return;
+
 	if (m_target.isSet == true)
 		return;
 	if (m_vPaths.Empty() == false)

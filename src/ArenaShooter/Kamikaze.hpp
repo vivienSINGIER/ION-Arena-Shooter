@@ -151,6 +151,9 @@ void OnBeginIdle()
 }
 void OnUpdateIdle()
 {
+	if (m_pOwner == nullptr)
+		return;
+
 	if (m_target.isSet == true)
 		return;
 	if (m_vPaths.Empty() == false)
