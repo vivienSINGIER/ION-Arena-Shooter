@@ -6,6 +6,7 @@
 #include "GameObject.h"
 #include "Chrono.h"
 #include "Projectile.hpp"
+#include "CustomScene.h"
 
 
 using namespace gce;
@@ -29,6 +30,8 @@ float32 m_coolRate = 8.f;
 bool m_isOverheated = false;
 
 Vector<Projectile*> m_pProjectiles;
+
+CustomScene* m_pCustomScene = nullptr;
 
 void Start() override
 {

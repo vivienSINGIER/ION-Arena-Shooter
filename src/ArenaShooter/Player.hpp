@@ -2,7 +2,6 @@
 #define PLAYER_HPP_INCLUDED
 
 #include <iostream>
-
 #include "define.h"
 #include "Script.h"
 #include "GameObject.h"
@@ -12,7 +11,7 @@
 #include "Rifle.hpp"
 #include "Shotgun.hpp"
 #include "Handgun.hpp"
-#include "Bazooka.hpp"
+#include "Bazooka.h"
 #include "Health.h"
 #include "WeaponController.hpp"
 #include "BulletDrone.hpp"
@@ -130,6 +129,7 @@ void SetActiveEvent() override
 	rifle.transform.SetWorldScale({ 1.3f,1.3f,1.3f });
 	rifle.transform.SetLocalPosition({ 0.3f,-0.2f,0.3f });
 	rifle.SetActive(false);
+	m_rifle->m_pCustomScene = m_customScene;
 
 	m_weaponController->AddWeapon(m_rifle);
 
@@ -148,6 +148,7 @@ void SetActiveEvent() override
 	shotgun.transform.SetLocalPosition({ 0.7f,-0.5f,1.5f });
 	shotgun.transform.SetLocalRotation({ 0.f, 0.f, 0.f });
 	shotgun.SetActive(false);
+	m_shotgun->m_pCustomScene = m_customScene;
 
 	m_weaponController->AddWeapon(m_shotgun);
 
@@ -165,6 +166,7 @@ void SetActiveEvent() override
 	handgun.SetParent(*m_camObj);
 	handgun.transform.SetLocalPosition({ 0.5f,-0.5f,1.f });
 	handgun.SetActive(false);
+	m_handgun->m_pCustomScene = m_customScene;
 
 	m_weaponController->AddWeapon(m_handgun);
 
@@ -176,6 +178,7 @@ void SetActiveEvent() override
 	bazooka.SetParent(*m_camObj);
 	bazooka.transform.SetLocalPosition({ 0.3f,-0.3f,1.f });
 	bazooka.SetActive(false);
+	m_bazooka->m_pCustomScene = m_customScene;
 	m_weaponController->AddWeapon(m_bazooka, false);
 	
 	GameObject& energyUiEmpty = m_customScene->AddObject();
@@ -209,6 +212,12 @@ void Test()
 
 	testObject.transform.SetWorldPosition(m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward() * 2.f);
 	
+}
+
+void AddEnergyOrb()
+{
+	if (m_energyOrbs < m_maxEnergyOrbs)
+		m_energyOrbs++;
 }
 
 void Update() override

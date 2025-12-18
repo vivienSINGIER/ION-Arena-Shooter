@@ -37,6 +37,12 @@ void CollisionEnter(GameObject* other)
     if (m_pOwner->GetName() == other->GetName())
         return;
     
+	if (other->GetName() == "Rifle bullet" || other->GetName() == "Handgun bullet" || other->GetName() == "Shotgun bullet" || other->GetName() == "Bazooka bullet" || other->GetName() == "Drone bullet" || other->GetName() == "Tank bullet")
+	    return;
+
+    if(m_pOwner->GetName() == "Rifle bullet" && other->GetName() == "Bazooka bullet")
+		return;
+
     return m_pOwner->SetActive(false);
 }
 

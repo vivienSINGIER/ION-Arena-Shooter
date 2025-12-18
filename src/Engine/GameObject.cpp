@@ -75,5 +75,9 @@ void GameObject::Destroy()
         pChild->Destroy();
 }
 
+bool GameObject::IsDestroyed() const
+{
+    return m_destroyed;
+}
 
 }

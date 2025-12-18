@@ -8,7 +8,7 @@
 #include "GameManager.h"
 #include "StateMachine/StateMachine.h"
 #include "BulletDrone.hpp"
-#include "EnergyOrb.hpp"
+#include "EnergyOrb.h"
 
 using namespace gce;
 

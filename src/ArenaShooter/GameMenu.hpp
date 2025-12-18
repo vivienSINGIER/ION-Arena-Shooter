@@ -13,7 +13,7 @@
 #include "WaveManager.hpp"
 #include "Drone.hpp"
 #include "Tank.hpp"
-#include "EnergyOrb.hpp"
+#include "EnergyOrb.h"
 #include "RoomManager.hpp"
 
 using namespace gce;

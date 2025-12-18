@@ -26,6 +26,7 @@ public:
 
     static GameObject& Create( Scene& scene);
     void Destroy();
+	bool IsDestroyed() const;
 
     [[nodiscard]] uint32 GetID() const;
     [[nodiscard]] String GetName() const;

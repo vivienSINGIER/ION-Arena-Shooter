@@ -2,12 +2,16 @@
 #define ENEMY_HPP_INCLUDED
 
 #include "define.h"
-#include "EnergyOrb.hpp"
+#include "EnergyOrb.h"
 #include "Script.h"
 #include "GameObject.h"
 #include "Health.h"
 #include "Projectile.hpp"
 #include "LevelGrid.h"
+#include "BulletHandgun.hpp"
+#include "BulletRifle.hpp"
+#include "BulletShotgun.hpp"
+#include "BulletBazooka.hpp"
 
 struct Target 
 {
@@ -112,6 +116,10 @@ void CollisionEnter(GameObject* pOther) override
 	if (pOther->GetScript<BulletHandgun>())
 	{
 	m_Hp->TakeDamage(pOther->GetScript<BulletHandgun>()->GetDmgBullet());
+	}
+	if (pOther->GetScript<BulletBazooka>())
+	{
+		m_Hp->TakeDamage(pOther->GetScript<BulletBazooka>()->GetDmgBullet());
 	}
 }
 
@@ -302,6 +310,11 @@ void ResetPath()
 	m_direction = {0.0f, 0.0f, 0.0f};
 	m_vPaths.Clear();
 	m_target.isSet = false;
+}
+
+GameObject* GetOwner()
+{
+	return m_pOwner;
 }
 
 private:

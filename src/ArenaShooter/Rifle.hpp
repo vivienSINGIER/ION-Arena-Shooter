@@ -31,7 +31,7 @@ void Start() override
         meshProjectile.pMaterial->useTextureAlbedo = 1.f;
         bullet.transform.SetWorldPosition({ 0.0f, 0.0f, 0.0f });
         bullet.transform.SetWorldScale({ 1.3f,1.3f,1.3f });
-        bullet.SetName("Riffle bullet");
+        bullet.SetName("Rifle bullet");
 
         bullet.AddComponent<SphereCollider>();
         bullet.AddComponent<PhysicComponent>()->SetGravityScale(0.0f);

@@ -7,7 +7,8 @@
 #include "Enemy.hpp"
 #include "GameManager.h"
 #include "StateMachine/StateMachine.h"
-#include "EnergyOrb.hpp"
+#include "EnergyOrb.h"
+#include "Player.hpp"
 
 using namespace gce;
 
@@ -107,7 +108,7 @@ void Explode()
 
 void Shoot() override
 {
-
+	 
 }
 
 void CollisionEnter(GameObject* other) override
