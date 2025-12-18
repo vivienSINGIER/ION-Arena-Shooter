@@ -126,16 +126,45 @@ struct MapLoader
                 //     h->maxHealth = 1.0f;
                 // }
             }
+
             
-            if (currObject.contains("texture") && currObject["texture"].is_string())
+            json textureObject = currObject["texture"];
+            if (textureObject.contains("Base Color") && textureObject["Base Color"].is_string())
             {
                 std::string texturePath = RES_PATH;
-                texturePath.append("res/Textures/");
-                texturePath.append(currObject["texture"].get<std::string>());
+                texturePath.append("res/ArenaShooter/Textures/");
+                texturePath.append(textureObject["Base Color"].get<std::string>());
                 Texture* texture = new Texture(texturePath);
                 mesh.pMaterial->albedoTextureID = texture->GetTextureID();
                 mesh.pMaterial->useTextureAlbedo = 1;
                 mesh.pMaterial->subsurface = 0.2f;
+            }
+            if (textureObject.contains("Roughness") && textureObject["Roughness"].is_string())
+            {
+                std::string texturePath = RES_PATH;
+                texturePath.append("res/ArenaShooter/Textures/");
+                texturePath.append(textureObject["Roughness"].get<std::string>());
+                Texture* texture = new Texture(texturePath);
+                mesh.pMaterial->roughnessTextureID = texture->GetTextureID();
+                mesh.pMaterial->useTextureRoughness = 1;
+            }
+            if (textureObject.contains("Normal") && textureObject["Normal"].is_string())
+            {
+                std::string texturePath = RES_PATH;
+                texturePath.append("res/ArenaShooter/Textures/");
+                texturePath.append(textureObject["Normal"].get<std::string>());
+                Texture* texture = new Texture(texturePath);
+                mesh.pMaterial->normalTextureID = texture->GetTextureID();
+                mesh.pMaterial->useTextureNormal = 1;
+            }
+            if (textureObject.contains("Ambient Occlusion") && textureObject["Ambient Occlusion"].is_string())
+            {
+                std::string texturePath = RES_PATH;
+                texturePath.append("res/ArenaShooter/Textures/");
+                texturePath.append(textureObject["Ambient Occlusion"].get<std::string>());
+                Texture* texture = new Texture(texturePath);
+                mesh.pMaterial->ambientTextureID = texture->GetTextureID();
+                mesh.pMaterial->useTextureAmbient = 1;
             }
             
             // Pos / Scale / Rot
