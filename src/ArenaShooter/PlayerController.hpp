@@ -83,8 +83,8 @@ void HandleInput()
 	
 	if (GetKeyDown(m_keyJump))
 		m_pPlayer->GetScript<Player>()->Jump();
-	if (GetKey(m_keyJump))
-		m_pPlayer->GetScript<Player>()->BoostUp();
+	/*if (GetKey(m_keyJump))
+		m_pPlayer->GetScript<Player>()->BoostUp();*/
 	
 	if (GetButtonDown(m_buttonLeft))
 	{

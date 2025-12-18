@@ -328,6 +328,7 @@ GameObject* GetOwner()
 private:
 
 	friend class WaveManager;
+	friend class BossManager;
 
 END_SCRIPT
 

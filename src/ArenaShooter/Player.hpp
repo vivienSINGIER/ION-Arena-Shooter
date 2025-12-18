@@ -273,6 +273,11 @@ bool IsGrounded()
 		return false;
 }
 
+void GettingPunched()
+{
+	m_isGettingPunched = true;
+}
+
 void Jump()
 {
 	if (m_isGrounded)
@@ -312,7 +317,7 @@ void Move(Vector3f32 direction)
 		Vector3f32 vel = phys.GetVelocity();
 		phys.SetVelocity({ offset.x, vel.y , offset.z });
 	}
-	else if (m_isGrounded == false)
+	else if (m_isGrounded == false && m_isGettingPunched == false)
 	{
 		Force airMovementForce;
 		airMovementForce.direction = m_currentOffset;
@@ -404,6 +409,7 @@ void RaycastUpdate()
 
 
 		m_isGrounded = true;
+		m_isGettingPunched = false;
 	}
 	else
 	{
@@ -421,6 +427,7 @@ private:
 	float32 m_deltaTime;
 
 	bool m_isGrounded;
+	bool m_isGettingPunched = false;
 
 
 END_SCRIPT
