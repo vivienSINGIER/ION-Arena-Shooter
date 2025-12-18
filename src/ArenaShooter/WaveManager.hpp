@@ -59,6 +59,13 @@ void OnInit()
     Texture* roughTank = new Texture(RES_PATH"res/ArenaShooter/Obj/tank_rough.png");
     Texture* aoTank = new Texture(RES_PATH"res/ArenaShooter/Obj/tank_ao.png");
 
+    Geometry* pDroneGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/drone.obj");
+    Texture* albedoDrone = new Texture(RES_PATH"res/ArenaShooter/Obj/drone_color.png");
+    Texture* normDrone = new Texture(RES_PATH"res/ArenaShooter/Obj/drone_norm.png");
+    Texture* roughDrone = new Texture(RES_PATH"res/ArenaShooter/Obj/drone_rough.png");
+    Texture* aoDrone = new Texture(RES_PATH"res/ArenaShooter/Obj/drone_ao.png");
+    Texture* metalDrone = new Texture(RES_PATH"res/ArenaShooter/Obj/drone_metal.png");
+
 
     for (int i = 0; i < 20; i++)
     {
@@ -123,9 +130,17 @@ void OnInit()
      {
          GameObject* newEnemy = &currScene->AddObject();
          MeshRenderer& mesh = *newEnemy->AddComponent<MeshRenderer>();
-         mesh.pGeometry = SHAPES.CUBE;
-         /*mesh.pMaterial->albedoTextureID = albedoKamikaze->GetTextureID();
-         mesh.pMaterial->useTextureAlbedo = 1;*/
+         mesh.pGeometry = pDroneGeo;
+         mesh.pMaterial->albedoTextureID = albedoDrone->GetTextureID();
+         mesh.pMaterial->useTextureAlbedo = 1;
+         mesh.pMaterial->normalTextureID = normDrone->GetTextureID();
+         mesh.pMaterial->useTextureNormal = 1;
+         mesh.pMaterial->roughnessTextureID = roughDrone->GetTextureID();
+         mesh.pMaterial->useTextureRoughness = 1;
+         mesh.pMaterial->ambientTextureID = aoDrone->GetTextureID();
+         mesh.pMaterial->useTextureAmbient = 1;
+		 mesh.pMaterial->metalnessTextureID = metalDrone->GetTextureID();
+		 mesh.pMaterial->useTextureMetalness = 1;
          newEnemy->transform.SetWorldScale({ 1.3f,1.3f,1.3f });
     
          newEnemy->SetName("Drone");

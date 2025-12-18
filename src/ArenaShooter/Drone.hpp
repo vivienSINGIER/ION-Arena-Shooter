@@ -82,17 +82,24 @@ void Destroy() override
 
 void Start() override
 {
+	Geometry* pGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/laser.obj");
+	Texture* albedo = new Texture(RES_PATH"res/ArenaShooter/Obj/LaserTxtRed.png");
+
 	for (int i = 0; i < 10; i++)
 	{
 		GameObject& bullet = m_pCustomScene->AddObject();
 		MeshRenderer& meshProjectile = *bullet.AddComponent<MeshRenderer>();
-		meshProjectile.pGeometry = SHAPES.SPHERE;
+		meshProjectile.pGeometry = pGeo;
+		meshProjectile.pMaterial->albedoTextureID = albedo->GetTextureID();
+		meshProjectile.pMaterial->useTextureAlbedo = 1;
+
 		bullet.transform.SetWorldPosition({ 10.0f, 0.0f, 0.0f });
-		bullet.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
+		bullet.transform.SetWorldScale({ 1.3f,1.3f,1.3f });
 		bullet.SetName("Drone bullet");
 
 		bullet.AddComponent<SphereCollider>();
 		bullet.AddComponent<PhysicComponent>()->SetGravityScale(0.0f);
+		bullet.GetComponent<PhysicComponent>()->SetIsTrigger(true);
 		m_pProjectiles.PushBack(bullet.AddScript<BulletDrone>());
 	}
 }
