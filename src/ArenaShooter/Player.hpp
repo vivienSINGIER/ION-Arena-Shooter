@@ -26,7 +26,7 @@ using namespace gce;
 
 DECLARE_SCRIPT(Player, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::CollisionStay | ScriptFlag::CollisionEnter | ScriptFlag::CollisionExit | ScriptFlag::SetActive)
 
-float32 m_speed = 5;
+float32 m_speed = 8;
 float32 m_jumpForce = 40000;
 float32 m_boostForce = 500;
 float32 m_airMovementForce = m_jumpForce / 15;
@@ -51,7 +51,7 @@ int8 m_maxEnergyOrbs = 8;
 
 void Start() override
 {
-	m_health = new Health<int>(50);
+	m_health = new Health<int>(5);
 
 	GameObject& cam = GameObject::Create(m_pOwner->GetScene());
 	cam.SetParent(*m_pOwner);

@@ -31,7 +31,7 @@ Vector<BulletTank*> m_pProjectiles;
 void Awake() override
 {
 	Enemy::Awake();
-	m_speed = 2.50f;
+	m_speed = 4.50f;
 	m_pOwner->SetName("Tank");
 	m_Hp = new Health<float>(150.f);
 
@@ -137,17 +137,17 @@ void Shoot() override
 
 bool IsPlayerClose()
 {
-	return m_distanceFromPlayer < 20.0f && m_distanceFromPlayer >= 15.f; // Seuil de distance
+	return m_distanceFromPlayer < 30.0f && m_distanceFromPlayer >= 25.f; // Seuil de distance
 }
 
 bool IsPlayerVeryClose()
 {
-	return m_distanceFromPlayer < 15.0f; // Seuil de distance
+	return m_distanceFromPlayer < 25.0f; // Seuil de distance
 }
 
 bool IsPlayerFar()
 {
-	return m_distanceFromPlayer > 30.0f; // Seuil de distance
+	return m_distanceFromPlayer > 40.0f; // Seuil de distance
 }
 
 bool IsBlocked()
