@@ -17,10 +17,13 @@ bool canSwitchRoom = false;
 bool isRoomInit = false;
 bool isPlayerLocked = false;
 
+Chrono initChrono;
+
 void Start() override
 {
     m_roomIndex = 0;
     isRoomInit = false;
+    initChrono.Start();
     
     if (pScene == nullptr)
         return;
@@ -45,9 +48,10 @@ void Start() override
 
 void Update() override
 {
-    if (m_InitOffset == false)
+    if (m_InitOffset == false && initChrono.GetElapsedTime() > 2.0f)
     {
         m_InitOffset = true;
+        pPlayer->transform.SetWorldPosition(m_pElevator->roomProperties.playerSpawn);
         return;
     }
     
@@ -55,14 +59,17 @@ void Update() override
         LoadRoom();
 
     Door* door = m_pElevator->GetFromScript<Door>();
-    if (door->isClosed == false && isFloorFinished == false)
+    if (door != nullptr)
     {
-        if (m_pElevator->DistanceFromRoomBorder() > 5.f)
+        if (door->isClosed == false && isFloorFinished == false)
         {
-            door->Toggle();
-            if (m_pCurrRoom != nullptr)
-                m_pCurrRoom->pWaveManager->StartWave();
-        }
+            if (m_pElevator->DistanceFromRoomBorder() > 5.f)
+            {
+                door->Toggle();
+                if (m_pCurrRoom != nullptr)
+                    m_pCurrRoom->pWaveManager->StartWave();
+            }
+        }   
     }
 
     if (m_pCurrRoom != nullptr)
