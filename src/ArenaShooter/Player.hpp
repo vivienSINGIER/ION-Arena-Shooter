@@ -12,6 +12,7 @@
 #include "Shotgun.hpp"
 #include "Handgun.hpp"
 #include "Bazooka.h"
+#include "BulletBoss.hpp"
 #include "Health.h"
 #include "WeaponController.hpp"
 #include "BulletDrone.hpp"
@@ -371,7 +372,10 @@ void CollisionEnter(GameObject* other)
 	{
 		TakeDamage(other->GetScript<BulletTank>()->GetDmgBullet());
 	}
-	
+	if (other->GetScript<BulletBoss>())
+	{
+		TakeDamage(other->GetScript<BulletBoss>()->GetDmgBullet());
+	}
 }
 
 void CollisionExit(GameObject* other) override

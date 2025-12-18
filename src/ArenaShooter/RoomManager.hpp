@@ -4,7 +4,6 @@
 #include "Engine.h"
 #include "define.h"
 #include "Room.hpp"
-#include "Thread/Thread.h"
 
 DECLARE_SCRIPT(RoomManager, ScriptFlag::Update | ScriptFlag::Start)
 
@@ -50,6 +49,10 @@ void Start() override
     pWaveManager->currScene = pScene;
     pWaveManager->OnInit();
 
+    m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room1.json");
+    // m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room2.json");
+    // m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room1.json");
+    // m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room2.json");
     m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room5.json");
 }
 
@@ -137,35 +140,36 @@ void LoadRoom()
     {
         m_pCurrRoom->hasWaves = true;
         m_pCurrRoom->pWaveManager = pWaveManager;
-    m_pCurrRoom->hasWaves = true;
-    m_pCurrRoom->pWaveManager = pWaveManager;
+        m_pCurrRoom->hasWaves = true;
+        m_pCurrRoom->pWaveManager = pWaveManager;
 
-    switch (m_roomIndex)
-    {
-    case 1:
-		delete uiLvlImage->btmBrush;
-		uiLvlImage->btmBrush = new BitMapBrush("res/ArenaShooter/1er.png");
-        uiLvlImage->btmBrush->SetTransformMatrix({ 20, 50, 0 }, { 0.5f , 0.5f , 0.5f }, 0);
-        break;
-	case 2:
-		delete uiLvlImage->btmBrush;
-        uiLvlImage->btmBrush = new BitMapBrush("res/ArenaShooter/2eme.png");
-		uiLvlImage->btmBrush->SetTransformMatrix({ 20, 50, 0 }, { 0.5f , 0.5f , 0.5f }, 0);
-        break;
-	case 3:
-        delete uiLvlImage->btmBrush;
-		uiLvlImage->btmBrush = new BitMapBrush("res/ArenaShooter/3eme.png");
-        uiLvlImage->btmBrush->SetTransformMatrix({ 20, 50, 0 }, { 0.5f , 0.5f , 0.5f }, 0);
-		break;
-	case 4:
-		delete uiLvlImage->btmBrush;
-        uiLvlImage->btmBrush = new BitMapBrush("res/ArenaShooter/4eme.png");
-        uiLvlImage->btmBrush->SetTransformMatrix({ 20, 50, 0 }, { 0.5f , 0.5f , 0.5f }, 0);
-		break;
-    default:
-        break;
+        switch (m_roomIndex)
+        {
+        case 1:
+            delete uiLvlImage->btmBrush;
+            uiLvlImage->btmBrush = new BitMapBrush("res/ArenaShooter/1er.png");
+            uiLvlImage->btmBrush->SetTransformMatrix({ 20, 50, 0 }, { 0.5f , 0.5f , 0.5f }, 0);
+            break;
+        case 2:
+            delete uiLvlImage->btmBrush;
+            uiLvlImage->btmBrush = new BitMapBrush("res/ArenaShooter/2eme.png");
+            uiLvlImage->btmBrush->SetTransformMatrix({ 20, 50, 0 }, { 0.5f , 0.5f , 0.5f }, 0);
+            break;
+        case 3:
+            delete uiLvlImage->btmBrush;
+            uiLvlImage->btmBrush = new BitMapBrush("res/ArenaShooter/3eme.png");
+            uiLvlImage->btmBrush->SetTransformMatrix({ 20, 50, 0 }, { 0.5f , 0.5f , 0.5f }, 0);
+            break;
+        case 4:
+            delete uiLvlImage->btmBrush;
+            uiLvlImage->btmBrush = new BitMapBrush("res/ArenaShooter/4eme.png");
+            uiLvlImage->btmBrush->SetTransformMatrix({ 20, 50, 0 }, { 0.5f , 0.5f , 0.5f }, 0);
+            break;
+        default:
+            break;
+        }
+        m_roomIndex++;
     }
-    m_roomIndex++;
 }
 
 void ChangeRoom()

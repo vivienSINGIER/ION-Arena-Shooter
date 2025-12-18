@@ -186,7 +186,7 @@ void OnBeginChase()
 void OnUpdateChase()
 {
 	float32 targetDistance = (m_target.position - m_pOwner->transform.GetWorldPosition()).Norm();
-	if (targetDistance < 3.0f)
+	if (targetDistance < 8.0f)
 		return;
 	
 	bool searchResult = SetPath(m_pPlayer->transform.GetWorldPosition());

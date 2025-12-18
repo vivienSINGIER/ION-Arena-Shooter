@@ -253,7 +253,7 @@ bool SetPath(Vector3f32 target)
 	
 		RaycastHit hitInfo;
 		bool hit = PhysicSystem::IntersectRay(ray, hitInfo, distance);
-
+	
 		
 		if (hit && hitInfo.pGameObject != nullptr && hitInfo.pGameObject->GetName() != "Player" &&  hitInfo.pGameObject != m_pOwner)
 		{

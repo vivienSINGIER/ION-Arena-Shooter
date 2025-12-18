@@ -161,9 +161,7 @@ void OnInit()
          Enemy* enemyScript = dynamic_cast<Enemy*>(tempScript);
          vEnemy.PushBack(enemyScript);
      }
-
- 
-
+    
     waveIntervalChrono.Start();
 }
 
@@ -213,8 +211,7 @@ void StartWave()
         return;
     
     currentWave++;
-    // waveValue = 5 + currentWave * 3 + floorFactor * 3;
-    waveValue = 2;
+    waveValue = 6;
     remainingWaveValue = waveValue;
     isSpawningWave = true;
     isReady = true;
@@ -230,9 +227,9 @@ void SpawnEnemy(Spawn selectedSpawn)
     
     Vector<EnemyCost> options;
 
-    //if (remainingWaveValue >= KAMIKAZE) options.PushBack(KAMIKAZE);
+    if (remainingWaveValue >= KAMIKAZE) options.PushBack(KAMIKAZE);
     if (remainingWaveValue >= DRONE) options.PushBack(DRONE);
-    //if (remainingWaveValue >= TANK) options.PushBack(TANK);
+    if (remainingWaveValue >= TANK) options.PushBack(TANK);
 
     EnemyCost chosenEnemy = RandomFrom(options);
     

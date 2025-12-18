@@ -37,7 +37,6 @@ Spawn BossSpawn = { { 35.f,1.f,0.f }, { 20.f,1.f,0.f } };
 Spawn KamikazeSpawn1 = { { 25.f,4.f,0.f }, { 25.f,8.f,-4.f } };
 Spawn KamikazeSpawn2 = { { 25.f,4.f,0.f }, { 25.f,8.f,4.f } };
 
-
 Chrono waveSpawnChrono;
 float32 waveSpawnDelay = 10.f;
 
@@ -219,6 +218,7 @@ void Update() override
         if (boss->GetOwner()->IsActive() == false)
         {
             isFightingBoss = false;
+            SceneManager::GetInstance()->GetCurrentScene()->GetAllScripts<Player>().Front()->Die();
         }
     }
 
