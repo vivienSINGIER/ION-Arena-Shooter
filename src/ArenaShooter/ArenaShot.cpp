@@ -36,7 +36,7 @@ void Game::Init()
     windowParam.title = L"Arena Game";
     windowParam.width = 1080;
     windowParam.height = 720;
-    windowParam.isFullScreen = false;
+    windowParam.isFullScreen = true;
 }
 
 int Game::RUN()

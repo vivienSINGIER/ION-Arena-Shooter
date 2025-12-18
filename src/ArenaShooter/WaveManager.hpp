@@ -169,7 +169,7 @@ int8 GetEnemyCount()
 
 bool IsFinished()
 {
-    return currentWave == maxWaveCount && GetEnemyCount() == 0 && !isSpawningWave;
+    return currentWave >= maxWaveCount && GetEnemyCount() == 0 && !isSpawningWave;
 }
 
 template <typename T>
