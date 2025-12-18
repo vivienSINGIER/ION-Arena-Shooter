@@ -211,7 +211,7 @@ void StartWave()
         return;
     
     currentWave++;
-    waveValue = 6;
+    waveValue = 3;
     remainingWaveValue = waveValue;
     isSpawningWave = true;
     isReady = true;
@@ -227,8 +227,8 @@ void SpawnEnemy(Spawn selectedSpawn)
     
     Vector<EnemyCost> options;
 
-    if (remainingWaveValue >= KAMIKAZE) options.PushBack(KAMIKAZE);
-    if (remainingWaveValue >= DRONE) options.PushBack(DRONE);
+   // if (remainingWaveValue >= KAMIKAZE) options.PushBack(KAMIKAZE);
+    //if (remainingWaveValue >= DRONE) options.PushBack(DRONE);
     if (remainingWaveValue >= TANK) options.PushBack(TANK);
 
     EnemyCost chosenEnemy = RandomFrom(options);
