@@ -10,6 +10,7 @@
 #include "Tank.hpp"
 #include "Drone.hpp"
 #include "Player.hpp"
+#include "Components/SliderComponent.h"
 
 enum EnemyCost
 {
@@ -17,6 +18,8 @@ enum EnemyCost
     DRONE = 2,
     TANK = 3
 };
+
+using namespace gce;
 
 DECLARE_SCRIPT(WaveManager, ScriptFlag::Update)
 
@@ -45,6 +48,7 @@ GameObject* player = nullptr;
 LevelGrid* grid = nullptr;
 
 Vector<Enemy*> vEnemy;
+
 
 void OnInit() 
 {

@@ -33,7 +33,7 @@ bool kamikazeSecondPhaseStarted = false;
 
 Vector<Spawn> spawns;
 
-Spawn BossSpawn = { { 35.f,4.f,0.f }, { 25.f,4.f,0.f } };
+Spawn BossSpawn = { { 35.f,1.f,0.f }, { 20.f,1.f,0.f } };
 Spawn KamikazeSpawn1 = { { 25.f,4.f,0.f }, { 25.f,8.f,-4.f } };
 Spawn KamikazeSpawn2 = { { 25.f,4.f,0.f }, { 25.f,8.f,4.f } };
 
@@ -52,34 +52,58 @@ Vector<Enemy*> vEnemy;
 
 void OnInit() 
 {
-    GameObject* newEnemy = &currScene->AddObject();
-    MeshRenderer& mesh = *newEnemy->AddComponent<MeshRenderer>();
-    mesh.pGeometry = SHAPES.CUBE;
-    newEnemy->transform.SetWorldScale({ 1.f,1.f,1.f });
+    Geometry* pBossGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/boss.obj");
+    Texture* albedoBoss = new Texture(RES_PATH"res/ArenaShooter/Obj/Boss_BaseColor.png");
+    Texture* roughBoss = new Texture(RES_PATH"res/ArenaShooter/Obj/Boss_Roughness.png");
+    Texture* aoBoss = new Texture(RES_PATH"res/ArenaShooter/Obj/Boss_AO.png");
+
+    Geometry* pKamikazeGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/Kamikaze.obj");
+    Texture* albedoKamikaze = new Texture(RES_PATH"res/ArenaShooter/Obj/Kamikaze_color.png");
+    Texture* roughKamikaze = new Texture(RES_PATH"res/ArenaShooter/Obj/Kamikaze_rough.png");
+    Texture* aoKamikaze = new Texture(RES_PATH"res/ArenaShooter/Obj/Kamikaze_ao.png");
     
-    Boss* tempScript = newEnemy->AddScript<Boss>();
-    tempScript->SetGrid(grid);
-    tempScript->SetPlayer(player);
+    GameObject* bossObj = &currScene->AddObject();
+    MeshRenderer& mesh = *bossObj->AddComponent<MeshRenderer>();
+    mesh.pGeometry = pBossGeo;
+    mesh.pMaterial->albedoTextureID = albedoBoss->GetTextureID();
+    mesh.pMaterial->useTextureAlbedo = 1;
+    mesh.pMaterial->roughnessTextureID = roughBoss->GetTextureID();
+    mesh.pMaterial->useTextureRoughness = 1;
+    mesh.pMaterial->ambientTextureID = aoBoss->GetTextureID();
+    mesh.pMaterial->useTextureAmbient = 1;
+    bossObj->transform.SetWorldScale({ 1.f,1.f,1.f });
+    
+    Boss* bossScript = bossObj->AddScript<Boss>();
+    bossScript->SetGrid(grid);
+    bossScript->SetPlayer(player);
+    bossScript->m_pCustomScene = currScene;
 
-    newEnemy->AddComponent<BoxCollider>(); 
-    PhysicComponent* newEnemyPC = newEnemy->AddComponent<PhysicComponent>();
-    newEnemyPC->SetGravityScale(0.0f);
-    newEnemyPC->SetIsTrigger(true);
-    newEnemy->SetActive(false);
+    bossObj->AddComponent<BoxCollider>(); 
+    PhysicComponent* bossPC = bossObj->AddComponent<PhysicComponent>();
+    bossPC->SetGravityScale(0.0f);
+    bossPC->SetIsTrigger(true);
+    bossObj->SetActive(false);
 
-    boss = dynamic_cast<Enemy*>(tempScript);
-
-    for (int i = 0; i < 20; i++)
+    boss = dynamic_cast<Enemy*>(bossScript);
+    
+    for (int i = 0; i < 10; i++)
     {
         GameObject* newEnemy = &currScene->AddObject();
-        MeshRenderer& mesh = *newEnemy->AddComponent<MeshRenderer>();
-        mesh.pGeometry = SHAPES.CUBE;
-        newEnemy->transform.SetWorldScale({ 1.f,1.f,1.f });
+        MeshRenderer& meshE = *newEnemy->AddComponent<MeshRenderer>();
+        meshE.pGeometry = pKamikazeGeo;
+        meshE.pMaterial->albedoTextureID = albedoKamikaze->GetTextureID();
+        meshE.pMaterial->useTextureAlbedo = 1;
+        meshE.pMaterial->roughnessTextureID = roughKamikaze->GetTextureID();
+        meshE.pMaterial->useTextureRoughness = 1;
+        meshE.pMaterial->ambientTextureID = aoKamikaze->GetTextureID();
+        meshE.pMaterial->useTextureAmbient = 1;
+        newEnemy->transform.SetWorldScale({ 1.3f,1.3f,1.3f });
 
+        newEnemy->SetName("Kamikaze");
         Kamikaze* tempScript = newEnemy->AddScript<Kamikaze>();
         tempScript->SetGrid(grid);
         tempScript->SetPlayer(player);
-
+        tempScript->m_pCustomScene = currScene;
         newEnemy->AddComponent<BoxCollider>();
         PhysicComponent* newEnemyPC = newEnemy->AddComponent<PhysicComponent>();
         newEnemyPC->SetGravityScale(0.0f);
@@ -144,9 +168,6 @@ void SpawnBoss(Spawn selectedSpawn)
     boss->m_pOwner->transform.SetWorldPosition(selectedSpawn.startPos);
     boss->GoToPosition(selectedSpawn.endPos, boss->m_speed);
     boss->m_pOwner->SetActive(true);
-    Console::Log("Spawned Boss");
-    
-    
 }
 
 void StartWave()
@@ -167,8 +188,6 @@ void SpawnEnemy(Spawn selectedSpawn)
     tempScript->m_pOwner->transform.SetWorldPosition(selectedSpawn.startPos);
     tempScript->GoToPosition(selectedSpawn.endPos, tempScript->m_speed);
     tempScript->m_pOwner->SetActive(true);
-    Console::Log("Spawned Kamikaze");
-
 }
 
 void SpawnSubWave()
@@ -185,26 +204,29 @@ void SpawnSubWave()
 void Update() override
 {
     if (bossAlreadySpawned == false && isSpawningBoss == true)
+    {
         SpawnBoss(BossSpawn);
+        return;
+    }
     else if (isSpawningBoss == true)
     {
         isSpawningBoss = false;
         isFightingBoss = true;
     }
-
+    
     if (isFightingBoss)
     {
-        if (boss == nullptr)
+        if (boss->GetOwner()->IsActive() == false)
         {
             isFightingBoss = false;
         }
     }
 
-    if (boss->m_Hp->GetHealth() <= 200 && !kamikazeFirstPhaseStarted)
+    if (boss->m_Hp->GetHealth() <= 2000 && !kamikazeFirstPhaseStarted)
     {
         kamikazeFirstPhaseStarted = true;
     }
-    if (boss->m_Hp->GetHealth() <= 100 && !kamikazeSecondPhaseStarted)
+    if (boss->m_Hp->GetHealth() <= 1000 && !kamikazeSecondPhaseStarted)
     {
         kamikazeSecondPhaseStarted = true;
         waveSpawnChrono.Reset();

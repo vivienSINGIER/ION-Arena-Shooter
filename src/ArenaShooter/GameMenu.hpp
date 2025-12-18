@@ -64,16 +64,6 @@ public:
         RoomManager* roomManager = roomManagerObj.AddScript<RoomManager>();
         roomManager->pPlayer = player;
         roomManager->pScene = this;
-
-        GameObject& bossManager = AddObject();
-        BossManager* bManagerComponent = bossManager.AddScript<BossManager>();
-        bManagerComponent->grid = grid;
-        bManagerComponent->player = player;
-        bManagerComponent->currScene = this;
-        bManagerComponent->spawns = mapProperties.vSpawns;
-        bManagerComponent->OnInit();
-        pBossManager = bManagerComponent;
-        pBossManager->OnStart();
     }
 
 private:

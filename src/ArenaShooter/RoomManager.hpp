@@ -40,10 +40,7 @@ void Start() override
     pWaveManager->currScene = pScene;
     pWaveManager->OnInit();
 
-    m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room1.json");
-    m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room2.json");
-    m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room1.json");
-    m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room1.json");
+    m_vRoomPaths.PushBack(RES_PATH"res/Maps/Room5.json");
 }
 
 void Update() override
@@ -69,8 +66,10 @@ void Update() override
             if (m_pElevator->DistanceFromRoomBorder() > 5.f)
             {
                 door->Toggle();
-                if (m_pCurrRoom != nullptr)
+                if (m_pCurrRoom != nullptr && m_pCurrRoom->hasWaves)
                     m_pCurrRoom->pWaveManager->StartWave();
+                if (m_pCurrRoom != nullptr && m_pCurrRoom->isBossRoom)
+                    m_pCurrRoom->pBossManager->StartBoss();
             }
         }   
     }
@@ -121,8 +120,14 @@ void LoadRoom()
     m_pCurrRoom->pPlayer = pPlayer;
     m_pCurrRoom->pScene = pScene;
     m_pCurrRoom->hasLevelGrid = true;
-    m_pCurrRoom->hasWaves = true;
-    m_pCurrRoom->pWaveManager = pWaveManager;
+
+    if (m_roomIndex == m_vRoomPaths.Size() - 1)
+        m_pCurrRoom->isBossRoom = true;
+    else
+    {
+        m_pCurrRoom->hasWaves = true;
+        m_pCurrRoom->pWaveManager = pWaveManager;
+    }
     m_roomIndex++;
 }
 

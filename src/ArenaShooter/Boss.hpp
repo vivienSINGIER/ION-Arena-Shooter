@@ -8,14 +8,13 @@
 #include "GameManager.h"
 #include "StateMachine/StateMachine.h"
 #include "BulletBoss.hpp"
-#include "EnergyOrb.hpp"
+#include "EnergyOrb.h"
 
 using namespace gce;
 
-DECLARE_CHILD_SCRIPT(Boss, Enemy, ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::CollisionEnter)
+DECLARE_CHILD_SCRIPT(Boss, Enemy, ScriptFlag::Awake | ScriptFlag::Start | ScriptFlag::Update | ScriptFlag::CollisionEnter)
 
 StateMachine* m_pSm = nullptr;
-
 
 bool isBlocked = false;
 Chrono blockedChrono;
@@ -32,13 +31,14 @@ Vector<BulletBoss*> m_pProjectiles;
 float32 m_punchUpForce = 5000.f;
 float32 m_punchForce = 200000.f;
 
+SliderComponent* pLifeBar = nullptr;
 
 void Awake() override
 {
 	Enemy::Awake();
 	m_speed = 2.f;
 	m_pOwner->SetName("Boss");
-	m_Hp = new Health<float>(300.f);
+	m_Hp = new Health<float>(3000.f);
 
 	m_pSm = GameManager::GetStateSystem().CreateStateMachine(m_pOwner);
 	String idle = "Idle";
@@ -56,24 +56,53 @@ void Awake() override
 	Vector<StateMachine::Condition> farPlayerConditions;
 	farPlayerConditions.PushBack(farPlayerCondition);
 	m_pSm->AddTransition(farPlayerConditions, punching, idle);
+	
+}
 
-	/*StateMachine::Condition rayCondition = { [this]() { return this->CheckPlayer(); } };
-	Vector<StateMachine::Condition> rayConditions;
-	rayConditions.PushBack(rayCondition);
-	m_pSm->AddTransition(rayConditions, shooting, idle);*/
+void Start() override
+{
+	Geometry* pLaserGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/LaserBoss.obj");
+	Texture* albedoLaser = new Texture(RES_PATH"res/ArenaShooter/Obj/Laser_BaseColor.png");
+	Texture* roughLaser = new Texture(RES_PATH"res/ArenaShooter/Obj/Laser_Roughness.png");
+	Texture* aoLaser = new Texture(RES_PATH"res/ArenaShooter/Obj/Laser_AO.png");
 
-
+	GameObject& pBossBarObj = m_pCustomScene->AddObject();
+	pLifeBar = pBossBarObj.AddComponent<SliderComponent>();
+	pLifeBar->size = { 800, 60 };
+	pLifeBar->min = 0.f;
+	pLifeBar->max = 800.f;
+	pLifeBar->interval = 1.0f;
+	pLifeBar->value = 800.f;
+	pLifeBar->handlePosition.x = 2000;
+	pLifeBar->isHandleMoved = true;
+	pLifeBar->showHandle = false;
+	pLifeBar->orientation = SliderComponent::LEFT_TO_RIGHT;
+	pLifeBar->sliderShape = SliderComponent::RECTANGLE;
+	pLifeBar->useFillImage = TRUE;
+	pLifeBar->fillImageBrush = new BitMapBrush("res/ArenaShooter/barre_de_vie_boss.png");
+	pLifeBar->useBarImage = TRUE;
+	pLifeBar->barImageBrush = new BitMapBrush("res/ArenaShooter/contour_barre_de_vie_boss.png");
+	pLifeBar->SetPosition({ 1000, 50 });
+	
 	for (int i = 0; i < 10; i++)
 	{
-		GameObject& bullet = GameObject::Create(m_pOwner->GetScene());
+		GameObject& bullet = m_pCustomScene->AddObject();
 		MeshRenderer& meshProjectile = *bullet.AddComponent<MeshRenderer>();
-		meshProjectile.pGeometry = SHAPES.CYLINDER;
+		meshProjectile.pGeometry = pLaserGeo;
+		meshProjectile.pMaterial->albedoTextureID = albedoLaser->GetTextureID();
+		meshProjectile.pMaterial->useTextureAlbedo = 1;
+		meshProjectile.pMaterial->roughnessTextureID = albedoLaser->GetTextureID();
+		meshProjectile.pMaterial->useTextureRoughness = 1;
+		meshProjectile.pMaterial->ambientTextureID = albedoLaser->GetTextureID();
+		meshProjectile.pMaterial->useTextureAmbient = 1;
 		bullet.transform.SetWorldPosition({ 10.0f, 0.0f, 0.0f });
-		bullet.transform.SetWorldScale({ 1.f,5.f,1.f });
+		bullet.transform.SetWorldScale({ 0.5f,5.f,0.5f });
 		bullet.SetName("Boss bullet");
 
 		bullet.AddComponent<BoxCollider>();
-		bullet.AddComponent<PhysicComponent>()->SetGravityScale(0.0f);
+		PhysicComponent* pcTemp = bullet.AddComponent<PhysicComponent>();
+		pcTemp->SetGravityScale(0.0f);
+		pcTemp->SetIsTrigger(true);
 		m_pProjectiles.PushBack(bullet.AddScript<BulletBoss>());
 	}
 }
@@ -95,6 +124,8 @@ void Update() override
 		energyOrb.AddComponent<PhysicComponent>()->SetMass(1.0f);
 	}
 
+	pLifeBar->handlePosition.x = 600.f + m_Hp->GetHealth() / 3000.0f * 800.0f;
+	
 	Enemy::Update();
 }
 
@@ -150,7 +181,7 @@ void ShootPattern1(float32 sideOffset)
 	float playerSideOffset = sideOffset;
 	float playerSideOffset2 = playerSideOffset * 2.f;
 	
-	// Cibles décalées
+	// Cibles dï¿½calï¿½es
 	Vector3f32 targetLeft = m_pPlayer->transform.GetWorldPosition() - right * playerSideOffset;
 	Vector3f32 targetRight = m_pPlayer->transform.GetWorldPosition() + right * playerSideOffset;
 	Vector3f32 targetLeft2 = m_pPlayer->transform.GetWorldPosition() - right * playerSideOffset2;
@@ -173,7 +204,6 @@ void ShootPattern1(float32 sideOffset)
 			Vector3f32 shootFrom = shootFromOffset;
 			Vector3f32 shotDir = shotDirOffset;
 			first->Init(shotDir, shootFrom, 15.f);
-			Console::Log("Boss Shot");
 			break;
 		}
 	}
@@ -184,7 +214,6 @@ void ShootPattern1(float32 sideOffset)
 		{
 			Vector3f32 shootFrom = shootFromOffset;
 			second->Init(shotDirLeft, shootFrom, 15.f);
-			Console::Log("Boss Shot");
 			break;
 		}
 	}
@@ -194,7 +223,6 @@ void ShootPattern1(float32 sideOffset)
 		{
 			Vector3f32 shootFrom = shootFromOffset;
 			third->Init(shotDirRight, shootFrom, 15.f);
-			Console::Log("Boss Shot");
 			break;
 		}
 	}
@@ -204,7 +232,6 @@ void ShootPattern1(float32 sideOffset)
 		{
 			Vector3f32 shootFrom = shootFromOffset;
 			fourth->Init(shotDirLeft2, shootFrom, 15.f);
-			Console::Log("Boss Shot");
 			break;
 		}
 	}
@@ -214,7 +241,6 @@ void ShootPattern1(float32 sideOffset)
 		{
 			Vector3f32 shootFrom = shootFromOffset;
 			fifth->Init(shotDirRight2, shootFrom, 15.f);
-			Console::Log("Boss Shot");
 			break;
 		}
 	}
@@ -222,7 +248,6 @@ void ShootPattern1(float32 sideOffset)
 
 void OnBeginIdle() 
 {
-	Console::Log("Boss Idle");
 	m_deltaTime = 0.0f;
 	ResetPath();
 }
@@ -234,13 +259,11 @@ void OnUpdateIdle()
 		ShootPattern1(10.f);
 		m_deltaTime = 0.0f;
 	}
-	Console::Log(m_Hp->GetHealth());
 }
 void OnEndIdle() {}
 
 void OnBeginPunching()
 {
-	Console::Log("Boss Punching");
 	m_deltaTime = 0.0f;
 	ResetPath();
 }
@@ -266,7 +289,6 @@ void OnUpdatePunching()
 			punch.norm = m_punchForce;
 			m_pPlayer->GetComponent<PhysicComponent>()->AddForce(punch);
 			m_deltaTime = 0.0f;
-			Console::Log("Boss Punched");
 		}
 	}
 

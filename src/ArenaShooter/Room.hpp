@@ -5,6 +5,7 @@
 #include "define.h"
 #include "WaveManager.hpp"
 #include "LevelGrid.h"
+#include "BossManager.hpp"
 
 using namespace gce;
 
@@ -12,6 +13,9 @@ DECLARE_SCRIPT(Room, ScriptFlag::Update | ScriptFlag::Start)
 
 WaveManager* pWaveManager = nullptr;
 bool hasWaves = false;
+
+BossManager* pBossManager = nullptr;
+bool isBossRoom = false;
 
 LevelGrid* pLevelGrid = nullptr;
 bool hasLevelGrid = false;
@@ -44,6 +48,17 @@ void Start() override
         pWaveManager->spawns = roomProperties.vSpawns;
         pWaveManager->floorFactor = floor;
         pWaveManager->currentWave = 0;
+    }
+    if ( isBossRoom)
+    {
+        GameObject& bossManager = pScene->AddObject();
+        BossManager* bManagerComponent = bossManager.AddScript<BossManager>();
+        bManagerComponent->grid = pLevelGrid;
+        bManagerComponent->player = pPlayer;
+        bManagerComponent->currScene = pScene;
+        bManagerComponent->spawns = roomProperties.vSpawns;
+        bManagerComponent->OnInit();
+        pBossManager = bManagerComponent;
     }
 }
 
