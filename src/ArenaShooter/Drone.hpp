@@ -27,13 +27,10 @@ float32 m_deltaTime = 0.0f;
 
 Vector<BulletDrone*> m_pProjectiles;
 
-Chrono m_playerCheckChrono;
-float32 m_playerCheckInterval = 1.f;
-
 void Awake() override
 {
 	Enemy::Awake();
-	m_speed = 4.50f;
+	m_speed = 3.50f;
 	m_pOwner->SetName("Drone");
 	m_Hp = new Health<float>(100.f);
 
@@ -82,24 +79,17 @@ void Destroy() override
 
 void Start() override
 {
-	Geometry* pGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/laser.obj");
-	Texture* albedo = new Texture(RES_PATH"res/ArenaShooter/Obj/LaserTxtRed.png");
-
 	for (int i = 0; i < 10; i++)
 	{
 		GameObject& bullet = m_pCustomScene->AddObject();
 		MeshRenderer& meshProjectile = *bullet.AddComponent<MeshRenderer>();
-		meshProjectile.pGeometry = pGeo;
-		meshProjectile.pMaterial->albedoTextureID = albedo->GetTextureID();
-		meshProjectile.pMaterial->useTextureAlbedo = 1;
-
+		meshProjectile.pGeometry = SHAPES.SPHERE;
 		bullet.transform.SetWorldPosition({ 10.0f, 0.0f, 0.0f });
-		bullet.transform.SetWorldScale({ 1.3f,1.3f,1.3f });
+		bullet.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
 		bullet.SetName("Drone bullet");
 
 		bullet.AddComponent<SphereCollider>();
 		bullet.AddComponent<PhysicComponent>()->SetGravityScale(0.0f);
-		bullet.GetComponent<PhysicComponent>()->SetIsTrigger(true);
 		m_pProjectiles.PushBack(bullet.AddScript<BulletDrone>());
 	}
 }
@@ -116,7 +106,15 @@ void Update() override
 	{
 		m_Hp->SetIsAlive(false);
 		m_pOwner->SetActive(false);
-		SpawnOrb();
+
+		GameObject& energyOrb = GameObject::Create(m_pOwner->GetScene());
+		MeshRenderer& meshEnergyOrb = *energyOrb.AddComponent<MeshRenderer>();
+		meshEnergyOrb.pGeometry = SHAPES.SPHERE;
+		energyOrb.transform.SetWorldScale({ 0.5f,0.5f,0.5f });
+		energyOrb.transform.SetWorldPosition(m_pOwner->transform.GetWorldPosition());
+		energyOrb.AddScript<EnergyOrb>();
+		energyOrb.AddComponent<BoxCollider>();
+		energyOrb.AddComponent<PhysicComponent>()->SetMass(1.0f);
 	}
 
 	Enemy::Update();
@@ -162,11 +160,6 @@ bool IsBlocked()
 
 bool CheckPlayer()
 {
-	m_playerCheckChrono.Start();
-
-	if(m_playerCheckChrono.GetElapsedTime() < m_playerCheckInterval)
-		return false;
-
 	Vector3f32 direction = m_pPlayer->transform.GetWorldPosition() - m_pOwner->transform.GetWorldPosition();
 	direction.SelfNormalize();
 	Ray ray;
@@ -175,8 +168,6 @@ bool CheckPlayer()
 
 	RaycastHit hitInfo;
 	bool hit = PhysicSystem::IntersectRay(ray, hitInfo, 25.f);
-
-	m_playerCheckChrono.Reset();
 
 	return hit && hitInfo.pGameObject != nullptr && hitInfo.pGameObject->GetName() != "Player" && hitInfo.pGameObject->GetName() != "Drone bullet" && hitInfo.pGameObject->GetName() != "Rifle bullet" && hitInfo.pGameObject->GetName() != "Shotgun bullet" && hitInfo.pGameObject->GetName() != "Handgun bullet" && hitInfo.pGameObject != m_pOwner;
 }

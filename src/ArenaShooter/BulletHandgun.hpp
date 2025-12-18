@@ -14,8 +14,8 @@ DECLARE_CHILD_SCRIPT(BulletHandgun, Projectile, ScriptFlag::Start | ScriptFlag::
 
 void Start() override
 {
-    m_MaxDistance = 15.f;
-    m_dmgBullet = 10.f;
+    m_MaxDistance = 10.f;
+    m_dmgBullet = 5.f;
 
     m_pOwner->SetActive(false);
 }
@@ -34,8 +34,7 @@ void Init(Vector3f32 dir, Vector3f32 pos, float32 speed) override
 
 void CollisionEnter(GameObject* other) override
 {
-    String otherName = other->GetName();
-    if (otherName == "Rifle bullet" || otherName == "Handgun bullet" || otherName == "Shotgun bullet" || otherName == "Bazooka bullet" || otherName == "Drone bullet" || otherName == "Tank bullet")
+    if (m_pOwner->GetName() == other->GetName())
         return;
 
     m_pOwner->transform.SetWorldScale({0.2f, 0.2f, 0.2f});
