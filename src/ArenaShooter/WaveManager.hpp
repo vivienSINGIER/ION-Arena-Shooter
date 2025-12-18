@@ -92,15 +92,15 @@ void OnInit()
     {
         GameObject* newEnemy = &currScene->AddObject();
         MeshRenderer& mesh = *newEnemy->AddComponent<MeshRenderer>();
-        mesh.pGeometry = SHAPES.CUBE;
-  //       mesh.pMaterial->albedoTextureID = albedoTank->GetTextureID();
-  //       mesh.pMaterial->useTextureAlbedo = 1;
-		// mesh.pMaterial->normalTextureID = normTank->GetTextureID();
-		// mesh.pMaterial->useTextureNormal = 1;
-		// mesh.pMaterial->roughnessTextureID = roughTank->GetTextureID();
-		// mesh.pMaterial->useTextureRoughness = 1;
-		// mesh.pMaterial->ambientTextureID = aoTank->GetTextureID();
-		// mesh.pMaterial->useTextureAmbient = 1;
+        mesh.pGeometry = pTankGeo;
+        mesh.pMaterial->albedoTextureID = albedoTank->GetTextureID();
+        mesh.pMaterial->useTextureAlbedo = 1;
+		mesh.pMaterial->normalTextureID = normTank->GetTextureID();
+		mesh.pMaterial->useTextureNormal = 1;
+		mesh.pMaterial->roughnessTextureID = roughTank->GetTextureID();
+		mesh.pMaterial->useTextureRoughness = 1;
+		mesh.pMaterial->ambientTextureID = aoTank->GetTextureID();
+		mesh.pMaterial->useTextureAmbient = 1;
         newEnemy->transform.SetWorldScale({ 1.3f,1.3f,1.3f });
 
         newEnemy->SetName("Tank");
@@ -211,9 +211,9 @@ void SpawnEnemy(Spawn selectedSpawn)
     
     Vector<EnemyCost> options;
 
-    if (remainingWaveValue >= KAMIKAZE) options.PushBack(KAMIKAZE);
+    //if (remainingWaveValue >= KAMIKAZE) options.PushBack(KAMIKAZE);
     //if (remainingWaveValue >= DRONE) options.PushBack(DRONE);
-    //if (remainingWaveValue >= TANK) options.PushBack(TANK);
+    if (remainingWaveValue >= TANK) options.PushBack(TANK);
 
     EnemyCost chosenEnemy = RandomFrom(options);
     

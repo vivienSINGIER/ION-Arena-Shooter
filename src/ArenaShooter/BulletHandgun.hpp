@@ -14,8 +14,8 @@ DECLARE_CHILD_SCRIPT(BulletHandgun, Projectile, ScriptFlag::Start | ScriptFlag::
 
 void Start() override
 {
-    m_MaxDistance = 10.f;
-    m_dmgBullet = 5.f;
+    m_MaxDistance = 15.f;
+    m_dmgBullet = 10.f;
 
     m_pOwner->SetActive(false);
 }

@@ -51,7 +51,7 @@ int8 m_maxEnergyOrbs = 8;
 
 void Start() override
 {
-	m_health = new Health<int>(5);
+	m_health = new Health<int>(50);
 
 	GameObject& cam = GameObject::Create(m_pOwner->GetScene());
 	cam.SetParent(*m_pOwner);
