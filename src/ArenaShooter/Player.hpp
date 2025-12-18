@@ -90,6 +90,13 @@ void SetActiveEvent() override
 	Texture* roughHandgun = new Texture(RES_PATH"res/ArenaShooter/Obj/handgun_rough.png");
 	Texture* ambiantHandgun = new Texture(RES_PATH"res/ArenaShooter/Obj/handhun_ao.png");
 
+	Geometry* pBazookaGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/bazooka.obj");
+	Texture* albedoBazooka = new Texture(RES_PATH"res/ArenaShooter/Obj/bazooka_color.png");
+	Texture* roughBazooka = new Texture(RES_PATH"res/ArenaShooter/Obj/bazooka_rough.png");
+	Texture* aoBazooka = new Texture(RES_PATH"res/ArenaShooter/Obj/bazooka_ao.png");
+	Texture* metalBazooka = new Texture(RES_PATH"res/ArenaShooter/Obj/bazooka_metal.png");
+	Texture* normBazooka = new Texture(RES_PATH"res/ArenaShooter/Obj/bazooka_norm.png");
+
 	if (m_health != nullptr)
 		m_health->Heal(5);
 	m_pOwner->transform.SetWorldRotation({ 0,0,0 });
@@ -179,11 +186,22 @@ void SetActiveEvent() override
 
 	GameObject& bazooka = m_customScene->AddObject();
 	MeshRenderer& meshProjectileBazooka = *bazooka.AddComponent<MeshRenderer>();
-	meshProjectileBazooka.pGeometry = SHAPES.CAPSULE;
+	meshProjectileBazooka.pGeometry = pBazookaGeo;
+	meshProjectileBazooka.pMaterial->albedoTextureID = albedoBazooka->GetTextureID();
+	meshProjectileBazooka.pMaterial->useTextureAlbedo = 1;
+	meshProjectileBazooka.pMaterial->roughnessTextureID = roughBazooka->GetTextureID();
+	meshProjectileBazooka.pMaterial->useTextureRoughness = 1;
+	meshProjectileBazooka.pMaterial->metalnessTextureID = metalBazooka->GetTextureID();
+	meshProjectileBazooka.pMaterial->useTextureMetalness = 1;
+	meshProjectileBazooka.pMaterial->normalTextureID = normBazooka->GetTextureID();
+	meshProjectileBazooka.pMaterial->useTextureNormal = 1;
+	meshProjectileBazooka.pMaterial->ambientTextureID = aoBazooka->GetTextureID();
+	meshProjectileBazooka.pMaterial->useTextureAmbient = 1;
+
 	m_bazooka = bazooka.AddScript<Bazooka>();
 	bazooka.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
 	bazooka.SetParent(*m_camObj);
-	bazooka.transform.SetLocalPosition({ 0.3f,-0.3f,1.f });
+	bazooka.transform.SetLocalPosition({ 0.4f,-0.4f,0.8f });
 	bazooka.SetActive(false);
 	m_bazooka->m_pCustomScene = m_customScene;
 	m_weaponController->AddWeapon(m_bazooka, false);

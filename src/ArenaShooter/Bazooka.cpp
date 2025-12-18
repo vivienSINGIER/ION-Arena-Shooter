@@ -7,12 +7,29 @@
 void Bazooka::Start()
 { 
 	Weapon::Start();
+
+	Geometry* pGeo = GeometryFactory::LoadGeometry(RES_PATH"res/ArenaShooter/Obj/missile.obj");
+	Texture* albedo = new Texture(RES_PATH"res/ArenaShooter/Obj/missile_color.png");
+	Texture* rough = new Texture(RES_PATH"res/ArenaShooter/Obj/missile_rough.png");
+	Texture* ao = new Texture(RES_PATH"res/ArenaShooter/Obj/missile_ao.png");
+	Texture* metal = new Texture(RES_PATH"res/ArenaShooter/Obj/missile_metal.png");
+
 	for (int i = 0; i < 2; i++) 
 	{ 
 		GameObject& bullet = m_pCustomScene->AddObject();
 		MeshRenderer& meshProjectile = *bullet.AddComponent<MeshRenderer>();
-		meshProjectile.pGeometry = SHAPES.CYLINDER; bullet.transform.SetWorldPosition({ 0.0f, 0.0f, 0.0f }); 
-		bullet.transform.SetWorldScale({ 1.f,1.f,1.f });
+		meshProjectile.pGeometry = pGeo;
+		meshProjectile.pMaterial->albedoTextureID = albedo->GetTextureID();
+		meshProjectile.pMaterial->roughnessTextureID = rough->GetTextureID();
+		meshProjectile.pMaterial->ambientTextureID = ao->GetTextureID();
+		meshProjectile.pMaterial->metalnessTextureID = metal->GetTextureID();
+		meshProjectile.pMaterial->useTextureAlbedo = 1.f;
+		meshProjectile.pMaterial->useTextureRoughness = 1.f;
+		meshProjectile.pMaterial->useTextureAmbient = 1.f;
+		meshProjectile.pMaterial->useTextureMetalness = 1.f;
+
+		bullet.transform.SetWorldPosition({ 0.0f, 0.0f, 0.0f }); 
+		bullet.transform.SetWorldScale({ 0.3f,0.3f,0.3f });
 		bullet.SetName("Bazooka bullet");
 		bullet.AddComponent<SphereCollider>();
 		bullet.AddComponent<PhysicComponent>()->SetGravityScale(0.0f);
@@ -93,7 +110,7 @@ bool Bazooka::Shoot()
 
 	if (bulletBazooka && targetEnemy) 
 		bulletBazooka->m_target = targetEnemy->GetOwner();
-		bulletBazooka->Init(m_pOwner->transform.GetWorldForward(), m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward() * 1.2f, 5.f); 
+		bulletBazooka->Init(m_pOwner->transform.GetWorldForward(), m_pOwner->transform.GetWorldPosition() + m_pOwner->transform.GetWorldForward() * 2.2f, 20.f); 
 	
 	LockMyself();
 	return true;
