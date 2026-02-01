@@ -1,1 +1,1 @@
-## This is a patched version of GCE-dev (the school engine) in order to be "production" ready for the Arena Shooter project of G.Tech 2.
+## This is made using GC-Engine, a custom game engine made my the students of Gaming Campus Lyon 
